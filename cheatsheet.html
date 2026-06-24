@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KIU Databases II — ULTIMATE FINALS CHEAT SHEET</title>
+<style>
+body{font-family:Georgia,serif;font-size:11pt;line-height:1.75;color:#111;margin:1.8cm 2cm}
+h1{color:#003366;font-size:20pt;border-bottom:4px solid #003366;padding-bottom:10px;margin-top:0;page-break-before:always}
+h1:first-of-type{page-break-before:avoid}
+h2{color:#003366;font-size:14pt;margin-top:26px;border-bottom:2px solid #aac;padding-bottom:3px}
+h3{color:#1a5276;font-size:12pt;margin-top:18px}
+/* BOX TYPES */
+.def{background:#e8f0fe;border-left:5px solid #1a73e8;padding:11px 14px;margin:12px 0;border-radius:4px}
+.imp{background:#fff3cd;border-left:5px solid #ffc107;padding:11px 14px;margin:12px 0;border-radius:4px}
+.tip{background:#d4edda;border-left:5px solid #28a745;padding:11px 14px;margin:12px 0;border-radius:4px}
+.tip::before{content:"EXAM TIP: ";font-weight:bold;color:#155724}
+.warn{background:#fde8e8;border-left:5px solid #dc3545;padding:11px 14px;margin:12px 0;border-radius:4px}
+.analogy{background:#f5f0ff;border-left:5px solid #7b2fbe;padding:11px 14px;margin:12px 0;border-radius:4px}
+.analogy::before{content:"ANALOGY: ";font-weight:bold;color:#5a1a9b}
+.mnemonic{background:#fff8e1;border:2px dashed #f9a825;padding:12px 16px;margin:12px 0;border-radius:6px}
+.mnemonic::before{content:"MEMORY TRICK: ";font-weight:bold;color:#e65100}
+.step{background:#f0f9ff;border:1px solid #90caf9;padding:10px 14px;margin:10px 0;border-radius:4px}
+.scenario{background:#f8f4e8;border:2px solid #d4a000;padding:12px 14px;margin:14px 0;border-radius:6px}
+pre{background:#1e1e1e;color:#d4d4d4;padding:13px;border-radius:6px;font-size:9pt;line-height:1.5;white-space:pre-wrap;word-wrap:break-word;margin:10px 0}
+code{background:#f0f0f0;color:#c7254e;padding:2px 5px;border-radius:3px;font-size:9.5pt;font-family:'Courier New',monospace}
+table{border-collapse:collapse;width:100%;margin:12px 0;font-size:10pt}
+th{background:#003366;color:white;padding:8px 10px;text-align:left}
+td{border:1px solid #ccc;padding:7px 10px;vertical-align:top}
+tr:nth-child(even){background:#f7f7f7}
+/* UNDERLINE for memorables */
+u{text-decoration:underline;text-underline-offset:2px;text-decoration-color:#c00}
+mark{background:#ffe082;padding:1px 3px;border-radius:2px}
+.ok{color:#1a7a1a;font-weight:bold}
+.no{color:#cc0000;font-weight:bold}
+.toc{background:#f0f4ff;padding:16px 20px;border:1px solid #aac;border-radius:7px;margin-bottom:22px}
+.toc a{color:#003366;text-decoration:none;line-height:2.1;font-size:10.5pt}
+.toc h2{margin-top:0;border:none;color:#003366;font-size:14pt}
+ul li,ol li{margin-bottom:4px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0}
+.box2{background:#f8f8f8;border:1px solid #ccc;padding:11px 13px;border-radius:5px}
+.box2 h3{margin-top:0;font-size:11pt;border:none}
+.timeline{background:#f0f0f8;padding:11px;border-radius:4px;font-family:'Courier New',monospace;font-size:8.5pt;white-space:pre;margin:10px 0;border:1px solid #ccc;line-height:1.5}
+</style>
+
+<style id="reader-controls-style">
+/* ===== Injected reading controls ===== */
+:root{ --rfs:1.5; --rcw:560px; }
+.reader-container{
+  max-width: var(--rcw);
+  margin-left: auto;
+  margin-right: auto;
+  zoom: var(--rfs);
+}
+body.reader-full .reader-container{ max-width: none; }
+
+#reader-controls{
+  position: fixed; top: 14px; right: 14px; z-index: 9999;
+  font-family: -apple-system, Segoe UI, Roboto, sans-serif;
+}
+#reader-controls #rc-toggle{
+  width: 40px; height: 40px; border-radius: 50%;
+  border: none; background: #003366; color: #fff;
+  font-size: 16px; font-weight: bold; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.3);
+}
+#reader-controls #rc-panel{
+  display: none; margin-top: 8px; width: 240px;
+  background: #fff; color: #222; border: 1px solid #ccd;
+  border-radius: 10px; padding: 12px 14px;
+  box-shadow: 0 6px 24px rgba(0,0,0,.2); font-size: 13px;
+}
+#reader-controls.open #rc-panel{ display: block; }
+#reader-controls .rc-row{
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; margin: 8px 0;
+}
+#reader-controls .rc-row:first-child{ margin-top: 0; }
+#reader-controls .rc-row > span:first-child{ font-weight: 600; color: #003366; min-width: 42px; }
+#reader-controls button[data-act]{
+  border: 1px solid #aac; background: #f0f4ff; color: #003366;
+  border-radius: 6px; padding: 3px 10px; cursor: pointer; font-size: 13px;
+}
+#reader-controls button[data-act]:hover{ background: #dde6ff; }
+#reader-controls #rc-font-val, #reader-controls #rc-width-val{
+  min-width: 44px; text-align: center; font-variant-numeric: tabular-nums;
+}
+#reader-controls input[type=range]{ flex: 1; }
+#reader-controls label{ display: flex; align-items: center; gap: 6px; cursor: pointer; }
+@media print{
+  #reader-controls{ display: none !important; }
+  .reader-container{ zoom: 1 !important; max-width: none !important; margin: 0 !important; }
+}
+</style>
+
+<script>
+(function(){try{
+  var k='readerTheme:db2site';
+  var t=localStorage.getItem(k)||'system';
+  var dark = t==='dark' || (t==='system' && window.matchMedia &&
+            window.matchMedia('(prefers-color-scheme: dark)').matches);
+  if(dark) document.documentElement.classList.add('theme-dark');
+}catch(e){}})();
+</script>
+
+<style id="theme-dark-style">
+/* ===== Dark theme (scoped to html.theme-dark) ===== */
+html.theme-dark, html.theme-dark body{
+  background: #16181c !important;
+  color: #d2d5da !important;
+}
+html.theme-dark h1, html.theme-dark h2, html.theme-dark h3, html.theme-dark h4{
+  color: #9ec5ff !important;
+  border-color: #33425a !important;
+}
+html.theme-dark a{ color: #8ab4f8 !important; }
+html.theme-dark .subtitle, html.theme-dark .meta, html.theme-dark .sub{ color: #9aa0a8 !important; }
+
+/* callout / card boxes -> dark surface, keep their accent border */
+html.theme-dark .box, html.theme-dark .warn, html.theme-dark .key, html.theme-dark .exam, html.theme-dark .answer, html.theme-dark .def, html.theme-dark .imp, html.theme-dark .tip, html.theme-dark .scenario, html.theme-dark .timeline, html.theme-dark .toc, html.theme-dark .defbox, html.theme-dark .notebox, html.theme-dark .examtip, html.theme-dark .assignment, html.theme-dark .cover{
+  background: #1e2230 !important;
+  color: #d2d5da !important;
+}
+html.theme-dark .cover{ background: #1a1d28 !important; }
+html.theme-dark .exam-title, html.theme-dark .examtip,
+html.theme-dark .notebox, html.theme-dark .kiu-logo{ color: #c7d2e8 !important; }
+
+/* tables */
+html.theme-dark table th{ background: #243044 !important; color: #e8eef7 !important; }
+html.theme-dark table td, html.theme-dark table th{ border-color: #3a3f49 !important; }
+html.theme-dark table tr:nth-child(even){ background: #1b1e24 !important; }
+html.theme-dark table tr:nth-child(odd){ background: transparent !important; }
+
+/* code blocks: darken any light ones; leave already-dark ones consistent */
+html.theme-dark pre, html.theme-dark code{
+  background: #0e0f12 !important;
+  color: #e2e2e2 !important;
+  border-color: #2c2f36 !important;
+}
+html.theme-dark .out, html.theme-dark .output{ background: #0f1a10 !important; }
+
+/* the settings panel itself in dark mode */
+html.theme-dark #reader-controls #rc-panel{
+  background: #23262d !important; color: #e0e2e6 !important; border-color: #3a3f4a !important;
+}
+html.theme-dark #reader-controls button[data-act]{
+  background: #2d323c !important; color: #cfe0ff !important; border-color: #3a4150 !important;
+}
+html.theme-dark #reader-controls button[data-act]:hover{ background: #39404d !important; }
+html.theme-dark #reader-controls .rc-row > span:first-child{ color: #9ec5ff !important; }
+
+/* theme segmented control */
+#reader-controls .rc-seg{ display: inline-flex; gap: 4px; }
+#reader-controls .rc-seg button{
+  border: 1px solid #aac; background: #f0f4ff; color: #003366;
+  border-radius: 6px; padding: 3px 8px; cursor: pointer; font-size: 14px; line-height: 1;
+}
+#reader-controls .rc-seg button.active{ background: #003366; color: #fff; border-color: #003366; }
+html.theme-dark #reader-controls .rc-seg button{ background: #2d323c; color: #cfe0ff; border-color: #3a4150; }
+html.theme-dark #reader-controls .rc-seg button.active{ background: #8ab4f8; color: #11151c; border-color: #8ab4f8; }
+
+@media print{
+  /* never print a black page even if dark mode is on */
+  html.theme-dark, html.theme-dark body,
+  html.theme-dark .box, html.theme-dark .warn, html.theme-dark .key, html.theme-dark .exam, html.theme-dark .answer, html.theme-dark .def, html.theme-dark .imp, html.theme-dark .tip, html.theme-dark .scenario, html.theme-dark .timeline, html.theme-dark .toc, html.theme-dark .defbox, html.theme-dark .notebox, html.theme-dark .examtip, html.theme-dark .assignment, html.theme-dark .cover, html.theme-dark table th,
+  html.theme-dark pre, html.theme-dark code, html.theme-dark .out, html.theme-dark .output{
+    background: #fff !important; color: #000 !important;
+  }
+}
+</style>
+
+<style id="reader-pagecounter-style">
+#reader-pagecounter{
+  position: fixed; bottom: 14px; right: 14px; z-index: 9999;
+  background: rgba(0,51,102,.92); color: #fff;
+  font-family: -apple-system, Segoe UI, Roboto, sans-serif; font-size: 12px;
+  padding: 6px 11px; border-radius: 20px; pointer-events: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25);
+  font-variant-numeric: tabular-nums; letter-spacing: .2px;
+}
+#reader-pagecounter b{ font-weight: 700; }
+html.theme-dark #reader-pagecounter{ background: rgba(138,180,248,.92); color: #11151c; }
+@media print{ #reader-pagecounter{ display: none !important; } }
+</style>
+
+<style id="reader-outline-style">
+/* keep the Aa button pinned to the right so it doesn't jump when the panel opens */
+#reader-controls{ display: flex; flex-direction: column; align-items: flex-end; }
+
+/* page counter becomes hover-interactive (was pointer-events:none) */
+#reader-nav{ position: fixed; bottom: 14px; right: 14px; z-index: 9999;
+  font-family: -apple-system, Segoe UI, Roboto, sans-serif; }
+#reader-nav #reader-pagecounter{ position: static; bottom: auto; right: auto;
+  pointer-events: auto; cursor: pointer; }
+
+#reader-outline{
+  display: none; position: absolute; bottom: 100%; right: 0; margin-bottom: 8px;
+  width: min(340px, 82vw); max-height: 70vh; overflow-y: auto;
+  background: #fff; color: #222; border: 1px solid #ccd; border-radius: 10px;
+  box-shadow: 0 8px 28px rgba(0,0,0,.22); padding: 6px 4px; font-size: 12.5px;
+}
+#reader-nav:hover #reader-outline, #reader-nav.pinned #reader-outline{ display: block; }
+#reader-outline::after{ content:""; position:absolute; left:0; right:0; top:100%; height:14px; }
+#reader-outline .ro-head{ font-weight: 700; color: #003366; padding: 4px 10px 6px;
+  border-bottom: 1px solid #e3e8f0; margin-bottom: 4px; position: sticky; top: 0; background: #fff; }
+#reader-outline .ro-item{
+  display: flex; align-items: baseline; gap: 8px; justify-content: space-between;
+  padding: 3px 10px; cursor: pointer; border-radius: 6px; text-decoration: none; color: inherit;
+}
+#reader-outline .ro-item:hover{ background: #eef3ff; }
+#reader-outline .ro-t{ overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#reader-outline .ro-p{ color: #6678a0; font-variant-numeric: tabular-nums; flex: 0 0 auto; font-size: 11px; }
+#reader-outline .ro-l0{ font-weight: 600; }
+#reader-outline .ro-l1 .ro-t{ padding-left: 14px; font-weight: 400; }
+#reader-outline .ro-l2 .ro-t{ padding-left: 28px; color: #555; font-weight: 400; }
+
+html.theme-dark #reader-outline{ background: #23262d; color: #e0e2e6; border-color: #3a3f4a; }
+html.theme-dark #reader-outline .ro-head{ background: #23262d; color: #9ec5ff; border-color: #343a44; }
+html.theme-dark #reader-outline .ro-item:hover{ background: #2f3540; }
+html.theme-dark #reader-outline .ro-p{ color: #8fa0c4; }
+html.theme-dark #reader-outline .ro-l2 .ro-t{ color: #b6bcc6; }
+
+@media print{ #reader-nav{ display: none !important; } }
+</style>
+
+<style id="reader-spy-style">
+#reader-pagecounter{ white-space: nowrap; }
+#rpc-head{ overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 230px; font-weight: 600; }
+#rpc-head:not(:empty)::after{ content: "\00B7"; margin: 0 7px; opacity: .55; font-weight: 400; }
+#reader-outline .ro-item.ro-active{ background: #dbe6ff; font-weight: 700; }
+#reader-outline .ro-item.ro-active .ro-p{ color: #003366; }
+html.theme-dark #reader-outline .ro-item.ro-active{ background: #34507e; }
+html.theme-dark #reader-outline .ro-item.ro-active .ro-p{ color: #cfe0ff; }
+</style>
+
+<style id="site-nav-style">
+#site-nav-toggle{ position:fixed; top:14px; left:14px; z-index:10001; width:40px; height:40px;
+  border-radius:8px; border:none; background:#0f2540; color:#fff; font-size:18px; line-height:1;
+  cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,.3);
+  font-family:-apple-system,Segoe UI,Roboto,sans-serif; }
+#site-nav{ position:fixed; top:0; left:0; width:250px; height:100vh; overflow-y:auto;
+  background:#0f2540; color:#cfe0ff; z-index:10000; transform:translateX(-100%);
+  transition:transform .2s ease; box-shadow:2px 0 14px rgba(0,0,0,.25);
+  font-family:-apple-system,Segoe UI,Roboto,sans-serif; }
+body.nav-open #site-nav{ transform:translateX(0); }
+#site-nav .sn-title{ font-weight:700; color:#fff; font-size:15px; padding:16px 18px 4px 58px; }
+#site-nav .sn-sub{ font-size:11px; color:#7f9cc0; padding:0 18px 12px 58px; border-bottom:1px solid #22405f; margin-bottom:6px; }
+#site-nav a.sn-link{ display:block; padding:11px 18px; color:#cfe0ff; text-decoration:none;
+  font-size:13.5px; border-left:3px solid transparent; line-height:1.35; }
+#site-nav a.sn-link:hover{ background:#163255; }
+#site-nav a.sn-link.active{ background:#1d3e66; border-left-color:#8ab4f8; color:#fff; font-weight:600; }
+#site-nav-backdrop{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:9999; }
+body.nav-open #site-nav-backdrop{ display:block; }
+@media (min-width:900px){
+  body.nav-open{ padding-left:250px; }
+  body.nav-open #site-nav-backdrop{ display:none; }
+}
+@media print{ #site-nav,#site-nav-toggle,#site-nav-backdrop{ display:none !important; } body.nav-open{ padding-left:0 !important; } }
+
+/* ===== mobile responsiveness ===== */
+@media (max-width:700px){
+  body{ margin:0 !important; }
+  .reader-container{ max-width: calc((100vw - 18px) / var(--rfs)) !important; margin:0 auto !important; padding:0 !important; }
+  #reader-controls{ top:10px !important; right:10px !important; }
+  #site-nav-toggle{ top:10px; left:10px; width:38px; height:38px; }
+  #reader-nav{ bottom:10px !important; right:10px !important; }
+  .reader-container table{ font-size:8.7pt; }
+  .reader-container pre, .reader-container .ascii-diagram{ font-size:8pt; }
+  h1{ font-size:17pt !important; } h2{ font-size:13.5pt !important; }
+}
+</style>
+<style id="cheat-dark-patch">
+/* dark-mode coverage for cheat-sheet-only classes */
+html.theme-dark .analogy, html.theme-dark .mnemonic,
+html.theme-dark .step, html.theme-dark .box2{ background:#1e2230 !important; color:#d2d5da !important; }
+html.theme-dark .box2{ border-color:#3a3f4a !important; }
+html.theme-dark .box2 h3{ color:#9ec5ff !important; }
+html.theme-dark .analogy::before{ color:#c9a8e8 !important; }
+html.theme-dark .mnemonic::before{ color:#ffb366 !important; }
+html.theme-dark mark{ background:#5a4a16 !important; color:#f3e7bf !important; }
+html.theme-dark .ok{ color:#7ee0a0 !important; }
+html.theme-dark .no{ color:#ff8a8a !important; }
+html.theme-dark u{ text-decoration-color:#ff8a8a !important; }
+</style>
+</head>
+<body>
+<button id="site-nav-toggle" title="Menu" aria-label="Menu">☰</button>
+<nav id="site-nav">
+  <div class="sn-title">DB2 Final Study</div>
+  <div class="sn-sub">KIU Databases II · 2026</div>
+  <a class="sn-link" href="index.html">Home</a>
+  <a class="sn-link" href="5-transactions.html">5.4 · Transactions & CC</a>
+  <a class="sn-link" href="6.1-6.2-consistency.html">6.1–6.2 · Consistency & Conflicts</a>
+  <a class="sn-link" href="6.3-6.4-consensus-lwt.html">6.3–6.4 · Consensus & LWT</a>
+  <a class="sn-link" href="7-mongodb.html">7 · MongoDB & Sharding</a>
+  <a class="sn-link" href="final-exam-prep.html">Final Exam Prep</a>
+  <a class="sn-link active" href="cheatsheet.html">Ultimate Cheat Sheet</a>
+</nav>
+<div id="site-nav-backdrop"></div>
+
+
+<div id="reader-controls">
+  <button id="rc-toggle" title="Reading settings">Aa</button>
+  <div id="rc-panel">
+    <div class="rc-row" id="rc-theme-row">
+      <span>Theme</span>
+      <div class="rc-seg">
+        <button data-theme="light" title="Light mode">&#9728;</button>
+        <button data-theme="dark" title="Dark mode">&#9790;</button>
+        <button data-theme="system" title="Match system">&#128421;</button>
+      </div>
+    </div>
+
+    <div class="rc-row">
+      <span>Font</span>
+      <button data-act="font-dec" title="Smaller">A&minus;</button>
+      <span id="rc-font-val">100%</span>
+      <button data-act="font-inc" title="Larger">A+</button>
+    </div>
+    <div class="rc-row">
+      <span>Width</span>
+      <input id="rc-width" type="range" min="300" max="1600" step="20">
+      <span id="rc-width-val">560</span>
+    </div>
+    <div class="rc-row">
+      <label><input id="rc-full" type="checkbox"> Full width</label>
+      <button data-act="reset">Reset</button>
+    </div>
+  </div>
+</div>
+
+<div class="reader-container">
+
+
+<h1 style="page-break-before:avoid;font-size:24pt;text-align:center;border-bottom:5px solid #003366;padding-bottom:18px">
+  KIU Databases II — ULTIMATE FINALS CHEAT SHEET
+</h1>
+<p style="text-align:center;font-size:1.1em;color:#555">Module 5 · Module 6.1/6.2 · Module 6.3/6.4 · Module 7 · Everything combined</p>
+
+<div class="toc">
+<h2>Contents</h2>
+<strong>MODULE 5 — PostgreSQL Transactions &amp; Concurrency</strong><br>
+<a href="#m5a">A. ACID Properties</a> · <a href="#m5b">B. WAL &amp; Buffer Pool</a> · <a href="#m5c">C. All 6 Isolation Anomalies</a> · <a href="#m5d">D. Isolation Levels (RC / RR / Serializable)</a><br>
+<a href="#m5e">E. 2PL vs MVCC</a> · <a href="#m5f">F. MVCC Deep Dive (xmin/xmax)</a> · <a href="#m5g">G. Deadlocks</a> · <a href="#m5h">H. HOT/COLD Updates &amp; Vacuum</a><br>
+<a href="#m5i">I. SELECT FOR UPDATE</a> · <a href="#m5j">J. Write Skew &amp; SSI</a><br><br>
+<strong>MODULE 6.1 &amp; 6.2 — P2P Distributed Databases</strong><br>
+<a href="#m61a">A. ACID in P2P &amp; 3 Meanings of Consistency</a> · <a href="#m61b">B. CAP Theorem</a> · <a href="#m61c">C. Consistency Levels &amp; W+R&gt;N</a><br>
+<a href="#m61d">D. Read Repair &amp; Hinted Handoff</a> · <a href="#m62a">E. LWW</a> · <a href="#m62b">F. Version Vectors &amp; Siblings</a> · <a href="#m62c">G. CRDTs</a><br><br>
+<strong>MODULE 6.3 &amp; 6.4 — Consensus, 2PC, Raft, LWT, Paxos</strong><br>
+<a href="#m63a">A. Consensus</a> · <a href="#m63b">B. Two-Phase Commit (2PC)</a> · <a href="#m63c">C. Raft</a> · <a href="#m64a">D. LWT vs LWW</a> · <a href="#m64b">E. Paxos</a><br><br>
+<strong>MODULE 7 — MongoDB</strong><br>
+<a href="#m7a">A. Data Models &amp; Document DB</a> · <a href="#m7b">B. BSON &amp; Embedding vs Referencing</a> · <a href="#m7c">C. Single-Leader Replication &amp; Oplog</a><br>
+<a href="#m7d">D. Write/Read Concern &amp; Read Preference</a> · <a href="#m7e">E. Failover, Split Brain, Rollback</a> · <a href="#m7f">F. Sharding</a><br><br>
+<a href="#masterref"><strong>MASTER QUICK-REFERENCE TABLE</strong></a>
+</div>
+
+<!-- ================================================================ -->
+<h1>MODULE 5 — PostgreSQL Transactions &amp; Concurrency</h1>
+<!-- ================================================================ -->
+
+<h2 id="m5a">A. ACID Properties</h2>
+<div class="def">
+<strong>A — Atomicity:</strong> All-or-nothing. If any step fails → entire transaction is rolled back. No partial commits.<br>
+<u>Implemented via: WAL (undo log) and rollback mechanism.</u><br><br>
+<strong>C — Consistency:</strong> DB moves from one valid state to another. All constraints (PK, FK, CHECK) hold before and after.<br><br>
+<strong>I — Isolation:</strong> Concurrent transactions appear to run serially. Implemented via <mark>2PL or MVCC</mark>.<br>
+Levels: Read Committed (default) → Repeatable Read → Serializable.<br><br>
+<strong>D — Durability:</strong> Once COMMITTED, data survives crashes. <u>Implemented via WAL flush to disk before COMMIT returns.</u>
+</div>
+<div class="tip">
+Which ACID property does PostgreSQL implement via WAL? → <mark>Durability</mark>. Atomicity uses the undo mechanism (old versions in heap). Isolation uses MVCC snapshots.
+</div>
+
+<h2 id="m5b">B. WAL &amp; Buffer Pool</h2>
+<div class="def">
+<strong>WAL (Write-Ahead Log)</strong> = sequential append-only log. <u>Every change is written to WAL BEFORE the data page is written to disk.</u><br>
+- Stored in <code>$PGDATA/pg_wal/</code><br>
+- Each record has an <strong>LSN (Log Sequence Number)</strong> — unique monotonically increasing 64-bit number<br>
+- On crash: PostgreSQL replays WAL from last checkpoint → no data loss
+</div>
+<div class="imp">
+<strong>COMMIT flow:</strong> (1) Write COMMIT record to WAL → (2) <u>fsync WAL to disk</u> → (3) return "COMMIT" to client. Data pages may still be dirty in buffer pool — they'll be written later. WAL already guarantees durability.
+</div>
+<strong>Checkpoint:</strong> All dirty buffer pool pages flushed to disk. After crash, only replay WAL from last checkpoint (not from beginning). Happens every <code>checkpoint_timeout</code> (default 5 min) or when WAL fills (<code>max_wal_size</code>).<br><br>
+<strong>ctid</strong> = physical row address = <code>(page_number, slot_number)</code>. Example: <code>(0,1)</code> = page 0, slot 1. Updates create new ctid.
+<div class="tip">
+WAL record types seen in pg_waldump: <code>HOT_UPDATE</code> = update stayed on same page, no index change. Plain <code>UPDATE</code> = indexed column changed OR no space → new ctid → index entries rewritten (<code>INSERT_LEAF</code> also appears).
+</div>
+
+<h2 id="m5c">C. All 6 Isolation Anomalies</h2>
+<table>
+<tr><th>Anomaly</th><th>What happens</th><th>Example</th><th>Prevented by</th></tr>
+<tr><td><strong>Dirty Write</strong></td><td>T1 overwrites T2's uncommitted write; T1 rolls back, T2's value lost</td><td>T1 sets price=50 (uncommitted), T2 sets price=60, T1 rollback → T2's value gone</td><td><u>ALL levels</u> (even Read Uncommitted)</td></tr>
+<tr><td><strong>Dirty Read</strong></td><td>T1 reads T2's uncommitted data; T2 rollbacks → T1 read "ghost" data</td><td>T2 sets stock=0 (uncommitted), T1 reads 0, T2 rollbacks → stock was never 0</td><td>Read Committed and above</td></tr>
+<tr><td><strong>Non-Repeatable Read</strong></td><td>T1 reads row, T2 updates+commits it, T1 reads same row → different value</td><td>T1 reads stock=10; T2 updates to 8, commits; T1 reads again → 8 (changed!)</td><td>Repeatable Read and above</td></tr>
+<tr><td><strong>Phantom Read</strong></td><td>T1 runs a range query, T2 inserts/deletes rows matching it, T1 re-runs → different row count</td><td>T1: SELECT WHERE price &lt; 100 → 5 rows; T2 inserts cheap product; T1 re-runs → 6 rows</td><td>Serializable (standard). <mark>Also RR in PostgreSQL</mark> (MVCC snapshot prevents phantoms)</td></tr>
+<tr><td><strong>Lost Update</strong></td><td>T1 and T2 both read value, compute update, write back. One overwrites the other</td><td>T1 reads stock=10→computes 9; T2 reads stock=10→computes 9; T1 writes 9; T2 writes 9. Two items sold but stock only −1</td><td><mark>RR in PostgreSQL</mark> (aborts 2nd writer). NOT standard SQL RR.</td></tr>
+<tr><td><u><strong>Write Skew</strong></u></td><td>T1 and T2 each read overlapping data, each writes to DIFFERENT rows. Together they violate a global invariant.</td><td>Rule: max 1 promotion. T1 sees 0 promotions → promotes product 4. T2 sees 0 → promotes product 6. Both commit → 2 promotions!</td><td><u>ONLY Serializable</u></td></tr>
+</table>
+<div class="warn">
+<strong>Write Skew is the hardest:</strong> no write-write conflict exists (they write different rows) → PostgreSQL doesn't catch it at RR. <u>Only SERIALIZABLE + SSI detects it via rw-dependency tracking.</u>
+</div>
+
+<h2 id="m5d">D. Isolation Levels in PostgreSQL</h2>
+<table>
+<tr><th>Level</th><th>Snapshot taken</th><th>Prevents</th><th>Does NOT prevent</th><th>PostgreSQL Extra</th></tr>
+<tr><td><strong>Read Committed</strong> (default)</td><td>Per statement</td><td>Dirty Write, Dirty Read</td><td>NRR, Phantom, Lost Update, Write Skew</td><td>—</td></tr>
+<tr><td><strong>Repeatable Read</strong></td><td>Per transaction (1st statement)</td><td>+ NRR</td><td>Write Skew</td><td><mark>Also prevents Phantom + Lost Update</mark> (beyond SQL standard)</td></tr>
+<tr><td><strong>Serializable</strong></td><td>Per transaction (1st statement)</td><td>ALL anomalies incl. Write Skew</td><td>—</td><td>Adds predicate locking + rw-dep tracking (SSI)</td></tr>
+</table>
+<div class="imp">
+<strong>PostgreSQL RR goes beyond the SQL standard:</strong> Standard RR only prevents NRR. PostgreSQL RR also prevents Phantom Reads and Lost Updates because MVCC gives a full consistent snapshot — new inserts by other transactions are invisible.
+</div>
+<div class="mnemonic">
+RC = "fresh newspaper every statement". RR = "same newspaper all transaction". SERIALIZABLE = "newspaper + editor checks for contradictions between readers".
+</div>
+
+<h2 id="m5e">E. 2PL vs MVCC — The Core Comparison</h2>
+<table>
+<tr><th></th><th>2PL (Two-Phase Locking)</th><th>MVCC (Multi-Version CC)</th></tr>
+<tr><td>Approach</td><td>Pessimistic — lock before access</td><td>Optimistic — create new versions, detect conflicts on write</td></tr>
+<tr><td>Read blocks Write?</td><td><span class="no">YES</span> (S-lock blocks X-lock)</td><td><span class="ok">NO</span> — reader reads old version</td></tr>
+<tr><td>Write blocks Read?</td><td><span class="no">YES</span> (X-lock blocks S-lock)</td><td><span class="ok">NO</span> — reader reads old version</td></tr>
+<tr><td>Write blocks Write?</td><td><span class="no">YES</span></td><td><span class="no">YES</span></td></tr>
+<tr><td>Lock Compatibility</td><td>SS=OK, SX=block, XS=block, XX=block</td><td>Only write-write locks needed</td></tr>
+<tr><td>Used by</td><td>MS SQL Server (default)</td><td><mark>PostgreSQL, Oracle, MySQL InnoDB</mark></td></tr>
+</table>
+<div class="imp">
+<strong>Strict 2PL</strong> (what commercial DBMS actually use): Hold ALL locks until COMMIT/ROLLBACK. No shrink phase until end. Prevents cascading rollbacks. <u>PostgreSQL does NOT use 2PL</u> — it uses MVCC. But PostgreSQL holds its write locks until commit (like Strict 2PL behavior for writes).
+</div>
+<div class="scenario">
+<strong>Airline 2PL example (hard exam case):</strong> T1: increase both routes by 10%. T2: add €10 tax to both routes. Naive locking (release early) → a=120, b=121 (different! invariant violated). With Strict 2PL: T2 blocks waiting for T1 to COMMIT (T1 holds X-lock on 'a'). T1 commits first → T2 proceeds → a=120, b=120. Serializable! ✓
+</div>
+
+<h2 id="m5f">F. MVCC Deep Dive — xmin / xmax</h2>
+<div class="def">
+Every PostgreSQL row has hidden system columns:<br>
+<code>xmin</code> = transaction ID that <strong>created</strong> this version<br>
+<code>xmax</code> = transaction ID that <strong>deleted/updated</strong> this version (0 = still valid)
+</div>
+<table>
+<tr><th>Operation</th><th>Effect on versions</th></tr>
+<tr><td>INSERT</td><td>New row: xmin=current_txid, xmax=0</td></tr>
+<tr><td>DELETE</td><td>Old row: xmax=current_txid (marked dead)</td></tr>
+<tr><td>UPDATE</td><td>Old row: xmax=current_txid; New row: xmin=current_txid, xmax=0</td></tr>
+</table>
+<div class="step">
+<strong>MVCC Visibility rule (Read Committed):</strong> Each statement sees data committed <em>before that statement started</em>. If T2's xmin > my statement's snapshot → invisible. If T2 committed after my statement started → invisible for this statement, visible for next statement.<br><br>
+<strong>MVCC Visibility rule (Repeatable Read):</strong> Snapshot fixed at first statement of transaction. Any transaction that started after my snapshot → permanently invisible, even after it commits.
+</div>
+<div class="scenario">
+<strong>Hard case — RR write-write conflict:</strong> T1 (RR) and T2 both want to UPDATE product stock. T2 commits first. T1 wakes up, sees xmax of the row = T2's committed txid. Row is dead, newer version exists. <u>PostgreSQL ABORTS T1 with: <code>ERROR: could not serialize access due to concurrent update</code></u>. T1 must retry. This is how RR prevents Lost Updates!
+</div>
+
+<h2 id="m5g">G. Deadlocks</h2>
+<div class="def">
+<strong>Deadlock</strong> = two or more transactions each waiting for a lock held by the other. Circular dependency → none can proceed.
+</div>
+<div class="scenario">
+<strong>Classic deadlock:</strong> T1 holds X-lock on row A, wants X-lock on B. T2 holds X-lock on B, wants X-lock on A. Both wait forever.
+</div>
+<strong>Waits-For Graph (WFG):</strong> Node per transaction. Edge T1→T2 means "T1 waits for lock held by T2". <u>A cycle = deadlock.</u><br><br>
+<strong>PostgreSQL approach:</strong> Optimistic — does NOT prevent deadlocks. Instead: (1) Wait <code>deadlock_timeout</code> = <strong>1 second</strong>. (2) Run WFG algorithm. (3) If cycle found → abort one victim transaction → others proceed. Error: <code>ERROR: deadlock detected SQLSTATE 40P01</code>.<br><br>
+<strong>Deadlock prevention strategies:</strong>
+<ul>
+<li><strong>Preclaiming (Conservative 2PL)</strong> — acquire ALL locks at start. Never deadlocks but severely limits concurrency.</li>
+<li><strong>Timestamp (Wait/Die)</strong> — older transaction waits, younger dies. OR Wound/Wait: older wounds younger.</li>
+<li><strong>Application level</strong> — always acquire locks in same order, keep transactions short, retry on deadlock error.</li>
+</ul>
+<div class="tip">
+Deadlocks happen even under MVCC! PostgreSQL uses MVCC for reads but exclusive row locks for writes → two writes can deadlock. The WFG is checked after 1 second wait.
+</div>
+
+<h2 id="m5h">H. HOT vs COLD Updates &amp; Vacuum</h2>
+<table>
+<tr><th></th><th><mark>HOT Update</mark></th><th>COLD Update</th></tr>
+<tr><td>When?</td><td>Updated column is NOT indexed AND space available on same page</td><td>Indexed column changed OR no space on page</td></tr>
+<tr><td>Indexes updated?</td><td><span class="ok">NO</span> — existing index entry still points to original line pointer</td><td><span class="no">YES</span> — new index entry added for each index</td></tr>
+<tr><td>Performance</td><td>Faster — no index writes</td><td>Slower — all indexes rewritten</td></tr>
+<tr><td>WAL record</td><td><code>HOT_UPDATE</code></td><td><code>UPDATE</code> + <code>INSERT_LEAF</code> per index</td></tr>
+</table>
+<div class="imp">
+<strong>Decision tree:</strong> Is the updated column indexed? YES → COLD. NO → Is there space on same page? YES → HOT. NO → COLD.<br><br>
+<u>Practical tip: Don't put indexes on heavily-updated columns (stock, price, score)</u> — every update becomes a COLD update and writes to ALL indexes. Use <code>fillfactor=70</code> to leave space for HOT updates.
+</div>
+<strong>VACUUM:</strong> Removes dead tuples. (1) Identifies rows where xmax = committed txid and no active snapshot can still need the old version. (2) Reclaims heap space. (3) Converts HOT chain pointers to re-direct pointers. (4) Removes dead index entries.
+
+<h2 id="m5i">I. SELECT … FOR UPDATE</h2>
+<div class="def">
+<code>SELECT ... FOR UPDATE</code> acquires an <strong>exclusive write lock</strong> on returned rows immediately at SELECT time — before any UPDATE is executed. Other transactions wanting to write those rows must wait.
+</div>
+<strong>Use cases:</strong> protect read-modify-write cycles at RC, avoid lost updates, partially prevent write skew (for existing rows only).<br><br>
+<div class="warn">
+<strong>FOR UPDATE does NOT fix phantom-insert write skew.</strong> If condition returns 0 rows (nothing to lock), FOR UPDATE locks nothing → write skew still possible. <u>Only SERIALIZABLE can fix this.</u>
+</div>
+<strong>Costs:</strong> higher deadlock risk, lower concurrency, extra WAL writes.
+
+<h2 id="m5j">J. Write Skew &amp; SSI</h2>
+<div class="scenario">
+<strong>Write Skew pattern (memorize):</strong><br>
+Rule: max 1 promotion. T1 reads promotions→0 rows. T2 reads promotions→0 rows. T1 sets product_4=promoted. T2 sets product_6=promoted. Both commit. Result: 2 promotions. Rule violated. Neither T1 nor T2 individually violated anything. Their combined reads+writes create the skew.
+</div>
+<strong>SSI (Serializable Snapshot Isolation) = PostgreSQL's Serializable:</strong> Uses MVCC snapshots PLUS <strong>predicate locks</strong> (non-blocking, just track what was read). If circular rw-dependency detected → abort one transaction.<br>
+Error: <code>ERROR: could not serialize access due to read/write dependencies among transactions</code>.<br><br>
+<strong>Write Skew fix ranking:</strong> (1) <mark>SERIALIZABLE</mark> — always works. (2) <code>FOR UPDATE</code> — works only when rows exist to lock. (3) Manual locking — complex.
+
+<!-- ================================================================ -->
+<h1>MODULE 6.1 &amp; 6.2 — P2P Distributed Databases</h1>
+<!-- ================================================================ -->
+
+<h2 id="m61a">A. ACID in P2P &amp; 3 Meanings of "Consistency"</h2>
+<table>
+<tr><th>ACID Property</th><th>Status in ScyllaDB/Cassandra (P2P)</th></tr>
+<tr><td><strong>Atomicity</strong></td><td><u>Does NOT exist.</u> No multi-statement / cross-partition transactions. Each CQL statement executes independently.</td></tr>
+<tr><td><strong>Consistency</strong></td><td>Redefined entirely — see below. NOT about DB constraints.</td></tr>
+<tr><td><strong>Isolation</strong></td><td>No transactions → no isolation. BUT concurrent writes → conflict resolution needed.</td></tr>
+<tr><td><strong>Durability</strong></td><td><mark>Strongest of all four</mark> — commit log + replication to multiple nodes.</td></tr>
+</table>
+<div class="warn">
+<strong>3 DIFFERENT meanings of "Consistency" — never confuse them:</strong><br>
+1. <strong>ACID Consistency</strong> = all DB constraints are satisfied (single-server RDBMS).<br>
+2. <strong>P2P Consistency</strong> = all replicas return the same value for the same request.<br>
+3. <strong>CAP Consistency</strong> = every node returns the most recent data — a global single view.
+</div>
+<div class="tip">
+Exam: "Which ACID property is best supported by P2P?" → <mark>Durability</mark>. "Which doesn't exist?" → <mark>Atomicity</mark>.
+</div>
+
+<h2 id="m61b">B. CAP Theorem</h2>
+<div class="def">
+<strong>CAP</strong> (Brewer 2000, proven 2002): A distributed replicated system can guarantee at most 2 of:<br>
+<strong>C</strong>onsistency · <strong>A</strong>vailability · <strong>P</strong>artition Tolerance
+</div>
+<div class="imp">
+<strong><u>P is not optional — it simply happens.</u></strong> Networks fail. The REAL choice when partition occurs: keep C (refuse requests that can't guarantee latest data = reduced availability) OR keep A (answer from possibly stale data = weaker consistency).<br><br>
+<mark>ScyllaDB/Cassandra = A/P systems</mark> → Eventual Consistency.
+</div>
+<strong>Eventual Consistency:</strong> "Stop writing → wait some unspecified time → eventually all replicas return the same value." Weak guarantee but allows high availability + low latency.<br><br>
+<strong>Two causes of replica divergence (exam!):</strong>
+<ol>
+<li><u>Write propagation delay (replication lag)</u> — write reached some replicas but not all yet. Resolves by itself.</li>
+<li><u>Concurrent writes</u> — two clients write same key via different coordinators simultaneously. No natural order → explicit conflict resolution needed.</li>
+</ol>
+<div class="def">
+<strong>Happened-Before:</strong> A happened before B if B knows about A (depends on A). <u>If neither knows about the other → they are CONCURRENT.</u> 3 cases: A before B, B before A, or concurrent. Concurrent writes have no natural order → system must impose one.
+</div>
+
+<h2 id="m61c">C. Consistency Levels &amp; W+R&gt;N Rule</h2>
+<table>
+<tr><th>Level</th><th>Meaning</th><th>Default?</th></tr>
+<tr><td><code>ONE</code></td><td>1 replica must participate</td><td><mark>YES (default)</mark></td></tr>
+<tr><td><code>QUORUM</code></td><td>Majority must participate = ⌊RF/2⌋+1</td><td>No</td></tr>
+<tr><td><code>ALL</code></td><td>All replicas must participate</td><td>No</td></tr>
+</table>
+<div class="def">
+<strong>W + R &gt; N rule:</strong> If write set and read set overlap in at least one replica, a read is guaranteed to see the latest write (no stale-only reads).<br>
+N−W = nodes that can be down while writes still work.<br><br>
+<strong>Example (N=5):</strong>
+<table>
+<tr><th>W</th><th>R</th><th>W+R</th><th>Stale reads possible?</th><th>Nodes can be down</th></tr>
+<tr><td>quorum=3</td><td>one=1</td><td>4 ≤ 5</td><td><span class="no">YES</span></td><td>2</td></tr>
+<tr><td>one=1</td><td>quorum=3</td><td>4 ≤ 5</td><td><span class="no">YES</span></td><td>4</td></tr>
+<tr><td>quorum=3</td><td>quorum=3</td><td>6 &gt; 5</td><td><span class="ok">NO</span></td><td>2</td></tr>
+</table>
+</div>
+<div class="warn">
+<strong>Critical edge case:</strong> Quorum write TIMES OUT → coordinator returns failure to client → <u>but some replicas may have already applied the write. Applied writes are NOT rolled back.</u> A "failed" write can still leave data behind!
+</div>
+
+<h2 id="m61d">D. Read Repair &amp; Hinted Handoff</h2>
+<div class="def">
+<strong>Read Repair:</strong> A read operation that finds different values across replicas: (1) Returns the value with the latest timestamp to client. (2) Triggers background write to update stale replicas. A read causes a write — drives toward eventual consistency.
+</div>
+<div class="def">
+<strong>Hinted Handoff:</strong> When a replica is DOWN during a write, the coordinator stores the write locally as a "hint" and delivers it to the down replica when it comes back online.
+</div>
+
+<h2 id="m62a">E. LWW — Last Write Wins</h2>
+<div class="def">
+<strong>LWW:</strong> When concurrent writes conflict, the write with the <u>highest timestamp wins</u>. Loser is <mark>silently discarded</mark> even though it was acknowledged as successful.
+</div>
+<div class="scenario">
+<strong>LWW danger example:</strong> Client A and B both write to same key simultaneously. Both get "acknowledged: true". LWW picks one by timestamp — the other is silently deleted. Client whose write lost doesn't know. Data corruption.
+</div>
+<strong>Problems with LWW:</strong>
+<ul>
+<li><u>Uncoordinated clocks</u> — each coordinator uses its own system clock. Clock drift/skew = node with faster clock always wins.</li>
+<li><u>Silent data loss</u> — all acknowledged writes except highest-timestamp are discarded.</li>
+<li>Tie-break = undocumented behavior.</li>
+</ul>
+<strong>CQL commands:</strong> <code>SELECT writetime(col)</code> → cell's write timestamp. <code>UPDATE ... USING TIMESTAMP N SET ...</code> → forces a timestamp. If N &lt; existing timestamp → write accepted but silently discarded (LWW comparison).
+<div class="tip">
+"All writes were acknowledged as successful — is data safe?" → <mark>NO with LWW</mark>. Acknowledged ≠ survived. Only the highest-timestamp write survives.
+</div>
+
+<h2 id="m62b">F. Version Vectors &amp; Sibling Values</h2>
+<div class="def">
+<strong>Version Vector (VV):</strong> A per-node counter list for each object. Tracks causal history. Lets the system determine if two versions are ordered (one is newer) or concurrent (both happened independently).
+</div>
+<strong>Rules:</strong>
+<ul>
+<li>VV_A ≤ VV_B in every slot → A happened-before B (B is newer). Sync to B.</li>
+<li>VV_B ≤ VV_A in every slot → B happened-before A (A is newer). Sync to A.</li>
+<li><u>Neither dominates → CONCURRENT writes → CONFLICT.</u></li>
+</ul>
+<div class="scenario">
+<strong>Concurrent VV example:</strong><br>
+Node A has: <code>{n2:2, n3:2, n4:1}</code> (value="Alice Brown")<br>
+Node B has: <code>{n2:1, n3:2, n4:2}</code> (value="Alice Johnson")<br>
+Compare: n2 slot → A has 2, B has 1 (A bigger). n4 slot → A has 1, B has 2 (B bigger). <u>Neither dominates → concurrent → SIBLING created!</u>
+</div>
+<div class="imp">
+<strong>CRITICAL exam answer:</strong> VVs can <u>only DETECT</u> concurrent conflicts. They <strong>cannot resolve</strong> them. (Multiple choice: answer C — "can only detect concurrent write conflicts")
+</div>
+<strong>Sibling Values (RIAK):</strong> With <code>allow_mult=true</code>, RIAK stores BOTH conflicting values as siblings. Both values AND both VVs kept. <u>Application must resolve and pick one.</u>
+<div class="mnemonic">
+VV = "edit counter per node". Both counters go up on different nodes → concurrent → sibling. Only one went up → clear winner. <strong>LWW throws away causal history. VV preserves it.</strong>
+</div>
+
+<h2 id="m62c">G. CRDTs — Conflict-Free Replicated Data Types</h2>
+<div class="def">
+<strong>CRDT</strong> = data structure where concurrent updates can ALWAYS be merged automatically without conflicts. Merge function is: <mark>Commutative</mark> (order doesn't matter) + <mark>Associative</mark> (grouping doesn't matter) + <mark>Idempotent</mark> (merging twice = merging once).
+</div>
+<div class="grid2">
+<div class="box2">
+<h3>State-Based CRDT (6.3)</h3>
+Sends full state. Merge = max per slot. Loose delivery (idempotent merge).<br>
+Example: <strong>G-Counter</strong>
+</div>
+<div class="box2">
+<h3>Op-Based CRDT (6.4)</h3>
+Sends operations (increment, add). Each op delivered exactly once per replica.<br>
+Example: <strong>OR-Set</strong>
+</div>
+</div>
+<div class="scenario">
+<strong>G-Counter (Grow-Only Counter) — hard exam case:</strong><br>
+<pre>Nodes n1, n2, n3. Each only increments its OWN slot.
+n1: inc 2 → state (2,0,0)
+n2: inc 3 → state (0,3,0)
+Merge (max per slot): (2,3,0). Total = 2+3 = 5. ✓
+Merge again: (2,3,0) merge (2,3,0) = (2,3,0). Idempotent ✓
+
+WHY no lost update: each node owns its slot → concurrent increments land in different slots → both kept.</pre>
+</div>
+<div class="imp">
+<strong>VV vs CRDT vector — DO NOT confuse:</strong><br>
+VV = <code>{key, value, VersionVector}</code> — metadata about causality, detects conflicts.<br>
+CRDT vector = <code>{key, CRDT_state}</code> — the actual data values, no causality needed, auto-merges.<br>
+<u>In CRDTs, time and causality are irrelevant — only the merged state matters.</u>
+</div>
+<strong>Strong Eventual Consistency (SEC):</strong> Replicas that have delivered the same set of updates have identical state — no conflict resolution needed. State-based CRDTs satisfy SEC. Stronger than plain eventual consistency.
+
+<!-- ================================================================ -->
+<h1>MODULE 6.3 &amp; 6.4 — Consensus, 2PC, Raft, LWT, Paxos</h1>
+<!-- ================================================================ -->
+
+<h2 id="m63a">A. Consensus</h2>
+<div class="def">
+<strong>Consensus:</strong> All nodes agree on a value (or order of events or cluster decision) despite failures, using a <u>majority quorum</u>. One or more nodes propose, the algorithm decides on exactly one.
+</div>
+<strong>4 formal properties a correct consensus algorithm must have:</strong>
+<table>
+<tr><th>Property</th><th>Meaning</th></tr>
+<tr><td><strong>Agreement</strong></td><td>No two correct nodes decide differently</td></tr>
+<tr><td><strong>Integrity</strong></td><td>No node decides twice (decision is final)</td></tr>
+<tr><td><strong>Validity</strong></td><td>Decided value was actually proposed (not invented)</td></tr>
+<tr><td><strong>Termination</strong></td><td>Every non-crashed node eventually decides (no infinite loop)</td></tr>
+</table>
+<strong>FLP Impossibility:</strong> No deterministic consensus algorithm guarantees both safety AND liveness in fully asynchronous network with even 1 crash. Systems get around this via partial synchrony + timeouts.<br><br>
+<strong>What consensus is used for in practice:</strong>
+<ul>
+<li><strong>Leader election</strong> (MongoDB: Raft for choosing Primary)</li>
+<li><strong>Cluster/schema management</strong> (ScyllaDB: Raft for membership + schema)</li>
+<li><strong>Distributed transactions</strong> (2PC for cross-DB atomic commit)</li>
+<li><strong>Data uniqueness enforcement</strong> (ScyllaDB: Paxos for LWT)</li>
+</ul>
+
+<h2 id="m63b">B. Two-Phase Commit (2PC)</h2>
+<div class="analogy">
+Wedding ceremony: priest asks "does anyone object?" (Phase 1 — PREPARE). If nobody objects → "you are married!" (Phase 2 — COMMIT). Even ONE objection → no wedding → ABORT.
+</div>
+<div class="warn">
+<strong>2PC ≠ 2PL!</strong> 2PL = concurrency control <em>within one database</em>. 2PC = atomic commit protocol <em>across multiple databases</em>.
+</div>
+<div class="step">
+<strong>Phase 1 — PREPARE (Voting):</strong>
+<ol>
+<li>Coordinator sends <code>PREPARE</code> to all participants</li>
+<li>Each participant: checks constraints, writes decision to WAL, replies <code>YES</code> or <code>NO</code></li>
+<li>YES vote = <u>binding promise</u> — participant MUST commit when told, even after crash+recovery</li>
+<li>Coordinator collects all votes</li>
+</ol>
+</div>
+<div class="step">
+<strong>Phase 2 — COMMIT or ABORT:</strong>
+<ol>
+<li>ALL said YES → coordinator writes COMMIT to its log → sends <code>COMMIT</code> to all</li>
+<li>ANY said NO → coordinator sends <code>ABORT</code> to all</li>
+<li>Participants execute the decision, release locks, send ACK</li>
+</ol>
+</div>
+<strong>All Failure Points:</strong>
+<table>
+<tr><th>When crashes</th><th>Who</th><th>Effect</th><th>Resolution</th></tr>
+<tr><td>Before PREPARE sent</td><td>Coordinator</td><td>Nothing done yet</td><td>New coordinator: abort cleanly</td></tr>
+<tr><td>During PREPARE — no vote sent</td><td>Participant</td><td>Coordinator times out → treats as NO</td><td>All abort</td></tr>
+<tr><td><mark>After voting YES</mark></td><td><u>Coordinator</u></td><td><u><strong>DANGER: participants hold locks, cannot decide alone. BLOCKED.</strong></u></td><td>Must wait for coordinator to recover</td></tr>
+<tr><td>During COMMIT — partial COMMITs sent</td><td>Coordinator</td><td>Some committed, some didn't</td><td>Participants query each other; coordinator retries on recovery</td></tr>
+<tr><td>After voting YES</td><td>Participant</td><td>Coordinator can still commit (has other votes)</td><td>Down participant commits on recovery per coordinator instruction</td></tr>
+</table>
+<div class="warn">
+<strong><u>The Blocking Problem (most important 2PC weakness):</u></strong> Participant voted YES → it is committed to that. Now it holds locks. If coordinator crashes before sending COMMIT/ABORT → participant is stuck indefinitely. 2PC is a <mark>blocking protocol</mark>.
+</div>
+<div class="scenario">
+<strong>True/False exam questions about 2PC:</strong><br>
+A. "Coordinator is single point of failure" → <span class="ok">TRUE</span><br>
+B. "Coordinator is single point for the final commit/abort decision" → <span class="ok">TRUE</span><br>
+C. "Any node can block 2PC by crashing before voting YES" → <span class="ok">TRUE</span> (coordinator aborts)<br>
+D. "Any node can block 2PC by crashing AFTER voting YES" → <span class="no">FALSE</span> — only the coordinator's crash blocks. If a participant crashes after YES, coordinator continues, commits, retries to the down node on recovery.
+</div>
+<strong>XA Standard:</strong> Standardized 2PC for heterogeneous DBs. Commands: <code>XA START</code>, <code>XA END</code>, <code>XA PREPARE</code>, <code>XA COMMIT</code>/<code>XA ROLLBACK</code>. PostgreSQL: <code>PREPARE TRANSACTION 'id'</code> then <code>COMMIT PREPARED</code> or <code>ROLLBACK PREPARED</code>.<br><br>
+<strong>Alternatives to 2PC:</strong>
+<ul>
+<li><strong>3PC:</strong> Adds "pre-commit" phase so participants can complete without coordinator. Requires synchronous messaging — <u>essentially not used in practice</u> (too complex).</li>
+<li><strong>Paxos-based 2PC:</strong> All nodes broadcast votes to each other. Each independently reaches same decision. No single coordinator → no single point of failure.</li>
+</ul>
+
+<h2 id="m63c">C. Raft Consensus Algorithm</h2>
+<div class="analogy">
+A company needs decisions even when employees are sick. They elect a CEO (Leader). All decisions through CEO. CEO hit by bus? Vote new CEO and continue. That's Raft.
+</div>
+<strong>3 Roles:</strong>
+<table>
+<tr><th>Role</th><th>Job</th><th>How many</th></tr>
+<tr><td><strong>Leader</strong></td><td>Receives ALL client requests. Replicates log. Sends heartbeats.</td><td>Exactly 1 per term</td></tr>
+<tr><td><strong>Follower</strong></td><td>Passive. Accepts entries from leader. Votes in elections.</td><td>All others</td></tr>
+<tr><td><strong>Candidate</strong></td><td>Temporary during election. Campaigns for leadership.</td><td>1+ during election</td></tr>
+</table>
+<div class="step">
+<strong>Leader Election:</strong>
+<ol>
+<li>Time divided into <strong>Terms</strong> (1, 2, 3…). Each term has at most 1 leader.</li>
+<li>Follower has election timeout (random <strong>150–300ms</strong>). No heartbeat in time → become Candidate.</li>
+<li>Candidate increments term, votes for self, sends <code>RequestVote</code> to all.</li>
+<li>Vote granted IF: (a) not voted this term yet, AND (b) candidate's log is at least as up-to-date.</li>
+<li>First to get <u>majority (quorum)</u> → becomes Leader.</li>
+<li>New leader immediately sends heartbeats to stop other elections.</li>
+</ol>
+</div>
+<div class="step">
+<strong>Log Replication:</strong>
+<ol>
+<li>Client request → Leader appends to log (uncommitted).</li>
+<li>Leader sends <code>AppendEntries</code> to all followers.</li>
+<li>Followers write entry, reply OK.</li>
+<li>Majority acked → Leader marks COMMITTED → applies to state machine → replies to client.</li>
+<li>Next heartbeat informs followers → they commit too.</li>
+</ol>
+</div>
+<div class="imp">
+<strong>Safety guarantees:</strong> At most 1 leader per term. Committed entries are never lost — any future leader of higher term will have them (Leader Completeness). Log Matching: same index+term → logs identical up to that point.
+</div>
+<div class="scenario">
+<strong>Hard case — Raft election during partition:</strong> 5 nodes. Leader A crashes. B and C have the committed log entry. D and E don't. B starts election: B votes self, C votes B (B's log is up-to-date), B gets majority → B becomes leader. D and E catch up on missing entries via AppendEntries.
+</div>
+<strong>Where Raft is used:</strong>
+<ul>
+<li><mark>ScyllaDB</mark> — cluster membership + schema management (DDL operations)</li>
+<li><mark>MongoDB</mark> — Replica Set elections (choosing new Primary)</li>
+<li>etcd (Kubernetes), CockroachDB, Consul, TiKV</li>
+</ul>
+<div class="mnemonic">
+Raft = Replicated log + election Timeout + majority vote. Leader wins election → owns all writes → majority confirms → commit. No leader → new election → continue.
+</div>
+
+<h2 id="m64a">D. LWT vs LWW — Lightweight Transactions</h2>
+<div class="warn">
+<strong>LWW silently discards data. LWT gives explicit rejection.</strong>
+</div>
+<div class="scenario">
+<strong>Why LWW fails for username registration:</strong><br>
+Client A: INSERT username="flash99", user_id=111 (timestamp=1000)<br>
+Client B: INSERT username="flash99", user_id=222 (timestamp=1001)<br>
+LWW result: user_id=222 wins. user_id=111 silently deleted. Client A got "OK" but their account is gone. → CORRUPTION.
+</div>
+<div class="def">
+<strong>LWT (Lightweight Transaction)</strong> = Paxos-based Compare-And-Set (CAS) in Cassandra/ScyllaDB. Write only succeeds IF a condition is true — evaluated atomically. Uses 4-phase Paxos round.
+</div>
+<strong>LWT Syntax:</strong>
+<pre>INSERT INTO users (u_id, u_name) VALUES (12, 'Zurab') IF NOT EXISTS;
+UPDATE users SET score = 500 WHERE u_id = 5 IF score = 100.5;
+DELETE FROM users WHERE u_id = 5 IF score = 0;
+CONSISTENCY SERIAL;  -- Paxos read: sees latest LWT-committed value
+SELECT score FROM users WHERE u_id = 5;</pre>
+<strong>LWT Response:</strong> Always includes <code>[applied]=True</code> or <code>[applied]=False</code> + current row values.<br><br>
+<strong>The 4 Phases of LWT (Paxos-based):</strong>
+<div class="step">
+<ol>
+<li><strong>Prepare:</strong> Coordinator generates ballot=(timestamp, node_id). Sends PREPARE(ballot) to RF replicas. Gets PROMISE from majority (or REJECT if higher ballot exists).</li>
+<li><strong>Read:</strong> Coordinator reads current value from quorum to evaluate IF condition. Condition fails → [applied]=False, stop.</li>
+<li><strong>Propose (Accept):</strong> Coordinator sends ACCEPT(ballot, new_value) to replicas. Quorum accepts → proposal wins.</li>
+<li><strong>Commit (Learn):</strong> Coordinator sends LEARN(new_value) to replicas. They apply to data table. Coordinator returns [applied]=True to client.</li>
+</ol>
+</div>
+<div class="imp">
+<strong>Performance: LWT = 4 round trips vs 1 for normal write → ~4x slower.</strong> Only use LWT when the ordering guarantee is truly needed (uniqueness, CAS, financial operations).
+</div>
+<table>
+<tr><th></th><th>LWW</th><th>LWT</th></tr>
+<tr><td>Conflict resolution</td><td>Latest timestamp wins</td><td>Condition must pass (CAS via Paxos)</td></tr>
+<tr><td>Silent data loss?</td><td><span class="no">YES</span></td><td><span class="ok">NO</span> — explicit [applied]=False</td></tr>
+<tr><td>Performance</td><td><span class="ok">Fast (1 round trip)</span></td><td><span class="no">Slow (4 round trips)</span></td></tr>
+<tr><td>Clock dependency</td><td><span class="no">YES</span> — clock skew is dangerous</td><td><span class="ok">NO</span> — uses ballot ordering</td></tr>
+<tr><td>Consistency</td><td>Eventual</td><td>Linearizable (serial)</td></tr>
+<tr><td>Use when</td><td>Losses OK (metrics, logs, cache)</td><td>Must not lose data (accounts, usernames)</td></tr>
+</table>
+<div class="warn">
+<strong><u>NEVER mix LWW and LWT writes on the same partition!</u></strong> LWW writes bypass Paxos and can silently overwrite LWT-committed values with a higher timestamp. The LWT ordering guarantee breaks completely. Once you use LWT for a partition, ALL writes to it must go through LWT.
+</div>
+<strong>LWT scope:</strong> Per-partition, per-operation only. NOT cross-partition. NOT multi-operation transactions.<br><br>
+<strong>LWT Error Handling (tricky!):</strong> An error (timeout) executing LWT does NOT mean it failed. Paxos may have already committed on some replicas after your client timed out. <u>To confirm: must re-read with CONSISTENCY SERIAL, or retry the operation.</u>
+
+<h2 id="m64b">E. Paxos</h2>
+<div class="analogy">
+Auction with multiple auctioneers who can run simultaneously. Only ONE final winner is ever declared, even if some auctioneers disappear mid-auction. Exactly one item gets sold no matter the chaos.
+</div>
+<strong>3 Roles:</strong> <strong>Proposer</strong> (initiates, picks ballot) · <strong>Acceptor</strong> (votes, forms quorum) · <strong>Learner</strong> (learns the final decision).<br><br>
+<div class="step">
+<strong>Phase 1 — Prepare / Promise:</strong><br>
+Proposer picks unique number N → sends <code>Prepare(N)</code> to all Acceptors.<br>
+Acceptor replies with <code>Promise(N)</code> IF N &gt; highest N it has promised: "I won't accept lower proposals. Here's what I already accepted (if anything)."<br>
+Proposer needs majority of promises.
+</div>
+<div class="step">
+<strong>Phase 2 — Propose / Accept:</strong><br>
+Proposer picks value: <u>if any acceptor already accepted a value → MUST use that value</u>. Otherwise free to use own value.<br>
+Proposer sends <code>Accept(N, value)</code> to all Acceptors.<br>
+Acceptor accepts if N ≥ highest promised N.<br>
+Majority accepts → <mark>value is CHOSEN</mark>. Done.
+</div>
+<div class="imp">
+<strong>The critical safety rule:</strong> If during Phase 1 you learn a value was already accepted by some acceptor, you MUST carry that value forward in Phase 2. This prevents two Paxos rounds from ever committing different values.
+</div>
+<div class="scenario">
+<strong>Hard Paxos scenario — 2 competing proposers:</strong><br>
+P1 wants value "A". P2 wants value "B". P2 has higher ballot.<br>
+P1: Prepare(1) → promises from X,Y. P1: Accept(1,"A") → X accepts. Y,Z reject (promised P2's ballot already).<br>
+P2: Prepare(2) → X promises AND reports "I accepted A under ballot 1". Y,Z promise.<br>
+<u>P2 must now propose "A" (not "B")</u> because accepted value was found in Phase 1.<br>
+Result: consensus on "A" even though P2 wanted "B". Safety guaranteed.
+</div>
+<strong>Paxos problems:</strong>
+<ul>
+<li><strong>Livelock:</strong> Two proposers keep outbidding each other → no progress. Solution: elect one distinguished leader (like Raft does).</li>
+<li><strong>Multi-Paxos:</strong> Basic Paxos = agree on ONE value. For a log of operations → Multi-Paxos (one Paxos instance per log slot). Raft simplifies this.</li>
+</ul>
+<table>
+<tr><th>System</th><th>How Paxos used</th></tr>
+<tr><td>ScyllaDB/Cassandra LWT</td><td>4-phase Paxos per LWT operation (Prepare→Read→Propose→Commit)</td></tr>
+<tr><td>Raft</td><td>Conceptually Multi-Paxos with strong leader to eliminate livelock</td></tr>
+<tr><td>Google Spanner</td><td>Paxos groups — each shard runs its own Paxos consensus</td></tr>
+<tr><td>Apache Zookeeper</td><td>ZAB protocol — heavily Paxos-inspired</td></tr>
+</table>
+<div class="mnemonic">
+Paxos: pick higher number → get promises → propose (must use already-accepted value if found) → majority accepts → done. Raft = Paxos + strong leader + cleaner structure.
+</div>
+
+<!-- ================================================================ -->
+<h1>MODULE 7 — MongoDB</h1>
+<!-- ================================================================ -->
+
+<h2 id="m7a">A. 4 Data Models &amp; Document Database</h2>
+<table>
+<tr><th>Model</th><th>Core Concept</th><th>Examples</th><th>Key Property</th></tr>
+<tr><td><strong>Relational</strong></td><td>Tables, rows, columns, FK-PK joins</td><td>PostgreSQL, MySQL, Oracle</td><td>Normalized, strict schema, ACID, SQL</td></tr>
+<tr><td><strong>Column-Family</strong></td><td>Rows with dynamic columns grouped in column families</td><td>ScyllaDB, Cassandra, HBase</td><td>Query-driven design, P2P distributed, wide rows</td></tr>
+<tr><td><strong>Key-Value</strong></td><td>Simple key→opaque value. Only SET/GET/DELETE.</td><td>Redis, DynamoDB</td><td>Extreme performance, cannot query by value</td></tr>
+<tr><td><strong>Document</strong></td><td>Key→structured tagged document (JSON/BSON). Query by any field.</td><td>MongoDB, CouchDB</td><td>Flexible schema, self-contained documents, rich queries</td></tr>
+</table>
+<div class="def">
+<strong>Document DB vs Key-Value:</strong> Key-value cannot query by value field (DB can't see inside the blob). Document DB uses tagged format (BSON/JSON) → DB understands structure → can filter by any field. That's the critical advantage.
+</div>
+<strong>Document DB properties:</strong>
+<ul>
+<li>Queryable by any field (not just key)</li>
+<li><u>Flexible (dynamic) schema</u> — different documents in same collection can have different fields</li>
+<li>Self-contained documents — no FK constraints, no formal relationships</li>
+<li>Application owns schema responsibility</li>
+</ul>
+<div class="tip">
+"What can exist in a MongoDB document that CANNOT exist in a normalized relational table?" → Arrays, embedded sub-documents, varying fields across rows, array of objects with different fields.
+</div>
+
+<h2 id="m7b">B. BSON Structure, ObjectId, Embedding vs Referencing</h2>
+<strong>Hierarchy:</strong> Database → Collection (≈Table) → Document (≈Row) → Field (≈Column)<br>
+<strong>Max document size: 16 MB</strong><br><br>
+<strong>ObjectId (12 bytes):</strong> 4 bytes Unix timestamp + 5 bytes random (machine+process) + 3 bytes incrementing counter. Globally unique without central coordination. Mandatory <code>_id</code> field.<br><br>
+<div class="grid2">
+<div class="box2">
+<h3>Embedded Documents</h3>
+Related data stored INSIDE parent. One read gets everything.<br>
+<strong>Use when:</strong> Always accessed together, 1:1 or 1:few relationship, not independently queried, won't grow unboundedly.
+</div>
+<div class="box2">
+<h3>Referenced Documents ($ref)</h3>
+Related data in separate collection. MANUAL second query needed. No FK enforcement — dangling refs possible.<br>
+<strong>Use when:</strong> Large data, independently queried, write-heavy, unbounded arrays, N:M relationship.
+</div>
+</div>
+<div class="warn">
+<strong>Embedding limitations:</strong><br>
+- Full document loaded on every read — even if only 1 field needed<br>
+- Update rewrites entire document<br>
+- <u>Unbounded array → hits 16MB limit → use references instead</u>
+</div>
+<div class="tip">
+N:M relationships are HARD in MongoDB (no native joins). Must use references + two queries. 1:1 and 1:N are natural with embedding.
+</div>
+
+<h2 id="m7c">C. Single-Leader Replication &amp; Oplog</h2>
+<div class="def">
+<strong>Single-Leader Replication:</strong> ALL writes go to Primary only. Primary sends oplog to Secondaries asynchronously. Secondaries apply changes in oplog order. Reads can go to Primary or a Secondary (depends on Read Preference).
+</div>
+<div class="imp">
+<strong>Contrast with P2P (ScyllaDB):</strong> P2P: write directly to RF replicas based on quorum. Any node accepts writes. No "primary". Single-leader: only primary accepts writes. Fundamentally different architecture.
+</div>
+<div class="def">
+<strong>Oplog</strong> = special capped collection at <code>local.oplog.rs</code>. Records ALL write operations in primary's processing order. Secondaries "tail" the oplog and replay entries.<br><br>
+<strong><u>Oplog is IDEMPOTENT</u></strong> — applying an entry multiple times = applying it once. f(x) = f(f(x)).<br>
+Why: <code>$inc: 10</code> is NOT idempotent (apply twice = +20). Oplog converts to <code>$set: &lt;final_value&gt;</code> instead. Safe to replay on crash recovery.
+</div>
+<div class="tip">
+Why must oplog be idempotent? When a secondary restarts after a crash, it may replay entries it already applied. If they weren't idempotent → data corruption. Idempotent ops make replay always safe.
+</div>
+
+<h2 id="m7d">D. Write Concern, Read Concern, Read Preference</h2>
+<table>
+<tr><th>Write Concern</th><th>Meaning</th><th>Rollback possible?</th></tr>
+<tr><td><code>w:0</code></td><td>Fire and forget — no acknowledgment</td><td>Yes</td></tr>
+<tr><td><code>w:1</code></td><td>Primary only acknowledges</td><td>Yes (if primary fails before replicating)</td></tr>
+<tr><td><code>w:2</code></td><td>Primary + 1 secondary</td><td>Less likely but possible</td></tr>
+<tr><td><mark><code>w:majority</code></mark></td><td>Default. Majority of nodes must confirm.</td><td><u>NOT possible once acknowledged</u></td></tr>
+</table>
+<table>
+<tr><th>Read Concern</th><th>Stale read?</th><th>Dirty read?</th><th>Notes</th></tr>
+<tr><td><code>local</code> (default)</td><td>Possible</td><td>Possible (may be rolled back)</td><td>Fastest. No consistency guarantees.</td></tr>
+<tr><td><code>majority</code></td><td>Possible (majority snapshot may not be latest)</td><td>No</td><td>No dirty reads. Slightly slower.</td></tr>
+<tr><td><code>linearizable</code></td><td>No</td><td>No</td><td>Slowest. Primary only. Single-doc reads only. Strongest.</td></tr>
+</table>
+<table>
+<tr><th>Read Preference</th><th>Routes reads to</th><th>Use case</th></tr>
+<tr><td><code>primary</code> (default)</td><td>Primary only</td><td>Strong consistency needed</td></tr>
+<tr><td><code>primaryPreferred</code></td><td>Primary if available, else secondary</td><td>High availability</td></tr>
+<tr><td><code>secondary</code></td><td>Secondary only (possibly stale)</td><td>Offload reads, analytics</td></tr>
+<tr><td><code>secondaryPreferred</code></td><td>Secondary if available, else primary</td><td>Read scaling</td></tr>
+<tr><td><code>nearest</code></td><td>Lowest latency node (any)</td><td>Multi-datacenter, read from nearest</td></tr>
+</table>
+<div class="warn">
+<strong>Read-Your-Own-Write problem:</strong> User inserts comment → primary acknowledges → user immediately queries → query routed to secondary that hasn't applied oplog yet → user sees "no results" for their own comment! Solution: use <code>readPreference: primary</code> or <code>w:majority</code> write concern.
+</div>
+<div class="imp">
+Read Preference = WHICH NODE to read from. Read Concern = WHAT VERSION of data to return. They are independent. Understand both.
+</div>
+
+<h2 id="m7e">E. Failover, Split Brain &amp; Rollback</h2>
+<div class="def">
+<strong>Failover only needed in single-leader systems (MongoDB), NOT in P2P.</strong> In P2P, any node accepts writes → no single point of failure. In MongoDB, if primary fails → writes stop until new primary elected.
+</div>
+<strong>Failure detection:</strong> Heartbeats every <strong>2 seconds</strong>. Timeout = <strong>10 seconds</strong> (<code>heartbeatTimeoutSecs</code>). If no heartbeat in 10s → member marked inaccessible. Increasing timeout → more accurate (fewer false positives) but slower to detect real failures.<br><br>
+<strong>Election process (Raft-based):</strong>
+<ol>
+<li>Secondary detects missing heartbeat → calls election</li>
+<li>Election requires <u>majority of voting nodes available</u></li>
+<li>Candidate with most up-to-date oplog (highest term + commit point) wins</li>
+<li><u>No writes during election period</u></li>
+<li>Old primary rejoins as secondary, may need to rollback uncommitted writes</li>
+</ol>
+<div class="scenario">
+<strong>Split Brain — Scenario 1 (5 nodes, Primary in Europe, 3 Secondaries in US):</strong><br>
+Network partition: Europe side = 2 nodes (Primary + Secondary). US side = 3 nodes.<br>
+Majority = 3. Europe has 2 → cannot maintain majority → <u>Europe Primary STEPS DOWN</u>.<br>
+US has 3 → majority → elects new Primary in US.<br>
+<u>Data loss possible:</u> any writes the Europe primary accepted that weren't replicated to US majority → ROLLED BACK.
+</div>
+<div class="scenario">
+<strong>Split Brain — Scenario 2 (Primary in US, 3 Secondaries in Europe):</strong><br>
+US side = Primary + 2 Secondaries = 3 nodes = majority → US Primary stays.<br>
+Europe side = 2 nodes only → cannot hold election → becomes read-only.<br>
+No split brain. No data loss.
+</div>
+<div class="scenario">
+<strong>Heartbeat delayed false positive:</strong><br>
+US thinks Europe Primary is dead (heartbeat delayed &gt;10s but Primary is actually alive). US elects new Primary → now 2 primaries briefly! <u>Raft term mechanism resolves:</u> new US Primary has higher term. Old Europe Primary, when it reconnects, sees higher term → steps down. Writes to old Europe Primary during this window → ROLLED BACK.
+</div>
+<div class="imp">
+<strong>MongoDB Rollback vs PostgreSQL Rollback — key exam question:</strong>
+<table>
+<tr><th></th><th>MongoDB Rollback</th><th>PostgreSQL Rollback</th></tr>
+<tr><td>Cause</td><td>Automatic — triggered by failover/election (replication phenomenon)</td><td>Intentional — client issues ROLLBACK or transaction fails (transaction phenomenon)</td></tr>
+<tr><td>Triggers</td><td>System automatically (old primary when rejoining)</td><td>Application or DB engine (on error)</td></tr>
+<tr><td>Data loss?</td><td><span class="no">YES</span> — acknowledged writes (w:1) can be permanently lost</td><td><span class="ok">NO</span> — transaction was never committed, nothing durable lost</td></tr>
+<tr><td>Prevention</td><td>Use <code>w:majority</code> — majority-acked writes cannot be rolled back</td><td>N/A — rollback is a feature, not a failure</td></tr>
+</table>
+</div>
+
+<h2 id="m7f">F. Sharding (Partitioning)</h2>
+<div class="def">
+<strong>Sharding</strong> = splitting data across multiple replica sets. Each subset = a <strong>shard</strong>. Each shard MUST be a replica set (gets redundancy + scaling together).
+</div>
+<strong>Sharded Cluster Architecture — 3 components:</strong>
+<div class="step">
+<strong>1. Shards</strong> — each is a replica set storing a subset of data.<br>
+<strong>2. Mongos (Router)</strong> — client connects here (NOT to shards directly). Routes queries to correct shard(s) using the chunk map. Stateless. Multiple mongos for HA.<br>
+<strong>3. Config Server (replica set)</strong> — stores chunk map (which shard key range → which shard). Mongos caches this. Must also be a replica set.
+</div>
+<div class="grid2">
+<div class="box2">
+<h3>Range Sharding</h3>
+Shard key divided into contiguous ranges. Shard 1: 0–30000, Shard 2: 30000–60000...<br>
+<span class="ok">✓ Range queries efficient (targeted to 1-2 shards)</span><br>
+<span class="no">✗ Hot spots: sequential shard keys (timestamps, auto-IDs) → all inserts to last shard</span>
+</div>
+<div class="box2">
+<h3>Hash Sharding</h3>
+Hash function applied to shard key value. Result determines chunk/shard. Even sequential keys scatter across all shards.<br>
+<span class="ok">✓ No hot spots, even distribution</span><br>
+<span class="no">✗ Range queries expensive (scatter-gather: sent to ALL shards, results merged)</span>
+</div>
+</div>
+<div class="def">
+<strong>Chunk:</strong> A contiguous range of shard key values assigned to a shard. Mongos knows which chunk is on which shard via the chunk map from Config Server.<br>
+<strong>Balancer:</strong> Background process that moves chunks between shards to maintain even data distribution. Runs automatically.
+</div>
+<div class="tip">
+Use Range sharding when: queries frequently filter by ranges of the shard key. Use Hash sharding when: high-throughput inserts with sequential keys (timestamps, IDs) and no range queries needed.
+</div>
+<div class="imp">
+<strong>Scatter-gather vs targeted query:</strong> Range sharding with a range query = targeted (mongos sends to 1-2 shards). Hash sharding with any query = scatter-gather (mongos sends to ALL shards and merges results → more expensive).
+</div>
+
+<!-- ================================================================ -->
+<h1 id="masterref">MASTER QUICK-REFERENCE TABLE</h1>
+<!-- ================================================================ -->
+
+<table>
+<tr><th>If exam asks…</th><th>Answer</th></tr>
+<tr><td>Which ACID property implemented by WAL?</td><td>Durability</td></tr>
+<tr><td>Which ACID property doesn't exist in P2P?</td><td>Atomicity</td></tr>
+<tr><td>Which ACID property strongest in P2P?</td><td>Durability</td></tr>
+<tr><td>Which anomaly needs Serializable (only)?</td><td>Write Skew</td></tr>
+<tr><td>PostgreSQL default isolation?</td><td>Read Committed</td></tr>
+<tr><td>Does PostgreSQL RR prevent phantom reads?</td><td>YES (beyond standard)</td></tr>
+<tr><td>Does PostgreSQL RR prevent lost updates?</td><td>YES (beyond standard)</td></tr>
+<tr><td>Does MVCC block readers?</td><td>NO</td></tr>
+<tr><td>Does 2PL block readers?</td><td>YES (X-lock blocks S-lock)</td></tr>
+<tr><td>SS lock compatibility?</td><td>Compatible</td></tr>
+<tr><td>What is HOT update?</td><td>Update of non-indexed column with space on page → no index rewrite</td></tr>
+<tr><td>What does VACUUM do?</td><td>Remove dead tuples, reclaim space, update HOT chain pointers, clean index entries</td></tr>
+<tr><td>What is Strict 2PL?</td><td>Hold ALL locks until COMMIT/ROLLBACK</td></tr>
+<tr><td>2PC vs 2PL?</td><td>2PC = distributed commit protocol across DBs. 2PL = lock-based concurrency within one DB</td></tr>
+<tr><td>Worst 2PC failure?</td><td>Participant voted YES → coordinator crashes → participant holds locks forever (blocking)</td></tr>
+<tr><td>True/False: "Any node blocks 2PC after voting YES"</td><td>FALSE — only coordinator crash blocks. Participant crash after YES is recoverable.</td></tr>
+<tr><td>CAP: Scylla/Cassandra?</td><td>A/P system → eventual consistency</td></tr>
+<tr><td>3 meanings of consistency?</td><td>ACID = constraints; P2P = replicas agree; CAP = all nodes see most recent data</td></tr>
+<tr><td>Quorum for RF=3?</td><td>⌊3/2⌋+1 = 2 nodes</td></tr>
+<tr><td>W+R>N means?</td><td>Read always overlaps a freshly-written replica → no stale-only reads</td></tr>
+<tr><td>Can a "failed" quorum write leave data behind?</td><td>YES — applied writes are not rolled back even if coordinator reports failure</td></tr>
+<tr><td>VVs can detect OR resolve conflicts?</td><td>ONLY DETECT (answer C)</td></tr>
+<tr><td>What are siblings (RIAK)?</td><td>Both conflicting values kept when allow_mult=true. App must resolve.</td></tr>
+<tr><td>CRDT merge properties?</td><td>Commutative, Associative, Idempotent</td></tr>
+<tr><td>State-based vs op-based CRDT delivery?</td><td>State-based: eventual delivery (idempotent). Op-based: exactly once per replica.</td></tr>
+<tr><td>LWT syntax for uniqueness?</td><td>INSERT … IF NOT EXISTS</td></tr>
+<tr><td>LWT round trips?</td><td>4 (Prepare→Read→Propose→Commit) vs 1 for normal write</td></tr>
+<tr><td>Can you mix LWW and LWT on same partition?</td><td>NO — LWW can silently overwrite LWT results</td></tr>
+<tr><td>LWT timeout = failure?</td><td>NO — must re-read with SERIAL or retry to confirm</td></tr>
+<tr><td>Paxos safety rule?</td><td>If an acceptor already accepted a value, proposer MUST use that value in Phase 2</td></tr>
+<tr><td>Raft election timeout (random range)?</td><td>150–300ms</td></tr>
+<tr><td>ScyllaDB uses Raft for?</td><td>Cluster membership + schema management</td></tr>
+<tr><td>MongoDB uses Raft for?</td><td>Replica set elections (Primary election)</td></tr>
+<tr><td>MongoDB write default?</td><td>w:majority</td></tr>
+<tr><td>MongoDB read concern default?</td><td>local (may be stale, may be dirty)</td></tr>
+<tr><td>MongoDB read preference default?</td><td>primary</td></tr>
+<tr><td>Oplog must be idempotent — why?</td><td>Secondaries may replay entries on crash recovery. Idempotency makes replaying safe.</td></tr>
+<tr><td>MongoDB rollback vs Postgres rollback?</td><td>MongoDB: automatic, replication phenomenon, can lose acknowledged data. Postgres: intentional, transaction phenomenon, no durable data lost.</td></tr>
+<tr><td>Prevent MongoDB rollback?</td><td>Use w:majority — majority-acked writes cannot be rolled back</td></tr>
+<tr><td>Sharding: which strategy has hot spots?</td><td>Range sharding (sequential keys → all inserts to one shard)</td></tr>
+<tr><td>Sharding: which has scatter-gather?</td><td>Hash sharding (range queries go to ALL shards)</td></tr>
+<tr><td>Mongos does?</td><td>Routes client queries to correct shard(s) using chunk map from config server</td></tr>
+<tr><td>Must each shard be a replica set?</td><td>YES</td></tr>
+<tr><td>Embed vs Reference: when to reference?</td><td>Large data, independently queried, write-heavy, unbounded growth, N:M relationship</td></tr>
+<tr><td>Split brain: which side can elect new primary?</td><td>The side with MAJORITY of voting nodes</td></tr>
+<tr><td>Heartbeat interval in MongoDB?</td><td>2 seconds. Timeout: 10 seconds.</td></tr>
+<tr><td>Increase heartbeat timeout → ?</td><td>More accurate (fewer false positives) but slower failure detection</td></tr>
+</table>
+
+<div class="mnemonic" style="margin-top:24px">
+<strong>Final memory trick — all topics in one sentence:</strong><br>
+"PostgreSQL uses <u>MVCC</u> (xmin/xmax) to prevent <u>anomalies</u> (use SERIALIZABLE for Write Skew). P2P systems face <u>CAP</u> so Scylla uses <u>quorum + LWW/VV/CRDTs</u> for conflict handling, and <u>Paxos-LWT</u> when ordering matters. MongoDB uses <u>single-leader</u> (oplog, w:majority, Raft election, range/hash sharding) while ScyllaDB uses <u>leaderless P2P</u>."
+</div>
+
+
+</div>
+
+<script>
+(function(){
+  var KEY = 'readerPrefs2:db2site';
+  var root = document.documentElement;
+  var body = document.body;
+  var DEF = { fs: 1.5, cw: 560, full: false };
+  var st = Object.assign({}, DEF);
+  try { st = Object.assign(st, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch(e){}
+
+  var ctl = document.getElementById('reader-controls');
+  var toggle = document.getElementById('rc-toggle');
+  var fontVal = document.getElementById('rc-font-val');
+  var widthInput = document.getElementById('rc-width');
+  var widthVal = document.getElementById('rc-width-val');
+  var fullChk = document.getElementById('rc-full');
+
+  function clamp(v, lo, hi){ return Math.min(hi, Math.max(lo, v)); }
+
+  function apply(){
+    root.style.setProperty('--rfs', st.fs);
+    root.style.setProperty('--rcw', st.cw + 'px');
+    body.classList.toggle('reader-full', !!st.full);
+    fontVal.textContent = Math.round(st.fs * 100) + '%';
+    widthInput.value = st.cw;
+    widthVal.textContent = st.full ? 'full' : st.cw;
+    widthInput.disabled = !!st.full;
+    fullChk.checked = !!st.full;
+  }
+  function save(){
+    try { localStorage.setItem(KEY, JSON.stringify(st)); } catch(e){}
+  }
+
+  toggle.addEventListener('click', function(){ ctl.classList.toggle('open'); });
+
+  ctl.addEventListener('click', function(e){
+    var act = e.target.getAttribute('data-act');
+    if(!act) return;
+    if(act === 'font-inc') st.fs = clamp(Math.round((st.fs + 0.1)*10)/10, 0.7, 2.2);
+    else if(act === 'font-dec') st.fs = clamp(Math.round((st.fs - 0.1)*10)/10, 0.7, 2.2);
+    else if(act === 'reset') st = Object.assign({}, DEF);
+    apply(); save();
+  });
+
+  widthInput.addEventListener('input', function(){
+    st.cw = clamp(parseInt(widthInput.value, 10) || DEF.cw, 300, 1600);
+    apply(); save();
+  });
+  fullChk.addEventListener('change', function(){
+    st.full = fullChk.checked;
+    apply(); save();
+  });
+
+  apply();
+})();
+</script>
+
+
+<script>
+(function(){
+  var KEY='readerTheme:db2site';
+  var root=document.documentElement;
+  var mql=window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  var theme=null;
+  try{ theme=localStorage.getItem(KEY); }catch(e){}
+  if(theme!=='light' && theme!=='dark' && theme!=='system') theme='system';
+
+  var row=document.getElementById('rc-theme-row');
+  function effective(){ return theme==='system' ? (mql && mql.matches ? 'dark':'light') : theme; }
+  function apply(){
+    root.classList.toggle('theme-dark', effective()==='dark');
+    if(row){ row.querySelectorAll('[data-theme]').forEach(function(b){
+      b.classList.toggle('active', b.getAttribute('data-theme')===theme); }); }
+  }
+  if(row){
+    row.addEventListener('click', function(e){
+      var b=e.target.closest('[data-theme]'); if(!b) return;
+      theme=b.getAttribute('data-theme');
+      try{ localStorage.setItem(KEY, theme); }catch(err){}
+      apply();
+    });
+  }
+  if(mql){
+    var onChange=function(){ if(theme==='system') apply(); };
+    if(mql.addEventListener) mql.addEventListener('change', onChange);
+    else if(mql.addListener) mql.addListener(onChange);
+  }
+  apply();
+})();
+</script>
+
+<div id="reader-pagecounter">Page <span id="rpc-cur">1</span> / <span id="rpc-total">1</span></div>
+
+<script>
+(function(){
+  var PAGE_PX = 1000;            // fixed LOGICAL page height -> identical unit across all files
+  var root = document.documentElement;
+  var curEl = document.getElementById('rpc-cur');
+  var totEl = document.getElementById('rpc-total');
+
+  function fontScale(){
+    var v = parseFloat(getComputedStyle(root).getPropertyValue('--rfs'));
+    return (v && v > 0) ? v : 1;
+  }
+  function update(){
+    var fs = fontScale();
+    var pp = PAGE_PX * fs;                       // page height in rendered px
+    var docH = Math.max(root.scrollHeight, document.body.scrollHeight);
+    var total = Math.max(1, Math.ceil(docH / pp));
+    var cur = Math.min(total, Math.floor((window.scrollY || window.pageYOffset || 0) / pp) + 1);
+    curEl.textContent = cur;
+    totEl.textContent = total;
+  }
+
+  var ticking = false;
+  function onScroll(){
+    if(ticking) return; ticking = true;
+    requestAnimationFrame(function(){ update(); ticking = false; });
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', update);
+
+  // recompute when font/width settings change the document height
+  var rc = document.querySelector('.reader-container');
+  if(window.ResizeObserver && rc){
+    new ResizeObserver(update).observe(rc);
+  } else {
+    setInterval(update, 1000);
+  }
+  update();
+})();
+</script>
+
+
+<script>
+(function(){
+  var PAGE_PX = 1000;
+  var root = document.documentElement;
+  var rc = document.querySelector('.reader-container');
+  var pc = document.getElementById('reader-pagecounter');
+  if(!rc || !pc) return;
+
+  // wrap counter + outline so hover stays active when moving between them
+  var nav = document.createElement('div'); nav.id = 'reader-nav';
+  pc.parentNode.insertBefore(nav, pc); nav.appendChild(pc);
+  var outline = document.createElement('div'); outline.id = 'reader-outline';
+  nav.appendChild(outline);
+
+  function fontScale(){
+    var v = parseFloat(getComputedStyle(root).getPropertyValue('--rfs'));
+    return (v && v > 0) ? v : 1;
+  }
+  function esc(s){ return s.replace(/[&<>"]/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+  function build(){
+    var pp = PAGE_PX * fontScale();
+    var hs = rc.querySelectorAll('h1, h2, h3');
+    var sy = window.scrollY || window.pageYOffset || 0;
+    var html = '<div class="ro-head">Contents &middot; page</div>';
+    hs.forEach(function(h){
+      if(h.closest('.toc, .cover')) return;          // skip TOC / cover headings
+      var txt = (h.textContent || '').trim();
+      if(!txt) return;
+      var lvl = h.tagName === 'H1' ? 0 : (h.tagName === 'H2' ? 1 : 2);
+      var top = h.getBoundingClientRect().top + sy;
+      var pg = Math.max(1, Math.floor(top / pp) + 1);
+      html += '<a class="ro-item ro-l' + lvl + '" data-top="' + Math.round(top) + '">' +
+              '<span class="ro-t">' + esc(txt) + '</span>' +
+              '<span class="ro-p">p.' + pg + '</span></a>';
+    });
+    outline.innerHTML = html;
+  }
+
+  nav.addEventListener('mouseenter', build);   // rebuild fresh each hover (page #s stay correct)
+  outline.addEventListener('click', function(e){
+    var a = e.target.closest('.ro-item'); if(!a) return;
+    var y = parseFloat(a.getAttribute('data-top')) - 12;
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  });
+})();
+</script>
+
+
+<script>
+(function(){
+  var PAGE_PX = 1000, SPY_OFFSET = 90;
+  var root = document.documentElement;
+  var rc = document.querySelector('.reader-container');
+  var pc = document.getElementById('reader-pagecounter');
+  var outline = document.getElementById('reader-outline');
+  var nav = document.getElementById('reader-nav');
+  if(!rc || !pc || !outline || !nav) return;
+
+  // current-heading label inside the pill (before the "Page X / Y" text)
+  var head = document.createElement('span'); head.id = 'rpc-head';
+  /* current heading shown in the outline only, not in the pill */
+
+  // cache the real section headings (skip TOC / cover)
+  var heads = [];
+  rc.querySelectorAll('h1, h2, h3').forEach(function(h){
+    if(h.closest('.toc, .cover')) return;
+    if(!(h.textContent || '').trim()) return;
+    heads.push(h);
+  });
+
+  function fontScale(){
+    var v = parseFloat(getComputedStyle(root).getPropertyValue('--rfs'));
+    return (v && v > 0) ? v : 1;
+  }
+  function esc(s){ return s.replace(/[&<>"]/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function topsAndCurrent(){
+    var sy = window.scrollY || window.pageYOffset || 0;
+    var tops = heads.map(function(h){ return h.getBoundingClientRect().top + sy; });
+    var cur = -1;
+    for(var i=0;i<tops.length;i++){ if(tops[i] <= sy + SPY_OFFSET) cur = i; else break; }
+    if(cur < 0 && tops.length) cur = 0;
+    return { tops: tops, cur: cur, sy: sy };
+  }
+
+  function build(){
+    var st = topsAndCurrent();
+    var pp = PAGE_PX * fontScale();
+    var html = '<div class="ro-head">Contents &middot; page</div>';
+    heads.forEach(function(h, i){
+      var lvl = h.tagName === 'H1' ? 0 : (h.tagName === 'H2' ? 1 : 2);
+      var pg = Math.max(1, Math.floor(st.tops[i] / pp) + 1);
+      html += '<a class="ro-item ro-l' + lvl + (i === st.cur ? ' ro-active' : '') +
+              '" data-i="' + i + '" data-top="' + Math.round(st.tops[i]) + '">' +
+              '<span class="ro-t">' + esc((h.textContent||'').trim()) + '</span>' +
+              '<span class="ro-p">p.' + pg + '</span></a>';
+    });
+    outline.innerHTML = html;
+    var act = outline.querySelector('.ro-active');
+    if(act) outline.scrollTop = act.offsetTop - outline.clientHeight / 2;
+  }
+
+  // run AFTER the earlier outline builder so this (spy-aware) version wins
+  nav.addEventListener('mouseenter', build);
+  pc.addEventListener('click', function(){ nav.classList.toggle('pinned'); if(nav.classList.contains('pinned')) build(); });
+  document.addEventListener('click', function(e){ if(nav.classList.contains('pinned') && !nav.contains(e.target)) nav.classList.remove('pinned'); });
+
+  var ticking = false;
+  function onScroll(){
+    if(ticking) return; ticking = true;
+    requestAnimationFrame(function(){
+      var st = topsAndCurrent();
+      head.textContent = st.cur >= 0 ? (heads[st.cur].textContent || '').trim() : '';
+      // live-highlight active item if the outline is currently shown
+      var items = outline.children;
+      for(var i=0;i<items.length;i++){
+        var el = items[i]; if(!el.classList || !el.classList.contains('ro-item')) continue;
+        el.classList.toggle('ro-active', parseInt(el.getAttribute('data-i'),10) === st.cur);
+      }
+      ticking = false;
+    });
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', onScroll);
+
+  // initial current-heading label
+  var st0 = topsAndCurrent();
+  head.textContent = st0.cur >= 0 ? (heads[st0.cur].textContent || '').trim() : '';
+})();
+</script>
+
+
+<script>
+(function(){
+  var KEY='siteNavOpen', body=document.body;
+  var wide=window.matchMedia('(min-width:900px)');
+  var saved=null; try{ saved=localStorage.getItem(KEY); }catch(e){}
+  var open = saved===null ? wide.matches : saved==='1';
+  function apply(){ body.classList.toggle('nav-open', open); }
+  var t=document.getElementById('site-nav-toggle');
+  if(t) t.addEventListener('click', function(){ open=!open; try{localStorage.setItem(KEY,open?'1':'0');}catch(e){} apply(); });
+  var bd=document.getElementById('site-nav-backdrop');
+  if(bd) bd.addEventListener('click', function(){ open=false; try{localStorage.setItem(KEY,'0');}catch(e){} apply(); });
+  apply();
+})();
+</script>
+
+</body>
+</html>
