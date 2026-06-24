@@ -1,0 +1,1367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Study Guide: Module 6.3 Consensus &amp; 6.4 LWT — KIU Databases II</title>
+<style>
+body{font-family:Georgia,serif;font-size:11pt;line-height:1.7;margin:2cm;color:#222}
+h1{color:#003366;font-size:20pt;border-bottom:3px solid #003366;padding-bottom:8px;margin-top:0;page-break-before:always}
+h1:first-of-type{page-break-before:avoid}
+h2{color:#003366;font-size:15pt;margin-top:24px;border-bottom:1px solid #aac}
+h3{color:#1a5276;font-size:13pt;margin-top:16px}
+h4{color:#444;font-size:11.5pt;margin-top:12px}
+.def{background:#e8f0fe;border-left:5px solid #1a73e8;padding:12px 14px;margin:12px 0;border-radius:4px}
+.imp{background:#fff3cd;border-left:5px solid #ffc107;padding:12px 14px;margin:12px 0;border-radius:4px}
+.tip{background:#d4edda;border-left:5px solid #28a745;padding:12px 14px;margin:12px 0;border-radius:4px}
+.tip::before{content:"EXAM TIP: ";font-weight:bold;color:#155724}
+.warn{background:#fde8e8;border-left:5px solid #dc3545;padding:12px 14px;margin:12px 0;border-radius:4px}
+pre,code{font-family:'Courier New',monospace}
+pre{background:#1e1e1e;color:#d4d4d4;padding:14px;border-radius:6px;font-size:9pt;line-height:1.5;white-space:pre-wrap;word-wrap:break-word}
+.out{background:#1a2a1a;color:#a8ff78;padding:12px;border-radius:6px;font-family:monospace;font-size:9pt;margin:8px 0;white-space:pre-wrap}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:10pt}
+th{background:#003366;color:white;padding:8px;text-align:left}
+td{border:1px solid #ccc;padding:7px;vertical-align:top}
+tr:nth-child(even){background:#f5f5f5}
+.toc{background:#f0f4ff;padding:16px;border:1px solid #aac;border-radius:6px;margin-bottom:20px}
+.toc a{color:#003366;text-decoration:none;line-height:2}
+.toc h3{margin-top:0;color:#003366}
+.timeline{background:#f0f0f8;padding:12px;border-radius:4px;font-family:monospace;font-size:9pt;white-space:pre;margin:10px 0;border:1px solid #ccc}
+.scenario{background:#f8f4e8;border:2px solid #d4a000;padding:14px;margin:16px 0;border-radius:6px}
+.scenario h4{color:#7a5000;margin-top:0}
+ol li,ul li{margin-bottom:6px}
+</style>
+
+<style id="reader-controls-style">
+/* ===== Injected reading controls ===== */
+:root{ --rfs:1.5; --rcw:560px; }
+.reader-container{
+  max-width: var(--rcw);
+  margin-left: auto;
+  margin-right: auto;
+  zoom: var(--rfs);
+}
+body.reader-full .reader-container{ max-width: none; }
+
+#reader-controls{
+  position: fixed; top: 14px; right: 14px; z-index: 9999;
+  font-family: -apple-system, Segoe UI, Roboto, sans-serif;
+}
+#reader-controls #rc-toggle{
+  width: 40px; height: 40px; border-radius: 50%;
+  border: none; background: #003366; color: #fff;
+  font-size: 16px; font-weight: bold; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.3);
+}
+#reader-controls #rc-panel{
+  display: none; margin-top: 8px; width: 240px;
+  background: #fff; color: #222; border: 1px solid #ccd;
+  border-radius: 10px; padding: 12px 14px;
+  box-shadow: 0 6px 24px rgba(0,0,0,.2); font-size: 13px;
+}
+#reader-controls.open #rc-panel{ display: block; }
+#reader-controls .rc-row{
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; margin: 8px 0;
+}
+#reader-controls .rc-row:first-child{ margin-top: 0; }
+#reader-controls .rc-row > span:first-child{ font-weight: 600; color: #003366; min-width: 42px; }
+#reader-controls button[data-act]{
+  border: 1px solid #aac; background: #f0f4ff; color: #003366;
+  border-radius: 6px; padding: 3px 10px; cursor: pointer; font-size: 13px;
+}
+#reader-controls button[data-act]:hover{ background: #dde6ff; }
+#reader-controls #rc-font-val, #reader-controls #rc-width-val{
+  min-width: 44px; text-align: center; font-variant-numeric: tabular-nums;
+}
+#reader-controls input[type=range]{ flex: 1; }
+#reader-controls label{ display: flex; align-items: center; gap: 6px; cursor: pointer; }
+@media print{
+  #reader-controls{ display: none !important; }
+  .reader-container{ zoom: 1 !important; max-width: none !important; margin: 0 !important; }
+}
+</style>
+
+<script>
+(function(){try{
+  var k='readerTheme:db2site';
+  var t=localStorage.getItem(k)||'system';
+  var dark = t==='dark' || (t==='system' && window.matchMedia &&
+            window.matchMedia('(prefers-color-scheme: dark)').matches);
+  if(dark) document.documentElement.classList.add('theme-dark');
+}catch(e){}})();
+</script>
+
+<style id="theme-dark-style">
+/* ===== Dark theme (scoped to html.theme-dark) ===== */
+html.theme-dark, html.theme-dark body{
+  background: #16181c !important;
+  color: #d2d5da !important;
+}
+html.theme-dark h1, html.theme-dark h2, html.theme-dark h3, html.theme-dark h4{
+  color: #9ec5ff !important;
+  border-color: #33425a !important;
+}
+html.theme-dark a{ color: #8ab4f8 !important; }
+html.theme-dark .subtitle, html.theme-dark .meta, html.theme-dark .sub{ color: #9aa0a8 !important; }
+
+/* callout / card boxes -> dark surface, keep their accent border */
+html.theme-dark .box, html.theme-dark .warn, html.theme-dark .key, html.theme-dark .exam, html.theme-dark .answer, html.theme-dark .def, html.theme-dark .imp, html.theme-dark .tip, html.theme-dark .scenario, html.theme-dark .timeline, html.theme-dark .toc, html.theme-dark .defbox, html.theme-dark .notebox, html.theme-dark .examtip, html.theme-dark .assignment, html.theme-dark .cover{
+  background: #1e2230 !important;
+  color: #d2d5da !important;
+}
+html.theme-dark .cover{ background: #1a1d28 !important; }
+html.theme-dark .exam-title, html.theme-dark .examtip,
+html.theme-dark .notebox, html.theme-dark .kiu-logo{ color: #c7d2e8 !important; }
+
+/* tables */
+html.theme-dark table th{ background: #243044 !important; color: #e8eef7 !important; }
+html.theme-dark table td, html.theme-dark table th{ border-color: #3a3f49 !important; }
+html.theme-dark table tr:nth-child(even){ background: #1b1e24 !important; }
+html.theme-dark table tr:nth-child(odd){ background: transparent !important; }
+
+/* code blocks: darken any light ones; leave already-dark ones consistent */
+html.theme-dark pre, html.theme-dark code{
+  background: #0e0f12 !important;
+  color: #e2e2e2 !important;
+  border-color: #2c2f36 !important;
+}
+html.theme-dark .out, html.theme-dark .output{ background: #0f1a10 !important; }
+
+/* the settings panel itself in dark mode */
+html.theme-dark #reader-controls #rc-panel{
+  background: #23262d !important; color: #e0e2e6 !important; border-color: #3a3f4a !important;
+}
+html.theme-dark #reader-controls button[data-act]{
+  background: #2d323c !important; color: #cfe0ff !important; border-color: #3a4150 !important;
+}
+html.theme-dark #reader-controls button[data-act]:hover{ background: #39404d !important; }
+html.theme-dark #reader-controls .rc-row > span:first-child{ color: #9ec5ff !important; }
+
+/* theme segmented control */
+#reader-controls .rc-seg{ display: inline-flex; gap: 4px; }
+#reader-controls .rc-seg button{
+  border: 1px solid #aac; background: #f0f4ff; color: #003366;
+  border-radius: 6px; padding: 3px 8px; cursor: pointer; font-size: 14px; line-height: 1;
+}
+#reader-controls .rc-seg button.active{ background: #003366; color: #fff; border-color: #003366; }
+html.theme-dark #reader-controls .rc-seg button{ background: #2d323c; color: #cfe0ff; border-color: #3a4150; }
+html.theme-dark #reader-controls .rc-seg button.active{ background: #8ab4f8; color: #11151c; border-color: #8ab4f8; }
+
+@media print{
+  /* never print a black page even if dark mode is on */
+  html.theme-dark, html.theme-dark body,
+  html.theme-dark .box, html.theme-dark .warn, html.theme-dark .key, html.theme-dark .exam, html.theme-dark .answer, html.theme-dark .def, html.theme-dark .imp, html.theme-dark .tip, html.theme-dark .scenario, html.theme-dark .timeline, html.theme-dark .toc, html.theme-dark .defbox, html.theme-dark .notebox, html.theme-dark .examtip, html.theme-dark .assignment, html.theme-dark .cover, html.theme-dark table th,
+  html.theme-dark pre, html.theme-dark code, html.theme-dark .out, html.theme-dark .output{
+    background: #fff !important; color: #000 !important;
+  }
+}
+</style>
+
+<style id="reader-pagecounter-style">
+#reader-pagecounter{
+  position: fixed; bottom: 14px; right: 14px; z-index: 9999;
+  background: rgba(0,51,102,.92); color: #fff;
+  font-family: -apple-system, Segoe UI, Roboto, sans-serif; font-size: 12px;
+  padding: 6px 11px; border-radius: 20px; pointer-events: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25);
+  font-variant-numeric: tabular-nums; letter-spacing: .2px;
+}
+#reader-pagecounter b{ font-weight: 700; }
+html.theme-dark #reader-pagecounter{ background: rgba(138,180,248,.92); color: #11151c; }
+@media print{ #reader-pagecounter{ display: none !important; } }
+</style>
+
+<style id="reader-outline-style">
+/* keep the Aa button pinned to the right so it doesn't jump when the panel opens */
+#reader-controls{ display: flex; flex-direction: column; align-items: flex-end; }
+
+/* page counter becomes hover-interactive (was pointer-events:none) */
+#reader-nav{ position: fixed; bottom: 14px; right: 14px; z-index: 9999;
+  font-family: -apple-system, Segoe UI, Roboto, sans-serif; }
+#reader-nav #reader-pagecounter{ position: static; bottom: auto; right: auto;
+  pointer-events: auto; cursor: pointer; }
+
+#reader-outline{
+  display: none; position: absolute; bottom: 100%; right: 0; margin-bottom: 8px;
+  width: min(340px, 82vw); max-height: 70vh; overflow-y: auto;
+  background: #fff; color: #222; border: 1px solid #ccd; border-radius: 10px;
+  box-shadow: 0 8px 28px rgba(0,0,0,.22); padding: 6px 4px; font-size: 12.5px;
+}
+#reader-nav:hover #reader-outline, #reader-nav.pinned #reader-outline{ display: block; }
+#reader-outline::after{ content:""; position:absolute; left:0; right:0; top:100%; height:14px; }
+#reader-outline .ro-head{ font-weight: 700; color: #003366; padding: 4px 10px 6px;
+  border-bottom: 1px solid #e3e8f0; margin-bottom: 4px; position: sticky; top: 0; background: #fff; }
+#reader-outline .ro-item{
+  display: flex; align-items: baseline; gap: 8px; justify-content: space-between;
+  padding: 3px 10px; cursor: pointer; border-radius: 6px; text-decoration: none; color: inherit;
+}
+#reader-outline .ro-item:hover{ background: #eef3ff; }
+#reader-outline .ro-t{ overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#reader-outline .ro-p{ color: #6678a0; font-variant-numeric: tabular-nums; flex: 0 0 auto; font-size: 11px; }
+#reader-outline .ro-l0{ font-weight: 600; }
+#reader-outline .ro-l1 .ro-t{ padding-left: 14px; font-weight: 400; }
+#reader-outline .ro-l2 .ro-t{ padding-left: 28px; color: #555; font-weight: 400; }
+
+html.theme-dark #reader-outline{ background: #23262d; color: #e0e2e6; border-color: #3a3f4a; }
+html.theme-dark #reader-outline .ro-head{ background: #23262d; color: #9ec5ff; border-color: #343a44; }
+html.theme-dark #reader-outline .ro-item:hover{ background: #2f3540; }
+html.theme-dark #reader-outline .ro-p{ color: #8fa0c4; }
+html.theme-dark #reader-outline .ro-l2 .ro-t{ color: #b6bcc6; }
+
+@media print{ #reader-nav{ display: none !important; } }
+</style>
+
+<style id="reader-spy-style">
+#reader-pagecounter{ white-space: nowrap; }
+#rpc-head{ overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 230px; font-weight: 600; }
+#rpc-head:not(:empty)::after{ content: "\00B7"; margin: 0 7px; opacity: .55; font-weight: 400; }
+#reader-outline .ro-item.ro-active{ background: #dbe6ff; font-weight: 700; }
+#reader-outline .ro-item.ro-active .ro-p{ color: #003366; }
+html.theme-dark #reader-outline .ro-item.ro-active{ background: #34507e; }
+html.theme-dark #reader-outline .ro-item.ro-active .ro-p{ color: #cfe0ff; }
+</style>
+
+<style id="site-nav-style">
+#site-nav-toggle{ position:fixed; top:14px; left:14px; z-index:10001; width:40px; height:40px;
+  border-radius:8px; border:none; background:#0f2540; color:#fff; font-size:18px; line-height:1;
+  cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,.3);
+  font-family:-apple-system,Segoe UI,Roboto,sans-serif; }
+#site-nav{ position:fixed; top:0; left:0; width:250px; height:100vh; overflow-y:auto;
+  background:#0f2540; color:#cfe0ff; z-index:10000; transform:translateX(-100%);
+  transition:transform .2s ease; box-shadow:2px 0 14px rgba(0,0,0,.25);
+  font-family:-apple-system,Segoe UI,Roboto,sans-serif; }
+body.nav-open #site-nav{ transform:translateX(0); }
+#site-nav .sn-title{ font-weight:700; color:#fff; font-size:15px; padding:16px 18px 4px 58px; }
+#site-nav .sn-sub{ font-size:11px; color:#7f9cc0; padding:0 18px 12px 58px; border-bottom:1px solid #22405f; margin-bottom:6px; }
+#site-nav a.sn-link{ display:block; padding:11px 18px; color:#cfe0ff; text-decoration:none;
+  font-size:13.5px; border-left:3px solid transparent; line-height:1.35; }
+#site-nav a.sn-link:hover{ background:#163255; }
+#site-nav a.sn-link.active{ background:#1d3e66; border-left-color:#8ab4f8; color:#fff; font-weight:600; }
+#site-nav-backdrop{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:9999; }
+body.nav-open #site-nav-backdrop{ display:block; }
+@media (min-width:900px){
+  body.nav-open{ padding-left:250px; }
+  body.nav-open #site-nav-backdrop{ display:none; }
+}
+@media print{ #site-nav,#site-nav-toggle,#site-nav-backdrop{ display:none !important; } body.nav-open{ padding-left:0 !important; } }
+
+/* ===== mobile responsiveness ===== */
+@media (max-width:700px){
+  body{ margin:0 !important; }
+  .reader-container{ max-width:none !important; margin:0 !important; zoom:1 !important; padding:0 14px !important; }
+  #reader-controls{ top:10px !important; right:10px !important; }
+  #site-nav-toggle{ top:10px; left:10px; width:38px; height:38px; }
+  #reader-nav{ bottom:10px !important; right:10px !important; }
+  .reader-container table{ font-size:8.7pt; }
+  .reader-container pre, .reader-container .ascii-diagram{ font-size:8pt; }
+  h1{ font-size:17pt !important; } h2{ font-size:13.5pt !important; }
+}
+</style>
+</head>
+<body>
+<button id="site-nav-toggle" title="Menu" aria-label="Menu">☰</button>
+<nav id="site-nav">
+  <div class="sn-title">DB2 Final Study</div>
+  <div class="sn-sub">KIU Databases II · 2026</div>
+  <a class="sn-link" href="index.html">Home</a>
+  <a class="sn-link" href="5-transactions.html">5.4 · Transactions & CC</a>
+  <a class="sn-link" href="6.1-6.2-consistency.html">6.1–6.2 · Consistency & Conflicts</a>
+  <a class="sn-link active" href="6.3-6.4-consensus-lwt.html">6.3–6.4 · Consensus & LWT</a>
+  <a class="sn-link" href="7-mongodb.html">7 · MongoDB & Sharding</a>
+  <a class="sn-link" href="final-exam-prep.html">Final Exam Prep</a>
+</nav>
+<div id="site-nav-backdrop"></div>
+
+
+<div id="reader-controls">
+  <button id="rc-toggle" title="Reading settings">Aa</button>
+  <div id="rc-panel">
+    <div class="rc-row" id="rc-theme-row">
+      <span>Theme</span>
+      <div class="rc-seg">
+        <button data-theme="light" title="Light mode">&#9728;</button>
+        <button data-theme="dark" title="Dark mode">&#9790;</button>
+        <button data-theme="system" title="Match system">&#128421;</button>
+      </div>
+    </div>
+
+    <div class="rc-row">
+      <span>Font</span>
+      <button data-act="font-dec" title="Smaller">A&minus;</button>
+      <span id="rc-font-val">100%</span>
+      <button data-act="font-inc" title="Larger">A+</button>
+    </div>
+    <div class="rc-row">
+      <span>Width</span>
+      <input id="rc-width" type="range" min="300" max="1600" step="20">
+      <span id="rc-width-val">560</span>
+    </div>
+    <div class="rc-row">
+      <label><input id="rc-full" type="checkbox"> Full width</label>
+      <button data-act="reset">Reset</button>
+    </div>
+  </div>
+</div>
+
+<div class="reader-container">
+
+
+<h1 style="page-break-before:avoid">Study Guide: Module 6.3 Consensus &amp; 6.4 Lightweight Transactions</h1>
+<p><strong>KIU Databases II — Prof. Eva Knirsch | Exam Preparation | 2026-06-22</strong></p>
+<p>Reading: [Kl] chapters 7 &amp; 9; ScyllaDB LWT docs</p>
+
+<div class="toc">
+<h3>Table of Contents</h3>
+<a href="#s1">1. What is Consensus?</a><br>
+<a href="#s2">2. Consensus Properties</a><br>
+<a href="#s3">3. Use Cases for Consensus in Distributed Systems</a><br>
+<a href="#s4">4. NoSQL Databases and Consensus</a><br>
+<a href="#s5">5. Two-Phase Commit (2PC) Protocol</a><br>
+<a href="#s6">6. XA Standard for Distributed Transactions</a><br>
+<a href="#s7">7. 2PC Failure Scenarios (Cohort Failures)</a><br>
+<a href="#s8">8. 2PC Failure Scenarios (Coordinator Failures)</a><br>
+<a href="#s9">9. 2PC True/False Analysis</a><br>
+<a href="#s10">10. Alternatives to 2PC (3PC, Paxos-based)</a><br>
+<a href="#s11">11. Raft Consensus Algorithm</a><br>
+<a href="#s12">12. Consensus-Based Mechanisms in ScyllaDB</a><br>
+<a href="#s13">13. LWT — Enforcing Uniqueness (IF NOT EXISTS)</a><br>
+<a href="#s14">14. LWT — Compare-And-Set (IF condition)</a><br>
+<a href="#s15">15. Mixing LWW and LWT — Dangerous!</a><br>
+<a href="#s16">16. Scylla Paxos-Based LWT — Protocol Detail</a><br>
+<a href="#s17">17. LWT Conflict Scenario 1</a><br>
+<a href="#s18">18. LWT Conflict Scenario 2</a><br>
+<a href="#s19">19. LWT Conflict Scenario 3</a><br>
+<a href="#s20">20. LWT Conflict Scenario 4</a><br>
+<a href="#s21">21. LWT Error Handling</a><br>
+<a href="#s22">22. Summary and Exam Cheat Sheet</a><br>
+</div>
+
+<h1 id="s1">1. What is Consensus?</h1>
+
+<div class="def">
+<strong>Consensus Definition (from slides, [Kl] p.364):</strong><br>
+A distributed system (database) guarantees a result — a value, an order, or a state — despite failures, even though the agreement may have been reached by a <em>majority quorum</em> only rather than by all nodes directly.<br><br>
+One or more nodes <strong>propose</strong> a result, and the consensus algorithm <strong>decides</strong> on one of those results.
+</div>
+
+<p>All nodes agree on the result despite possible failures, including:</p>
+<ul>
+<li>Node crashes</li>
+<li>Asynchronous communication and replication delays</li>
+<li>Lack of cluster-wide clock coordination (no global clock)</li>
+<li>Network partitions (some nodes can't reach others)</li>
+</ul>
+<p>Only a <strong>majority quorum</strong> — not necessarily all nodes — needs to be involved in reaching the agreement. This makes consensus fault-tolerant: as long as a majority is alive, consensus can be reached.</p>
+
+<h3>What Can Be "Agreed Upon"?</h3>
+<ul>
+<li><strong>A specific value</strong> — for data consistency (e.g., "the new credit balance is 500")</li>
+<li><strong>Cluster definition and membership</strong> — which nodes are in the cluster, which have left or joined</li>
+<li><strong>Cluster metadata</strong> — schema definitions, topology information</li>
+<li><strong>The outcome of a distributed transaction</strong> — commit or abort</li>
+<li><strong>A cluster-wide order of events</strong> — establishing which event happened first</li>
+</ul>
+
+<div class="imp">
+<strong>Key insight:</strong> Consensus is a <em>core concept</em> of distributed systems and distributed databases. Without it, nodes might disagree on the current state, leading to inconsistency.
+</div>
+
+<h1 id="s2">2. Consensus Properties</h1>
+
+<p>A correct consensus algorithm must satisfy four formal properties:</p>
+
+<table>
+<tr><th>Property</th><th>Definition</th><th>In Practice</th></tr>
+<tr><td><strong>Agreement</strong></td><td>No two correct nodes decide on different values</td><td>All nodes that decide must decide the same thing — no split decisions</td></tr>
+<tr><td><strong>Integrity</strong></td><td>No node decides twice</td><td>Once a node has decided on a value, it does not change its decision</td></tr>
+<tr><td><strong>Validity</strong></td><td>Any decided value was proposed by some node</td><td>The decided value was not invented out of thin air — it was a real proposal</td></tr>
+<tr><td><strong>Termination</strong></td><td>Each node that does not crash eventually decides</td><td>The algorithm makes progress — it does not loop forever</td></tr>
+</table>
+
+<div class="tip">
+Agreement + Validity together mean: all correct nodes agree on a value that was actually proposed. Termination means the algorithm doesn't stall forever. These four properties define what it means to "solve" consensus.
+</div>
+
+<h3>Why Consensus is Hard</h3>
+<p>The famous <strong>FLP Impossibility Result</strong> (Fischer, Lynch, Paterson, 1985) proves that no deterministic consensus algorithm can guarantee <em>both</em> safety (agreement + validity) and liveness (termination) in a fully asynchronous network where even one process can crash. In practice, systems get around this by:</p>
+<ul>
+<li>Assuming <strong>partial synchrony</strong> (messages eventually arrive)</li>
+<li>Using <strong>timeouts</strong> to detect failures (though imperfect)</li>
+<li>Accepting that in very rare cases the algorithm may need extra rounds</li>
+</ul>
+
+<h1 id="s3">3. Use Cases for Consensus in Distributed Systems</h1>
+
+<table>
+<tr><th>Use Case</th><th>Agreed Upon Result</th><th>Protocol / Example</th></tr>
+<tr><td><strong>Leader election</strong> in a leader-follower system (e.g., MongoDB)</td><td>Which node is the new primary</td><td>Raft consensus — MongoDB uses Raft for election</td></tr>
+<tr><td><strong>Distributed transactions</strong> between heterogeneous systems (e.g., Oracle + Postgres)</td><td>Commit or abort decision for all participants</td><td>2PC protocol / XA standard, can use Paxos-based components</td></tr>
+<tr><td><strong>Cluster coordination</strong> (e.g., ScyllaDB)</td><td>Cluster membership, node joins/leaves, schema changes</td><td>Raft (ScyllaDB uses Raft for cluster topology management)</td></tr>
+<tr><td><strong>Enforcing distributed data uniqueness or business invariants</strong> (e.g., ScyllaDB LWT)</td><td>Which of two concurrent writes wins, with a condition enforced</td><td>Paxos — ScyllaDB's Lightweight Transactions (LWT)</td></tr>
+</table>
+
+<h1 id="s4">4. NoSQL Databases and Consensus</h1>
+
+<p>Many NoSQL distributed databases (Cassandra, ScyllaDB, MongoDB, Kafka, ElasticSearch...) initially <strong>avoided consensus protocols</strong> because they were considered too costly — too many round trips, too much coordination overhead. The optimistic approach was that <em>temporary inconsistencies could be tolerated</em>.</p>
+
+<p>In recent years, most of these systems have introduced consensus-based solutions <em>selectively</em> for:</p>
+<ul>
+<li><strong>Topology issues</strong> — tracking which nodes are in the cluster</li>
+<li><strong>Cluster coordination</strong> — coordinating schema changes across nodes</li>
+<li><strong>Leader election</strong> — safely electing a new primary after failure</li>
+<li><strong>Option to enforce invariants from the application side</strong> — LWT in ScyllaDB</li>
+</ul>
+
+<div class="imp">
+Operations that manage the cluster itself (topology, schema) rely more and more on consensus protocols. Operations on user data (write path / read path) still largely avoid consensus for performance. But even for user data, there are now options to enforce consensus — at the cost of performance.
+</div>
+
+<p>The two key protocols used today:</p>
+<ul>
+<li><strong>Paxos family</strong> — classic consensus, used for LWT in ScyllaDB/Cassandra</li>
+<li><strong>Raft</strong> — designed for understandability, used for leader election (MongoDB) and cluster management (ScyllaDB)</li>
+</ul>
+
+<h1 id="s5">5. Two-Phase Commit (2PC) Protocol</h1>
+
+<div class="def">
+<strong>2PC Purpose:</strong> A protocol that ensures all databases involved in a distributed transaction either ALL commit or ALL abort. Without this, some DBs could commit while others roll back, leaving the system inconsistent.
+</div>
+
+<div class="warn">
+<strong>Do NOT confuse 2-Phase Commit (2PC) with 2-Phase Locking (2PL)!</strong><br>
+2PL = a locking protocol within a single database for concurrency control.<br>
+2PC = a coordination protocol across multiple databases for distributed commits.
+</div>
+
+<h3>The Problem 2PC Solves</h3>
+<p>Imagine a bank transfer: debit from Postgres, credit to Oracle. If Postgres commits but Oracle crashes before committing, money disappears. We need <em>atomic</em> decision across both systems.</p>
+
+<h3>2PC Protocol — Step by Step</h3>
+
+<p><strong>Setup:</strong> One node acts as the <strong>Coordinator</strong> (transaction manager). All other databases are <strong>participants</strong> (cohorts).</p>
+
+<p><strong>Phase 0 (Pre-phase): Execution</strong></p>
+<ul>
+<li>Coordinator generates a globally unique transaction ID</li>
+<li>All operations carry this transaction ID</li>
+<li>Operations execute on each database; if any fails, transaction aborts immediately</li>
+</ul>
+
+<p><strong>Phase 1 (Prepare/Voting Phase):</strong></p>
+<ol>
+<li>Coordinator sends <code>PREPARE</code> (or "prepare for commit") to all participants</li>
+<li>Each participant checks if it can commit: all constraints satisfied? WAL flushed?</li>
+<li>Each participant votes <strong>YES</strong> (can commit, will not unilaterally abort) or <strong>NO</strong> (cannot commit)</li>
+<li>Coordinator waits until ALL participants respond (or times out)</li>
+<li>A YES vote is a <strong>binding promise</strong> — the participant must commit when told to, even if it crashes and recovers</li>
+</ol>
+
+<p><strong>Phase 2 (Commit/Abort Phase):</strong></p>
+<ol>
+<li>If ALL voted YES: coordinator writes "COMMIT" to its <strong>transaction log on disk</strong> (this is the commit point)</li>
+<li>Coordinator sends <code>COMMIT</code> to all participants</li>
+<li>Participants commit and send acknowledgment</li>
+<li>If ANY voted NO (or timed out): coordinator sends <code>ABORT</code> to all participants</li>
+<li>Participants roll back</li>
+<li>If commit fails on any node, it is retried until it succeeds (binding vote!)</li>
+</ol>
+
+<div class="timeline">
+  Coordinator         Database 1           Database 2
+      |                    |                    |
+      |---write data------>|                    |
+      |<------ok-----------|                    |
+      |---write data---------------------------->|
+      |<------ok----------------------------------|
+      |                    |                    |
+      | ============ PHASE 1: PREPARE ===========|
+      |---PREPARE--------->|                    |
+      |---PREPARE------------------------------ >|
+      |<------YES----------|                    |
+      |<------YES--------------------------------|
+      |                    |                    |
+      | ============ PHASE 2: COMMIT ============|
+      |---COMMIT---------->|                    |
+      |---COMMIT------------------------------>  |
+      |<------OK-----------|                    |
+      |<------OK---------------------------------|
+</div>
+
+<h1 id="s6">6. XA Standard for Distributed Transactions</h1>
+
+<p>The <strong>XA Standard</strong> (eXtended Architecture) is a standardized protocol for 2PC that allows transactions to span multiple heterogeneous database systems. It is implemented by PostgreSQL, MySQL, MariaDB, DB2, SQL Server, Oracle, and others.</p>
+
+<h3>XA Architecture</h3>
+<p>A Transaction Manager (coordinator) sits above multiple databases and orchestrates the 2PC using XA commands:</p>
+<pre>
+XA START 'transaction_id';     -- Begin transaction on a participant
+... SQL operations ...
+XA END 'transaction_id';       -- Mark end of SQL work
+XA PREPARE 'transaction_id';   -- Phase 1: vote YES or NO
+XA COMMIT 'transaction_id';    -- Phase 2: commit (if all voted YES)
+XA ROLLBACK 'transaction_id';  -- Phase 2: abort
+</pre>
+
+<h3>How XA Works in Practice</h3>
+<p>The coordinator uses XA commands to manage each participant database independently. The coordinator itself keeps a transaction log recording the final decision. This log survives crashes, ensuring the coordinator can recover and re-send COMMIT or ABORT commands after restart.</p>
+
+<div class="tip">
+In PostgreSQL: <code>PREPARE TRANSACTION 'txid';</code> is the Phase 1 vote. The prepared transaction persists across crashes. Then <code>COMMIT PREPARED 'txid';</code> or <code>ROLLBACK PREPARED 'txid';</code> completes Phase 2.
+</div>
+
+<h1 id="s7">7. 2PC Failure Scenarios — Cohort (Participant) Failures</h1>
+
+<h3>During Prepare Phase:</h3>
+<ul>
+<li><strong>One database votes "abort":</strong> Coordinator receives the NO vote → immediately decides ABORT → sends ABORT to all participants → all roll back. Result: clean abort, system consistent.</li>
+<li><strong>One database becomes unavailable before sending its vote:</strong> Coordinator times out waiting → treats missing vote as NO → decides ABORT → sends ABORT to all. The unavailable node, when it recovers, either rolls back (it never voted YES) or queries the coordinator for the decision. Result: abort.</li>
+</ul>
+
+<h3>During Commit Phase:</h3>
+<ul>
+<li><strong>One database becomes unavailable after sending its YES vote:</strong> That node already voted YES (binding promise) and then crashed. Coordinator still gets YES from others. Coordinator still decides to COMMIT (if all others said YES). The unavailable node, on recovery, queries the coordinator and then commits. The coordinator retries the COMMIT to that node until it succeeds. Result: eventual commit on all nodes.</li>
+</ul>
+
+<h1 id="s8">8. 2PC Failure Scenarios — Coordinator Failures</h1>
+
+<h3>During Prepare Phase:</h3>
+<p>Coordinator sends PREPARE requests to participants, then crashes:</p>
+<ul>
+<li>At least one participant has not sent its vote yet → it is safe for that participant to abort (it never committed to anything)</li>
+<li>Participants don't know whether coordinator wrote the commit decision to its log → they don't know the final outcome</li>
+<li>Participants are in a <strong>state of doubt</strong> (they voted YES but haven't received commit/abort)</li>
+<li>They are <strong>blocked</strong> — holding locks — until the coordinator recovers (this is why 2PC is called a "blocking protocol")</li>
+<li>When coordinator recovers: it reads its log. If PREPARE was logged but no decision → abort. If COMMIT was logged → send COMMIT to all.</li>
+</ul>
+
+<h3>During Commit Phase:</h3>
+<p>Coordinator made and logged the COMMIT decision, started sending COMMIT, then crashes:</p>
+<ul>
+<li>Some participants received COMMIT, some didn't</li>
+<li>Participants communicate among themselves: if any participant received a COMMIT or ABORT, it is safe for others to follow that decision</li>
+<li>Result: participants can eventually determine the outcome by querying each other</li>
+</ul>
+
+<div class="tip">
+The critical weakness of 2PC: if the coordinator crashes AFTER all participants voted YES but BEFORE writing the decision to its log, participants are permanently blocked (holding locks) until coordinator recovers. This is the "blocking problem" of 2PC.
+</div>
+
+<h1 id="s9">9. 2PC True/False Analysis (from slides)</h1>
+
+<table>
+<tr><th>Statement</th><th>Answer</th><th>Explanation</th></tr>
+<tr>
+  <td>A. Coordinator is the single point of failure.</td>
+  <td><strong>TRUE</strong></td>
+  <td>If the coordinator fails after participants vote YES but before sending COMMIT, participants are blocked indefinitely. The coordinator is the bottleneck for the final decision.</td>
+</tr>
+<tr>
+  <td>B. Coordinator is the single point for the final commit/abort decision.</td>
+  <td><strong>TRUE</strong></td>
+  <td>Only the coordinator makes and records the final COMMIT or ABORT decision. Participants cannot make this decision themselves.</td>
+</tr>
+<tr>
+  <td>C. Any involved node can block 2PC when crashing before voting "Yes" in the prepare phase.</td>
+  <td><strong>TRUE</strong></td>
+  <td>If a participant crashes without voting, the coordinator times out and aborts. This blocks completion (though in this case, it aborts rather than hangs indefinitely).</td>
+</tr>
+<tr>
+  <td>D. Any involved node can block 2PC when crashing after voting "Yes" in the prepare phase.</td>
+  <td><strong>FALSE</strong></td>
+  <td>If a participant crashes AFTER voting YES, it is committed to voting YES. The coordinator can proceed with the other participants' votes. If it still gets a quorum of YES votes, it commits. The crashed participant, on recovery, gets the COMMIT instruction and commits. 2PC is NOT blocked in this case.</td>
+</tr>
+</table>
+
+<h1 id="s10">10. Alternatives to 2PC</h1>
+
+<p>2PC is a <strong>blocking protocol</strong> — if the coordinator fails after the vote, participants are stuck holding locks. This motivated alternatives:</p>
+
+<h3>1. Three-Phase Commit (3PC)</h3>
+<ul>
+<li>Adds a third phase: "pre-commit" between PREPARE and COMMIT</li>
+<li>In the pre-commit phase, participants know the coordinator intends to commit</li>
+<li>If coordinator fails, participants can complete the commit themselves</li>
+<li>Requires <strong>synchronous communication</strong> (reliable message delivery with timeouts)</li>
+<li>In practice: <strong>essentially not implemented</strong> in commercial databases — too complex, synchronous communication assumption too strong in real networks</li>
+</ul>
+
+<h3>2. 2PC with a Full Consensus Algorithm (e.g., Paxos)</h3>
+<ul>
+<li>Every node broadcasts its prepared vote to all other nodes</li>
+<li>Each node counts the votes it receives</li>
+<li>If any node receives an ABORT vote → transaction can immediately be aborted</li>
+<li>Otherwise, a node waits until it has received one vote from each node</li>
+<li>If ALL votes are YES → transaction can be committed</li>
+<li>Basic idea: all nodes agree on a decision (consensus) and each makes the same decision independently</li>
+<li>No single coordinator → no single point of failure</li>
+<li>More round trips but more fault tolerant</li>
+</ul>
+
+<div class="tip">
+The key difference: in classic 2PC, only the coordinator decides. In Paxos-based 2PC, all nodes independently reach the same decision through consensus. This eliminates coordinator as single point of failure.
+</div>
+
+<h1 id="s11">11. Raft Consensus Algorithm</h1>
+
+<div class="def">
+<strong>Raft</strong> is a consensus algorithm designed to be easier to understand than Paxos while providing equivalent guarantees. It is used by ScyllaDB for cluster management and by MongoDB for leader election.
+</div>
+
+<h3>Raft Core Concepts</h3>
+<ul>
+<li><strong>Term:</strong> Raft divides time into numbered terms (1, 2, 3...). Each term begins with an election. Terms act as logical clocks — if a node sees a message with a higher term, it updates its term.</li>
+<li><strong>Roles:</strong> Each node is one of: Follower, Candidate, Leader</li>
+<li><strong>Log:</strong> An ordered sequence of entries (operations). Leader appends, followers replicate.</li>
+</ul>
+
+<h3>Leader Election in Raft</h3>
+<ol>
+<li>All nodes start as <strong>Followers</strong></li>
+<li>Followers wait for heartbeats from the Leader. If none arrives within the <strong>election timeout</strong> (typically 150-300ms), the follower assumes the leader is dead</li>
+<li>Follower becomes a <strong>Candidate</strong>, increments term, votes for itself</li>
+<li>Candidate sends <code>RequestVote</code> RPC to all other nodes</li>
+<li>A node grants a vote if: the candidate's term &gt;= own term AND the candidate's log is at least as up-to-date as the voter's log</li>
+<li>First candidate to receive votes from a majority of the cluster wins and becomes <strong>Leader</strong></li>
+<li>Leader sends heartbeats (AppendEntries with no entries) to all followers to maintain authority</li>
+</ol>
+
+<h3>Split Vote Scenario</h3>
+<p>Two candidates start election simultaneously and each gets half the votes (no majority). Solution: each node uses a randomized election timeout so one usually starts first. If split vote occurs, the term increments and a new election starts.</p>
+
+<h3>Log Replication in Raft</h3>
+<ol>
+<li>Client sends command to Leader</li>
+<li>Leader appends command to its log (as an uncommitted entry)</li>
+<li>Leader sends <code>AppendEntries</code> RPC to all Followers</li>
+<li>When majority of cluster acknowledge the entry → Leader marks it <strong>committed</strong></li>
+<li>Leader applies command to state machine (executes it)</li>
+<li>Leader notifies followers in next heartbeat, followers commit too</li>
+</ol>
+
+<h3>Safety Guarantees of Raft</h3>
+<ul>
+<li><strong>Election safety:</strong> At most one leader per term</li>
+<li><strong>Log matching:</strong> If two logs have an entry with the same index and term, they are identical up to that point</li>
+<li><strong>Leader completeness:</strong> A committed entry from term N will be present in all leaders of term &gt;N</li>
+</ul>
+
+<h3>How ScyllaDB Uses Raft</h3>
+<p>ScyllaDB uses Raft for:</p>
+<ul>
+<li><strong>Cluster management:</strong> Nodes joining/leaving, topology changes</li>
+<li><strong>Schema management:</strong> DDL operations (CREATE TABLE, DROP TABLE, ALTER TABLE) are applied via Raft so all nodes see the same schema</li>
+</ul>
+<p>This gives reliable, consistent cluster operation without the old gossip-based approach which could lead to schema disagreements between nodes.</p>
+
+<h3>How MongoDB Uses Raft (Replica Set Elections)</h3>
+<p>MongoDB Replica Set elections are Raft-based:</p>
+<ul>
+<li>When Primary fails → Secondaries detect missing heartbeat</li>
+<li>Secondary starts election, sends <code>replSetRequestVotes</code></li>
+<li>Node with most up-to-date oplog (highest term + highest commit point) wins</li>
+<li>New Primary elected; old Primary becomes Secondary when it recovers</li>
+</ul>
+
+<h1 id="s12">12. Consensus-Based Mechanisms in ScyllaDB</h1>
+
+<p>ScyllaDB started out avoiding consensus but over time introduced it in two areas:</p>
+
+<h3>1. Raft for Cluster and Schema Management</h3>
+<p><strong>Motivation:</strong> Reliably working cluster (members leaving and joining, partitioning) and reliable database schema for nodes to work with. Previously: gossip-based membership could lead to inconsistencies. Now: Raft ensures all nodes agree on membership and schema.</p>
+
+<h3>2. Paxos for Lightweight Transactions (LWT)</h3>
+<p>ScyllaDB and Cassandra offer applications a <strong>Paxos-based mechanism</strong> that ensures that replicas agree on a value as the outcome of a write or of concurrent writes, thereby establishing an order among concurrent writes.</p>
+
+<p>Key characteristics of LWT:</p>
+<ul>
+<li><strong>Breaks LWW</strong> — instead of last-write-wins, the winner is determined by Paxos consensus</li>
+<li><strong>Prevents data loss</strong> and <strong>enforces uniqueness constraints</strong></li>
+<li>It is <strong>consensus per partition and per operation only</strong> — NOT cross-partitions, NOT for a sequence of operations (no multi-row transactions)</li>
+<li>It is <strong>application-enforced</strong>, not database-enforced (unlike Postgres where constraints are automatic)</li>
+<li>Applications that use LWT must NOT mix normal LWW writes and LWT writes on the same data — mixing corrupts the ordering guarantee</li>
+<li>Write operations: add a conditional <code>IF</code> clause</li>
+<li>Read operations: use consistency level <code>SERIAL</code> to perform Paxos reads</li>
+</ul>
+
+<h1 id="s13">13. LWT — Enforcing Uniqueness (IF NOT EXISTS)</h1>
+
+<p>The classic use case for LWT: ensuring unique emails/usernames in a distributed database where no single-server uniqueness constraint exists.</p>
+
+<h3>The Problem Without LWT</h3>
+<p>In ScyllaDB without LWT, two clients can simultaneously INSERT rows with the same primary key. The last write wins (by timestamp). This means two users could "register" with the same username and one silently overwrites the other.</p>
+
+<h3>Solution: IF NOT EXISTS</h3>
+<pre>
+-- Safe user registration
+INSERT INTO users1 (u_id, activity_score, u_email, u_name) 
+VALUES (12, 100.5, 'zurab@xx.ge', 'Zurab') IF NOT EXISTS;
+</pre>
+
+<div class="out">
+-- Scenario 1: row with u_id=12 does NOT exist
+ [applied] | u_id | activity_score | post_count | u_birthday | u_email | u_name
+-----------+------+----------------+------------+------------+---------+-------
+      True | null |           null |       null |       null |    null |  null
+(1 row)
+-- Result: INSERT applied. u_id=12, Zurab inserted.
+</div>
+
+<pre>
+-- Attempt to insert duplicate (u_id=5 already has tamar@xx.ge)
+INSERT INTO users1 (u_id, activity_score, u_email, u_name) 
+VALUES (5, 100.5, 'zurab@xx.ge', 'Zurab') IF NOT EXISTS;
+</pre>
+
+<div class="out">
+-- Scenario 2: row with u_id=5 ALREADY EXISTS
+ [applied] | u_id | activity_score | post_count | u_birthday | u_email       | u_name
+-----------+------+----------------+------------+------------+---------------+-------
+     False |    5 |          100.5 |         10 | 2000-09-30 | tamar@xx.ge   |  tamar
+(1 row)
+-- Result: INSERT NOT applied. Existing row returned. Client must handle this.
+</div>
+
+<div class="imp">
+<strong>LWT response always includes [applied] boolean:</strong><br>
+- <code>[applied] = True</code> → operation succeeded<br>
+- <code>[applied] = False</code> → condition was not met; current row values are returned
+</div>
+
+<p>The standard INSERT (without IF NOT EXISTS) overwrites existing data silently:</p>
+<pre>
+-- WITHOUT LWT — silently overwrites!
+INSERT INTO users1 (u_id, activity_score, u_email, u_name) 
+VALUES (5, 100.5, 'tamar@xx.ge', 'Tamar');
+-- Before: u_id=5 had elene@example.com, Elene
+-- After:  u_id=5 now has tamar@xx.ge, Tamar (data loss!)
+</pre>
+
+<h1 id="s14">14. LWT — Compare-And-Set (IF condition)</h1>
+
+<p>LWT also supports conditional updates: "only update IF the current value equals what I expect."</p>
+
+<h3>The Problem: Concurrent Read-Modify-Write</h3>
+<p>Two clients both read activity_score = 100.5 and want to update it:</p>
+
+<div class="timeline">
+Client 1 reads:  activity_score = 100.5
+Client 2 reads:  activity_score = 100.5
+
+Client 1 writes: UPDATE users1 SET activity_score = 500 WHERE u_id = 5;
+Client 2 writes: UPDATE users1 SET activity_score = 200 WHERE u_id = 5;
+
+Result with LWW: depends on timestamp. One write silently overwrites the other.
+Result should be: the first update wins, the second should only apply to the already-updated value.
+</div>
+
+<h3>Solution: IF condition (CAS)</h3>
+<pre>
+-- Client 1: "set to 500, but only if current value is 100.5"
+UPDATE users1 SET activity_score = 500 
+WHERE u_id = 5 IF activity_score = 100.5;
+
+-- Client 2: "set to 200, but only if current value is 100.5"
+UPDATE users1 SET activity_score = 200 
+WHERE u_id = 5 IF activity_score = 100.5;
+</pre>
+
+<p>With LWT (Paxos): exactly ONE of these will succeed (whichever wins the Paxos round). The other will get <code>[applied] = False</code> and the updated value (e.g., 500) back, so the client can decide what to do.</p>
+
+<div class="tip">
+LWT protects the happened-before order and will not allow the overwrite of the earlier operation. It uses a Compare-And-Set (CAS) method. The condition is evaluated atomically with the write — no race condition.
+</div>
+
+<h3>CQL Syntax Summary for LWT</h3>
+<pre>
+-- INSERT with IF NOT EXISTS
+INSERT INTO table (pk, col) VALUES (val1, val2) IF NOT EXISTS;
+
+-- UPDATE with condition
+UPDATE table SET col = new_val WHERE pk = key IF col = expected_val;
+
+-- DELETE with condition
+DELETE FROM table WHERE pk = key IF col = expected_val;
+
+-- Read with serial consistency (Paxos read — sees latest LWT-committed value)
+CONSISTENCY SERIAL;
+SELECT col FROM table WHERE pk = key;
+</pre>
+
+<h1 id="s15">15. Mixing LWW and LWT — Dangerous!</h1>
+
+<div class="warn">
+<strong>NEVER mix LWW (normal) writes and LWT writes on the same data partition!</strong><br>
+If you use LWT for some writes and LWW for others, the ordering guarantee breaks completely.
+</div>
+
+<h3>Why Mixing is Dangerous — Example from Slides</h3>
+<pre>
+-- Session 1 (LWW write):
+session1: update users1 set activity_score = 500 where u_id = 5;
+
+-- Session 2 (LWT write, concurrent):  
+session2: update users1 set activity_score = 200 where u_id = 5 
+          if activity_score = 100.5;
+</pre>
+
+<p><strong>What happens?</strong></p>
+<ul>
+<li>Session 1 (LWW): sends write with timestamp T1, overwrites regardless of current value → score = 500</li>
+<li>Session 2 (LWT/Paxos): reads current value via Paxos. But Session 1's LWW write may or may not be visible yet (depends on replication timing)</li>
+<li>If Paxos reads score = 100.5 (before Session 1's LWW write is applied) → condition holds → sets score = 200 via Paxos</li>
+<li>Then Session 1's LWW write (score = 500) arrives at replicas with timestamp T1</li>
+<li>If T1 is higher than the Paxos write timestamp → LWW overwrites Paxos → score = 500 despite LWT "winning"</li>
+</ul>
+
+<p><strong>Result:</strong> Undefined, unpredictable behavior. The LWT guarantee is violated by the concurrent LWW write.</p>
+
+<div class="tip">
+The rule: once you decide a partition uses LWT for ordering, ALL writes to that partition must go through LWT. Normal writes bypass Paxos and can silently overwrite LWT-committed values.
+</div>
+
+<h1 id="s16">16. Scylla Paxos-Based LWT — Protocol Detail</h1>
+
+<p>ScyllaDB's LWT implementation uses a modified Paxos with 4 phases (the coordinator acts as the Paxos proposer):</p>
+
+<h3>The 4 Phases of LWT in ScyllaDB</h3>
+
+<h4>Phase 1: Prepare and Promise</h4>
+<ol>
+<li>Coordinator (proposer) generates a unique <strong>Paxos ballot</strong> = (timestamp, node_id)</li>
+<li>Coordinator sends <code>PREPARE(ballot)</code> to all RF replicas</li>
+<li>Each replica either:
+  <ul>
+    <li><strong>Promises:</strong> "I will not accept any proposal with a lower ballot number." Returns its currently stored value.</li>
+    <li><strong>Rejects:</strong> "I already promised a higher ballot." Returns the higher ballot it has promised + any currently accepted value.</li>
+  </ul>
+</li>
+<li>Coordinator waits for a <strong>majority quorum</strong> of promises</li>
+<li>If rejected by majority → coordinator generates a new higher ballot and retries from Phase 1</li>
+</ol>
+
+<div class="timeline">
+Coordinator (ballot=0b89ad92, ts=..., node=172.20.0.2)
+    |
+    |--PREPARE(0b89ad92)------>  Replica 172.20.0.2 (local)
+    |--PREPARE(0b89ad92)------>  Replica 172.20.0.3
+    |
+    |&lt;--PROMISE(empty, empty)--  172.20.0.3
+    |&lt;--PROMISE(empty, empty)--  172.20.0.2
+    |
+    | "got enough replies to proceed" -- quorum reached
+</div>
+
+<h4>Phase 2: Read (check condition)</h4>
+<ol>
+<li>Coordinator reads the current value from the quorum of replicas (to evaluate the IF condition)</li>
+<li>If the condition (IF activity_score = 100.5) is NOT met → coordinator aborts, returns [applied]=False</li>
+<li>If condition IS met → proceed to Phase 3</li>
+</ol>
+
+<h4>Phase 3: Propose (Accept)</h4>
+<ol>
+<li>Coordinator sends <code>ACCEPT(ballot, new_value)</code> to all RF replicas</li>
+<li>Each replica accepts if the ballot is still the highest it has promised</li>
+<li>If a replica has in the meantime promised a higher ballot → it rejects</li>
+<li>Coordinator needs a quorum of ACCEPTED responses</li>
+</ol>
+
+<h4>Phase 4: Commit (Learn)</h4>
+<ol>
+<li>Coordinator sends <code>LEARN(new_value)</code> to all replicas</li>
+<li>Replicas apply the new value to the base table (the actual data table)</li>
+<li>Paxos round complete</li>
+<li>Coordinator returns [applied]=True to the client</li>
+</ol>
+
+<div class="imp">
+<strong>Performance implication:</strong> LWT requires 4 round trips (Prepare → Read → Propose → Commit) compared to 1 round trip for a normal write. This is why LWT is 4x slower and should only be used when the ordering guarantee is truly needed.
+</div>
+
+<h3>Ballot Format</h3>
+<p>Ballot = (timestamp, node_id). When two coordinators have the same timestamp, the node_id breaks the tie. The ballot ordering is total: (ts, n2) &gt; (ts, n1) if n2 &gt; n1. This ensures proposals from different coordinators have a strict order.</p>
+
+<h1 id="s17">17. LWT Conflict Scenario 1</h1>
+
+<div class="scenario">
+<h4>Setup: rf=3, node ordering n5&gt;n4&gt;n3&gt;n2&gt;n1; n1 and n2 are coordinators; n3, n4, n5 are replicas</h4>
+<p><strong>n1 wants:</strong> UPDATE users SET score=100 WHERE u_id=1 IF score=50<br>
+<strong>n2 wants:</strong> UPDATE users SET score=0 WHERE u_id=1 IF score=50</p>
+
+<p><strong>n1's timeline:</strong></p>
+<ul>
+<li>Sends PREPARE(ts, n1) to n3, n4, n5. Same timestamp as n2, but (ts,n1) &lt; (ts,n2) because n1 &lt; n2</li>
+<li>n3, n4 promise ballot (ts,n1), send their stored values (score=50)</li>
+<li>n1 gets quorum of promises, checks condition: score=50=50 ✓ → condition holds</li>
+<li>n1 sends ACCEPT(ts,n1, 100) to n3, n4, n5</li>
+<li>Because of delay, n3 has NOT yet received n2's PREPARE ballot</li>
+<li>n3 accepts (ts,n1,100). But n4 and n5 REJECT (ts,n1,100) because they already promised (ts,n2) which is higher</li>
+<li>n1 does NOT get a quorum of accepts → FAILURE</li>
+<li>n1 returns failure/timeout to client</li>
+<li>(In pure Paxos: n1 generates new ballot (ts_higher,n1) and starts a new round)</li>
+</ul>
+
+<p><strong>n2's timeline (concurrent):</strong></p>
+<ul>
+<li>Sends PREPARE(ts, n2) to n3, n4, n5</li>
+<li>n5 promises (ts,n2), sends score=50</li>
+<li>n4 upgrades its promise to (ts,n2), sends score=50</li>
+<li>n2 gets quorum, checks condition: score=50=50 ✓ → condition holds</li>
+<li>n2 sends ACCEPT(ts,n2, 0) to n3, n4, n5</li>
+<li>n4 and n5 accept (ts,n2,0) → quorum reached → DECISION DONE</li>
+<li>n2 sends LEARN to n3, n4, n5; replicas apply score=0 to table</li>
+<li>n2 returns [applied]=True to its client</li>
+</ul>
+
+<p><strong>Final result: score = 0</strong> (n2 won)</p>
+</div>
+
+<h1 id="s18">18. LWT Conflict Scenario 2</h1>
+
+<div class="scenario">
+<h4>Same setup. Key difference: n3 receives n2's PREPARE after it already accepted n1's proposal.</h4>
+
+<p><strong>n1's timeline:</strong></p>
+<ul>
+<li>Sends PREPARE(ts,n1), n3 and n4 promise</li>
+<li>n1 gets quorum, condition holds, sends ACCEPT(ts,n1, 100)</li>
+<li>n3 accepts (ts,n1,100). n4 and n5 reject (already promised ts,n2)</li>
+<li>n1 does NOT get quorum → fails</li>
+</ul>
+
+<p><strong>n2's timeline:</strong></p>
+<ul>
+<li>Sends PREPARE(ts,n2), n5 promises</li>
+<li>n4 upgrades promise to (ts,n2)</li>
+<li>n3 receives PREPARE(ts,n2) → upgrades promise to (ts,n2), sends back promise AND the accepted value: <strong>(ts,n1, 100)</strong></li>
+<li>n2 gets quorum promise. BUT n2 learns that n3 already accepted value 100 under ballot (ts,n1)</li>
+<li><strong>Paxos rule:</strong> n2 MUST propose the previously accepted value (100) instead of its own (0)</li>
+<li>n2 sends ACCEPT(ts,n2, 100) — NOT 0!</li>
+<li>n4 and n5 accept (ts,n2,100) → quorum reached</li>
+<li>n2 sends LEARN, replicas apply score=100</li>
+<li>n2 returns the result to client (needs testing — may return "applied" or "failure")</li>
+</ul>
+
+<p><strong>Final result: score = 100</strong> (n1's value propagated through n2's round!)</p>
+
+<p><strong>Key Paxos rule demonstrated:</strong> If during Phase 1 you learn that some value was already accepted in a previous ballot, you MUST propose that value in Phase 2, not your own. This is how Paxos ensures consistency even when proposals race.</p>
+</div>
+
+<h1 id="s19">19. LWT Conflict Scenario 3</h1>
+
+<div class="scenario">
+<h4>Same setup. n1 has some latency before sending ACCEPT.</h4>
+
+<p><strong>n2's timeline (faster):</strong></p>
+<ul>
+<li>Sends PREPARE(ts,n2), n5 promises. n4 upgrades to (ts,n2)</li>
+<li>n2 gets quorum, condition holds, sends ACCEPT(ts,n2, 0)</li>
+<li>n4 and n5 accept (ts,n2,0) → quorum → DECISION DONE</li>
+<li>n2 sends LEARN, replicas apply score=0</li>
+<li>n2 returns [applied]=True</li>
+</ul>
+
+<p><strong>n1's timeline (slower):</strong></p>
+<ul>
+<li>Sends PREPARE(ts,n1), n3 and n4 promise initially</li>
+<li>n1 gets quorum, condition holds (score still reads as 50 from Paxos read)</li>
+<li>Sends ACCEPT(ts,n1, 100)</li>
+<li>But n4 and n5 send back promised ballot (ts,n2) INCLUDING accepted value (ts,n2,0)</li>
+<li>n1 cannot proceed — its ballot is lower</li>
+<li>n1 returns failure/timeout to client</li>
+</ul>
+
+<p><strong>Final result: score = 0</strong> (n2 won again)</p>
+</div>
+
+<h1 id="s20">20. LWT Conflict Scenario 4</h1>
+
+<div class="scenario">
+<h4>rf=3, n3&gt;n2&gt;n1. Scenario where n1 completes first.</h4>
+
+<p><strong>n1's timeline:</strong></p>
+<ul>
+<li>Sends PREPARE(ts,n1), n3 and n4 promise</li>
+<li>n1 gets quorum, condition holds, sends ACCEPT(ts,n1, 100)</li>
+<li>n3 and n4 accept → QUORUM REACHED</li>
+<li>n1 sends LEARN to n3, n4, n5. Value 100 is committed. Paxos round complete.</li>
+<li>n1 returns [applied]=True to client</li>
+</ul>
+
+<p><strong>n2's timeline (started concurrent, but n1 won first):</strong></p>
+<ul>
+<li>Sends PREPARE(ts,n2) to n3, n4, n5. n5 promises with score=50</li>
+<li>n3 and n4 upgrade promise to (ts,n2) and send back: accepted value (ts,n1, 100)</li>
+<li>n2: learns that value 100 is already chosen (n3 and n4 report accepted value)</li>
+<li>n2 <strong>cannot continue with its own value 0</strong> — it must acknowledge that 100 is already decided</li>
+<li>n2 returns failure to client</li>
+<li>(In pure Paxos but NOT LWT implementation: n2 would start a new Paxos round using value 100 to complete the commit)</li>
+</ul>
+
+<p><strong>Final result: score = 100</strong> (n1 won)</p>
+
+<div class="tip">
+Key pattern from all 4 scenarios: The Paxos ballot ordering (ts, node_id) determines which coordinator "wins" the prepare phase. But the critical safety rule is: if any coordinator learns during Phase 1 that a value was already accepted in a prior ballot, it MUST carry that value forward — ensuring no two Paxos rounds can commit different values.
+</div>
+</div>
+
+<h1 id="s21">21. LWT Error Handling</h1>
+
+<p>An error executing a conditional statement (LWT) does <strong>NOT necessarily mean it failed</strong>. This is a critical difference from normal writes!</p>
+
+<p>In addition to standard failure causes (client-side timeouts, server overload, memory allocation errors), Paxos has its own scenarios leading to uncertainty:</p>
+
+<ul>
+<li><strong>Paxos livelock:</strong> Two coordinators keep outbidding each other's ballots. Neither reaches Phase 3. Solved in practice by exponential backoff + randomized retry delay.</li>
+<li><strong>Update started by one node, completed by another:</strong> If coordinator n1 starts a Paxos round but fails after Phase 3, another node (n2) may detect the incomplete round during its own Phase 1 and complete the commit — with n1's value, not n2's.</li>
+<li><strong>Timeout uncertainty:</strong> A timeout doesn't tell you whether the operation succeeded or not. The Paxos round may have completed on some replicas after the client timed out.</li>
+</ul>
+
+<div class="imp">
+<strong>To know for sure whether an LWT operation succeeded after an error: a client MUST either:</strong>
+<ol>
+<li>Read the value back (with CONSISTENCY SERIAL) to verify the current state, OR</li>
+<li>Retry the operation until it succeeds (if idempotent)</li>
+</ol>
+</div>
+
+<h3>Why LWT Errors Are Uncertain (Paxos Takeover)</h3>
+<p>Example: n1 runs UPDATE...IF score=50 and gets a timeout after sending ACCEPT. Meanwhile, n2 starts its own LWT on the same partition. During n2's Phase 1, it reads n1's partially-completed Paxos state and sees n1's value was already accepted by some replicas. Paxos requires n2 to complete n1's proposal (with n1's value). So n1's update may have been applied even though n1 got a timeout.</p>
+
+<h1 id="s22">22. Summary and Exam Cheat Sheet</h1>
+
+<h2>Consensus — Key Facts</h2>
+<table>
+<tr><th>Topic</th><th>Key Point</th></tr>
+<tr><td>Consensus definition</td><td>All nodes agree on a value despite failures, using majority quorum</td></tr>
+<tr><td>Consensus properties</td><td>Agreement, Integrity, Validity, Termination</td></tr>
+<tr><td>Protocols</td><td>Paxos family (for LWT), Raft (for leader election, cluster mgmt)</td></tr>
+<tr><td>2PC purpose</td><td>Atomic commit across multiple heterogeneous databases</td></tr>
+<tr><td>2PC phases</td><td>Phase 1: PREPARE (vote Yes/No), Phase 2: COMMIT or ABORT</td></tr>
+<tr><td>2PC weakness</td><td>Blocking: if coordinator fails after vote, participants hold locks indefinitely</td></tr>
+<tr><td>2PC vs 2PL</td><td>2PC = distributed commit protocol; 2PL = concurrency control within one DB</td></tr>
+<tr><td>XA standard</td><td>Standardized 2PC for heterogeneous systems (Postgres, Oracle, MySQL...)</td></tr>
+<tr><td>Cohort failure during prepare</td><td>Timeout = coordinator aborts all</td></tr>
+<tr><td>Cohort failure during commit</td><td>Retry until success (binding YES vote)</td></tr>
+<tr><td>Coordinator failure during prepare</td><td>Participants in doubt, blocked until coordinator recovers</td></tr>
+<tr><td>Coordinator failure during commit</td><td>Participants can consult each other to determine outcome</td></tr>
+<tr><td>2PC A True/False</td><td>Coordinator IS single point of failure → TRUE</td></tr>
+<tr><td>2PC D True/False</td><td>Node can block 2PC after voting YES → FALSE (can retry commit)</td></tr>
+</table>
+
+<h2>Raft — Key Facts</h2>
+<table>
+<tr><th>Topic</th><th>Key Point</th></tr>
+<tr><td>Raft roles</td><td>Follower, Candidate, Leader</td></tr>
+<tr><td>Term</td><td>Monotonically increasing logical time unit; one leader per term</td></tr>
+<tr><td>Election</td><td>Candidate sends RequestVote; majority wins; log must be up-to-date</td></tr>
+<tr><td>Log replication</td><td>Leader sends AppendEntries; committed when majority acks</td></tr>
+<tr><td>ScyllaDB uses Raft for</td><td>Cluster membership, schema management</td></tr>
+<tr><td>MongoDB uses Raft for</td><td>Replica set elections (primary election)</td></tr>
+</table>
+
+<h2>LWT (Lightweight Transactions) — Key Facts</h2>
+<table>
+<tr><th>Topic</th><th>Key Point</th></tr>
+<tr><td>LWT syntax</td><td>INSERT...IF NOT EXISTS; UPDATE...IF col=val; DELETE...IF col=val</td></tr>
+<tr><td>LWT return</td><td>Always returns [applied]=True/False + current row values</td></tr>
+<tr><td>LWT uses</td><td>Paxos, 4 round trips (Prepare→Read→Propose→Commit)</td></tr>
+<tr><td>LWT vs normal write</td><td>Normal write: 1 round trip. LWT: 4 round trips → ~4x slower</td></tr>
+<tr><td>LWT ballot</td><td>(timestamp, node_id) pair; strictly ordered; higher ballot wins</td></tr>
+<tr><td>Paxos safety rule</td><td>If a previously accepted value found in Phase 1, MUST propose that value</td></tr>
+<tr><td>Mixing LWW+LWT</td><td>NEVER — LWW writes bypass Paxos and can silently overwrite LWT results</td></tr>
+<tr><td>LWT scope</td><td>Per-partition, per-operation only. NOT cross-partition, NOT multi-op transaction</td></tr>
+<tr><td>Error handling</td><td>LWT timeout ≠ failure. Must read back or retry to confirm</td></tr>
+<tr><td>SERIAL consistency</td><td>Used for Paxos reads — ensures you see the latest LWT-committed value</td></tr>
+<tr><td>Conflict scenarios</td><td>Higher ballot coordinator wins Phase 1. Previously-accepted values propagate.</td></tr>
+</table>
+
+
+</div>
+
+<script>
+(function(){
+  var KEY = 'readerPrefs2:db2site';
+  var root = document.documentElement;
+  var body = document.body;
+  var DEF = { fs: 1.5, cw: 560, full: false };
+  var st = Object.assign({}, DEF);
+  try { st = Object.assign(st, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch(e){}
+
+  var ctl = document.getElementById('reader-controls');
+  var toggle = document.getElementById('rc-toggle');
+  var fontVal = document.getElementById('rc-font-val');
+  var widthInput = document.getElementById('rc-width');
+  var widthVal = document.getElementById('rc-width-val');
+  var fullChk = document.getElementById('rc-full');
+
+  function clamp(v, lo, hi){ return Math.min(hi, Math.max(lo, v)); }
+
+  function apply(){
+    root.style.setProperty('--rfs', st.fs);
+    root.style.setProperty('--rcw', st.cw + 'px');
+    body.classList.toggle('reader-full', !!st.full);
+    fontVal.textContent = Math.round(st.fs * 100) + '%';
+    widthInput.value = st.cw;
+    widthVal.textContent = st.full ? 'full' : st.cw;
+    widthInput.disabled = !!st.full;
+    fullChk.checked = !!st.full;
+  }
+  function save(){
+    try { localStorage.setItem(KEY, JSON.stringify(st)); } catch(e){}
+  }
+
+  toggle.addEventListener('click', function(){ ctl.classList.toggle('open'); });
+
+  ctl.addEventListener('click', function(e){
+    var act = e.target.getAttribute('data-act');
+    if(!act) return;
+    if(act === 'font-inc') st.fs = clamp(Math.round((st.fs + 0.1)*10)/10, 0.7, 2.2);
+    else if(act === 'font-dec') st.fs = clamp(Math.round((st.fs - 0.1)*10)/10, 0.7, 2.2);
+    else if(act === 'reset') st = Object.assign({}, DEF);
+    apply(); save();
+  });
+
+  widthInput.addEventListener('input', function(){
+    st.cw = clamp(parseInt(widthInput.value, 10) || DEF.cw, 300, 1600);
+    apply(); save();
+  });
+  fullChk.addEventListener('change', function(){
+    st.full = fullChk.checked;
+    apply(); save();
+  });
+
+  apply();
+})();
+</script>
+
+
+<script>
+(function(){
+  var KEY='readerTheme:db2site';
+  var root=document.documentElement;
+  var mql=window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  var theme=null;
+  try{ theme=localStorage.getItem(KEY); }catch(e){}
+  if(theme!=='light' && theme!=='dark' && theme!=='system') theme='system';
+
+  var row=document.getElementById('rc-theme-row');
+  function effective(){ return theme==='system' ? (mql && mql.matches ? 'dark':'light') : theme; }
+  function apply(){
+    root.classList.toggle('theme-dark', effective()==='dark');
+    if(row){ row.querySelectorAll('[data-theme]').forEach(function(b){
+      b.classList.toggle('active', b.getAttribute('data-theme')===theme); }); }
+  }
+  if(row){
+    row.addEventListener('click', function(e){
+      var b=e.target.closest('[data-theme]'); if(!b) return;
+      theme=b.getAttribute('data-theme');
+      try{ localStorage.setItem(KEY, theme); }catch(err){}
+      apply();
+    });
+  }
+  if(mql){
+    var onChange=function(){ if(theme==='system') apply(); };
+    if(mql.addEventListener) mql.addEventListener('change', onChange);
+    else if(mql.addListener) mql.addListener(onChange);
+  }
+  apply();
+})();
+</script>
+
+<div id="reader-pagecounter">Page <span id="rpc-cur">1</span> / <span id="rpc-total">1</span></div>
+
+<script>
+(function(){
+  var PAGE_PX = 1000;            // fixed LOGICAL page height -> identical unit across all files
+  var root = document.documentElement;
+  var curEl = document.getElementById('rpc-cur');
+  var totEl = document.getElementById('rpc-total');
+
+  function fontScale(){
+    var v = parseFloat(getComputedStyle(root).getPropertyValue('--rfs'));
+    return (v && v > 0) ? v : 1;
+  }
+  function update(){
+    var fs = fontScale();
+    var pp = PAGE_PX * fs;                       // page height in rendered px
+    var docH = Math.max(root.scrollHeight, document.body.scrollHeight);
+    var total = Math.max(1, Math.ceil(docH / pp));
+    var cur = Math.min(total, Math.floor((window.scrollY || window.pageYOffset || 0) / pp) + 1);
+    curEl.textContent = cur;
+    totEl.textContent = total;
+  }
+
+  var ticking = false;
+  function onScroll(){
+    if(ticking) return; ticking = true;
+    requestAnimationFrame(function(){ update(); ticking = false; });
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', update);
+
+  // recompute when font/width settings change the document height
+  var rc = document.querySelector('.reader-container');
+  if(window.ResizeObserver && rc){
+    new ResizeObserver(update).observe(rc);
+  } else {
+    setInterval(update, 1000);
+  }
+  update();
+})();
+</script>
+
+
+<script>
+(function(){
+  var PAGE_PX = 1000;
+  var root = document.documentElement;
+  var rc = document.querySelector('.reader-container');
+  var pc = document.getElementById('reader-pagecounter');
+  if(!rc || !pc) return;
+
+  // wrap counter + outline so hover stays active when moving between them
+  var nav = document.createElement('div'); nav.id = 'reader-nav';
+  pc.parentNode.insertBefore(nav, pc); nav.appendChild(pc);
+  var outline = document.createElement('div'); outline.id = 'reader-outline';
+  nav.appendChild(outline);
+
+  function fontScale(){
+    var v = parseFloat(getComputedStyle(root).getPropertyValue('--rfs'));
+    return (v && v > 0) ? v : 1;
+  }
+  function esc(s){ return s.replace(/[&<>"]/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+  function build(){
+    var pp = PAGE_PX * fontScale();
+    var hs = rc.querySelectorAll('h1, h2, h3');
+    var sy = window.scrollY || window.pageYOffset || 0;
+    var html = '<div class="ro-head">Contents &middot; page</div>';
+    hs.forEach(function(h){
+      if(h.closest('.toc, .cover')) return;          // skip TOC / cover headings
+      var txt = (h.textContent || '').trim();
+      if(!txt) return;
+      var lvl = h.tagName === 'H1' ? 0 : (h.tagName === 'H2' ? 1 : 2);
+      var top = h.getBoundingClientRect().top + sy;
+      var pg = Math.max(1, Math.floor(top / pp) + 1);
+      html += '<a class="ro-item ro-l' + lvl + '" data-top="' + Math.round(top) + '">' +
+              '<span class="ro-t">' + esc(txt) + '</span>' +
+              '<span class="ro-p">p.' + pg + '</span></a>';
+    });
+    outline.innerHTML = html;
+  }
+
+  nav.addEventListener('mouseenter', build);   // rebuild fresh each hover (page #s stay correct)
+  outline.addEventListener('click', function(e){
+    var a = e.target.closest('.ro-item'); if(!a) return;
+    var y = parseFloat(a.getAttribute('data-top')) - 12;
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  });
+})();
+</script>
+
+
+<script>
+(function(){
+  var PAGE_PX = 1000, SPY_OFFSET = 90;
+  var root = document.documentElement;
+  var rc = document.querySelector('.reader-container');
+  var pc = document.getElementById('reader-pagecounter');
+  var outline = document.getElementById('reader-outline');
+  var nav = document.getElementById('reader-nav');
+  if(!rc || !pc || !outline || !nav) return;
+
+  // current-heading label inside the pill (before the "Page X / Y" text)
+  var head = document.createElement('span'); head.id = 'rpc-head';
+  /* current heading shown in the outline only, not in the pill */
+
+  // cache the real section headings (skip TOC / cover)
+  var heads = [];
+  rc.querySelectorAll('h1, h2, h3').forEach(function(h){
+    if(h.closest('.toc, .cover')) return;
+    if(!(h.textContent || '').trim()) return;
+    heads.push(h);
+  });
+
+  function fontScale(){
+    var v = parseFloat(getComputedStyle(root).getPropertyValue('--rfs'));
+    return (v && v > 0) ? v : 1;
+  }
+  function esc(s){ return s.replace(/[&<>"]/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function topsAndCurrent(){
+    var sy = window.scrollY || window.pageYOffset || 0;
+    var tops = heads.map(function(h){ return h.getBoundingClientRect().top + sy; });
+    var cur = -1;
+    for(var i=0;i<tops.length;i++){ if(tops[i] <= sy + SPY_OFFSET) cur = i; else break; }
+    if(cur < 0 && tops.length) cur = 0;
+    return { tops: tops, cur: cur, sy: sy };
+  }
+
+  function build(){
+    var st = topsAndCurrent();
+    var pp = PAGE_PX * fontScale();
+    var html = '<div class="ro-head">Contents &middot; page</div>';
+    heads.forEach(function(h, i){
+      var lvl = h.tagName === 'H1' ? 0 : (h.tagName === 'H2' ? 1 : 2);
+      var pg = Math.max(1, Math.floor(st.tops[i] / pp) + 1);
+      html += '<a class="ro-item ro-l' + lvl + (i === st.cur ? ' ro-active' : '') +
+              '" data-i="' + i + '" data-top="' + Math.round(st.tops[i]) + '">' +
+              '<span class="ro-t">' + esc((h.textContent||'').trim()) + '</span>' +
+              '<span class="ro-p">p.' + pg + '</span></a>';
+    });
+    outline.innerHTML = html;
+    var act = outline.querySelector('.ro-active');
+    if(act) outline.scrollTop = act.offsetTop - outline.clientHeight / 2;
+  }
+
+  // run AFTER the earlier outline builder so this (spy-aware) version wins
+  nav.addEventListener('mouseenter', build);
+  pc.addEventListener('click', function(){ nav.classList.toggle('pinned'); if(nav.classList.contains('pinned')) build(); });
+  document.addEventListener('click', function(e){ if(nav.classList.contains('pinned') && !nav.contains(e.target)) nav.classList.remove('pinned'); });
+
+  var ticking = false;
+  function onScroll(){
+    if(ticking) return; ticking = true;
+    requestAnimationFrame(function(){
+      var st = topsAndCurrent();
+      head.textContent = st.cur >= 0 ? (heads[st.cur].textContent || '').trim() : '';
+      // live-highlight active item if the outline is currently shown
+      var items = outline.children;
+      for(var i=0;i<items.length;i++){
+        var el = items[i]; if(!el.classList || !el.classList.contains('ro-item')) continue;
+        el.classList.toggle('ro-active', parseInt(el.getAttribute('data-i'),10) === st.cur);
+      }
+      ticking = false;
+    });
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', onScroll);
+
+  // initial current-heading label
+  var st0 = topsAndCurrent();
+  head.textContent = st0.cur >= 0 ? (heads[st0.cur].textContent || '').trim() : '';
+})();
+</script>
+
+
+<script>
+(function(){
+  var KEY='siteNavOpen', body=document.body;
+  var wide=window.matchMedia('(min-width:900px)');
+  var saved=null; try{ saved=localStorage.getItem(KEY); }catch(e){}
+  var open = saved===null ? wide.matches : saved==='1';
+  function apply(){ body.classList.toggle('nav-open', open); }
+  var t=document.getElementById('site-nav-toggle');
+  if(t) t.addEventListener('click', function(){ open=!open; try{localStorage.setItem(KEY,open?'1':'0');}catch(e){} apply(); });
+  var bd=document.getElementById('site-nav-backdrop');
+  if(bd) bd.addEventListener('click', function(){ open=false; try{localStorage.setItem(KEY,'0');}catch(e){} apply(); });
+  apply();
+})();
+</script>
+
+</body>
+</html>

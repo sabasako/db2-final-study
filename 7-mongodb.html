@@ -1,0 +1,2620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Databases II — Module 7: MongoDB Study Guide | KIU</title>
+<style>
+  /* ======= BASE RESET & FONTS ======= */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-size: 11pt;
+    line-height: 1.7;
+    color: #1a1a2e;
+    background: #ffffff;
+    max-width: 1050px;
+    margin: 0 auto;
+    padding: 20px 30px;
+  }
+
+  /* ======= HEADINGS ======= */
+  h1 {
+    font-size: 26pt;
+    color: #1a3a6b;
+    border-bottom: 4px solid #1a3a6b;
+    padding-bottom: 12px;
+    margin: 30px 0 20px 0;
+    font-family: 'Arial', sans-serif;
+  }
+  h2 {
+    font-size: 18pt;
+    color: #1a3a6b;
+    border-left: 6px solid #1a3a6b;
+    padding-left: 14px;
+    margin: 28px 0 14px 0;
+    font-family: 'Arial', sans-serif;
+  }
+  h3 {
+    font-size: 14pt;
+    color: #2c5f8a;
+    margin: 20px 0 10px 0;
+    font-family: 'Arial', sans-serif;
+    border-bottom: 2px dotted #2c5f8a;
+    padding-bottom: 4px;
+  }
+  h4 {
+    font-size: 12pt;
+    color: #1a3a6b;
+    margin: 16px 0 8px 0;
+    font-family: 'Arial', sans-serif;
+  }
+
+  /* ======= COVER PAGE ======= */
+  .cover {
+    text-align: center;
+    padding: 60px 20px 40px;
+    border: 3px solid #1a3a6b;
+    margin-bottom: 40px;
+    background: linear-gradient(135deg, #f0f4ff 0%, #ffffff 100%);
+  }
+  .cover h1 { border: none; font-size: 32pt; }
+  .cover .subtitle { font-size: 15pt; color: #2c5f8a; margin: 10px 0; }
+  .cover .meta { font-size: 11pt; color: #666; margin-top: 20px; }
+  .kiu-logo { font-size: 20pt; font-weight: bold; color: #1a3a6b; letter-spacing: 3px; margin-bottom: 16px; }
+
+  /* ======= TABLE OF CONTENTS ======= */
+  .toc { background: #f8faff; border: 2px solid #1a3a6b; padding: 24px 30px; margin: 20px 0 30px; }
+  .toc h2 { border: none; font-size: 16pt; margin-bottom: 16px; }
+  .toc ol { padding-left: 22px; }
+  .toc li { margin: 6px 0; font-size: 11pt; }
+  .toc a { color: #1a3a6b; text-decoration: none; }
+  .toc .sub { padding-left: 24px; list-style-type: lower-alpha; }
+
+  /* ======= DEFINITION BOXES ======= */
+  .defbox {
+    background: #e8f4fd;
+    border-left: 5px solid #2c5f8a;
+    border-radius: 0 6px 6px 0;
+    padding: 14px 18px;
+    margin: 14px 0;
+    font-size: 10.5pt;
+  }
+  .defbox strong { color: #1a3a6b; }
+
+  /* ======= NOTE / IMPORTANT BOXES ======= */
+  .notebox {
+    background: #fff8e1;
+    border-left: 5px solid #f59e0b;
+    border-radius: 0 6px 6px 0;
+    padding: 14px 18px;
+    margin: 14px 0;
+    font-size: 10.5pt;
+  }
+  .notebox::before { content: "Important: "; font-weight: bold; color: #b45309; }
+
+  /* ======= EXAM TIP BOXES ======= */
+  .examtip {
+    background: #ecfdf5;
+    border: 2px solid #10b981;
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin: 14px 0;
+    font-size: 10.5pt;
+  }
+  .examtip::before { content: "Exam Tip: "; font-weight: bold; color: #065f46; }
+
+  /* ======= CODE BLOCKS ======= */
+  pre {
+    background: #1e1e2e;
+    color: #cdd6f4;
+    padding: 16px 20px;
+    border-radius: 8px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 9.5pt;
+    overflow-x: auto;
+    margin: 14px 0;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+  code {
+    background: #2a2d3e;
+    color: #a6e3a1;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 9pt;
+    padding: 2px 6px;
+    border-radius: 3px;
+  }
+  .comment { color: #6c7086; }
+  .keyword { color: #cba6f7; }
+  .string { color: #a6e3a1; }
+  .number { color: #fab387; }
+  .output { color: #89dceb; }
+
+  /* ======= TABLES ======= */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 16px 0;
+    font-size: 10pt;
+  }
+  th {
+    background: #1a3a6b;
+    color: white;
+    padding: 10px 12px;
+    text-align: left;
+    font-family: 'Arial', sans-serif;
+    font-size: 10pt;
+  }
+  td {
+    padding: 9px 12px;
+    border-bottom: 1px solid #d0dff0;
+    vertical-align: top;
+  }
+  tr:nth-child(even) { background: #f0f6ff; }
+  tr:hover { background: #dbeafe; }
+
+  /* ======= ASSIGNMENT BOXES ======= */
+  .assignment {
+    background: #fef3c7;
+    border: 2px solid #d97706;
+    border-radius: 8px;
+    padding: 18px 22px;
+    margin: 20px 0;
+  }
+  .assignment h3 { border: none; color: #92400e; font-size: 13pt; margin-bottom: 12px; }
+  .assignment .question { font-weight: bold; color: #78350f; margin: 12px 0 6px; }
+  .answer-box {
+    background: #ffffff;
+    border-left: 4px solid #10b981;
+    padding: 12px 16px;
+    margin: 8px 0;
+    border-radius: 0 4px 4px 0;
+  }
+  .answer-box::before { content: "Model Answer: "; font-weight: bold; color: #065f46; display: block; margin-bottom: 6px; }
+
+  /* ======= PAGE BREAKS ======= */
+  .pagebreak { page-break-before: always; margin-top: 0; }
+
+  /* ======= LISTS ======= */
+  ul, ol { padding-left: 24px; margin: 10px 0; }
+  li { margin: 5px 0; }
+
+  /* ======= MISC ======= */
+  p { margin: 10px 0; }
+  .highlight { background: #fef9c3; padding: 2px 4px; border-radius: 2px; }
+  .tag { display: inline-block; background: #1a3a6b; color: white; font-size: 8.5pt; padding: 2px 8px; border-radius: 10px; margin: 2px; font-family: Arial, sans-serif; }
+  hr { border: none; border-top: 2px solid #d0dff0; margin: 24px 0; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 14px 0; }
+  .col { background: #f8faff; border: 1px solid #c0d4ef; padding: 14px; border-radius: 6px; }
+  .ascii-diagram { background: #1e1e2e; color: #cdd6f4; font-family: 'Courier New', monospace; font-size: 9.5pt; padding: 16px 20px; border-radius: 8px; margin: 14px 0; line-height: 1.6; white-space: pre; overflow-x: auto; }
+
+  @media print {
+    .pagebreak { page-break-before: always; }
+    body { font-size: 10pt; }
+    pre { font-size: 8.5pt; }
+    table { font-size: 9pt; }
+  }
+</style>
+
+<style id="reader-controls-style">
+/* ===== Injected reading controls ===== */
+:root{ --rfs:1.5; --rcw:560px; }
+.reader-container{
+  max-width: var(--rcw);
+  margin-left: auto;
+  margin-right: auto;
+  zoom: var(--rfs);
+}
+body.reader-full .reader-container{ max-width: none; }
+
+#reader-controls{
+  position: fixed; top: 14px; right: 14px; z-index: 9999;
+  font-family: -apple-system, Segoe UI, Roboto, sans-serif;
+}
+#reader-controls #rc-toggle{
+  width: 40px; height: 40px; border-radius: 50%;
+  border: none; background: #003366; color: #fff;
+  font-size: 16px; font-weight: bold; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.3);
+}
+#reader-controls #rc-panel{
+  display: none; margin-top: 8px; width: 240px;
+  background: #fff; color: #222; border: 1px solid #ccd;
+  border-radius: 10px; padding: 12px 14px;
+  box-shadow: 0 6px 24px rgba(0,0,0,.2); font-size: 13px;
+}
+#reader-controls.open #rc-panel{ display: block; }
+#reader-controls .rc-row{
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; margin: 8px 0;
+}
+#reader-controls .rc-row:first-child{ margin-top: 0; }
+#reader-controls .rc-row > span:first-child{ font-weight: 600; color: #003366; min-width: 42px; }
+#reader-controls button[data-act]{
+  border: 1px solid #aac; background: #f0f4ff; color: #003366;
+  border-radius: 6px; padding: 3px 10px; cursor: pointer; font-size: 13px;
+}
+#reader-controls button[data-act]:hover{ background: #dde6ff; }
+#reader-controls #rc-font-val, #reader-controls #rc-width-val{
+  min-width: 44px; text-align: center; font-variant-numeric: tabular-nums;
+}
+#reader-controls input[type=range]{ flex: 1; }
+#reader-controls label{ display: flex; align-items: center; gap: 6px; cursor: pointer; }
+@media print{
+  #reader-controls{ display: none !important; }
+  .reader-container{ zoom: 1 !important; max-width: none !important; margin: 0 !important; }
+}
+</style>
+
+<script>
+(function(){try{
+  var k='readerTheme:db2site';
+  var t=localStorage.getItem(k)||'system';
+  var dark = t==='dark' || (t==='system' && window.matchMedia &&
+            window.matchMedia('(prefers-color-scheme: dark)').matches);
+  if(dark) document.documentElement.classList.add('theme-dark');
+}catch(e){}})();
+</script>
+
+<style id="theme-dark-style">
+/* ===== Dark theme (scoped to html.theme-dark) ===== */
+html.theme-dark, html.theme-dark body{
+  background: #16181c !important;
+  color: #d2d5da !important;
+}
+html.theme-dark h1, html.theme-dark h2, html.theme-dark h3, html.theme-dark h4{
+  color: #9ec5ff !important;
+  border-color: #33425a !important;
+}
+html.theme-dark a{ color: #8ab4f8 !important; }
+html.theme-dark .subtitle, html.theme-dark .meta, html.theme-dark .sub{ color: #9aa0a8 !important; }
+
+/* callout / card boxes -> dark surface, keep their accent border */
+html.theme-dark .box, html.theme-dark .warn, html.theme-dark .key, html.theme-dark .exam, html.theme-dark .answer, html.theme-dark .def, html.theme-dark .imp, html.theme-dark .tip, html.theme-dark .scenario, html.theme-dark .timeline, html.theme-dark .toc, html.theme-dark .defbox, html.theme-dark .notebox, html.theme-dark .examtip, html.theme-dark .assignment, html.theme-dark .cover{
+  background: #1e2230 !important;
+  color: #d2d5da !important;
+}
+html.theme-dark .cover{ background: #1a1d28 !important; }
+html.theme-dark .exam-title, html.theme-dark .examtip,
+html.theme-dark .notebox, html.theme-dark .kiu-logo{ color: #c7d2e8 !important; }
+
+/* tables */
+html.theme-dark table th{ background: #243044 !important; color: #e8eef7 !important; }
+html.theme-dark table td, html.theme-dark table th{ border-color: #3a3f49 !important; }
+html.theme-dark table tr:nth-child(even){ background: #1b1e24 !important; }
+html.theme-dark table tr:nth-child(odd){ background: transparent !important; }
+
+/* code blocks: darken any light ones; leave already-dark ones consistent */
+html.theme-dark pre, html.theme-dark code{
+  background: #0e0f12 !important;
+  color: #e2e2e2 !important;
+  border-color: #2c2f36 !important;
+}
+html.theme-dark .out, html.theme-dark .output{ background: #0f1a10 !important; }
+
+/* the settings panel itself in dark mode */
+html.theme-dark #reader-controls #rc-panel{
+  background: #23262d !important; color: #e0e2e6 !important; border-color: #3a3f4a !important;
+}
+html.theme-dark #reader-controls button[data-act]{
+  background: #2d323c !important; color: #cfe0ff !important; border-color: #3a4150 !important;
+}
+html.theme-dark #reader-controls button[data-act]:hover{ background: #39404d !important; }
+html.theme-dark #reader-controls .rc-row > span:first-child{ color: #9ec5ff !important; }
+
+/* theme segmented control */
+#reader-controls .rc-seg{ display: inline-flex; gap: 4px; }
+#reader-controls .rc-seg button{
+  border: 1px solid #aac; background: #f0f4ff; color: #003366;
+  border-radius: 6px; padding: 3px 8px; cursor: pointer; font-size: 14px; line-height: 1;
+}
+#reader-controls .rc-seg button.active{ background: #003366; color: #fff; border-color: #003366; }
+html.theme-dark #reader-controls .rc-seg button{ background: #2d323c; color: #cfe0ff; border-color: #3a4150; }
+html.theme-dark #reader-controls .rc-seg button.active{ background: #8ab4f8; color: #11151c; border-color: #8ab4f8; }
+
+@media print{
+  /* never print a black page even if dark mode is on */
+  html.theme-dark, html.theme-dark body,
+  html.theme-dark .box, html.theme-dark .warn, html.theme-dark .key, html.theme-dark .exam, html.theme-dark .answer, html.theme-dark .def, html.theme-dark .imp, html.theme-dark .tip, html.theme-dark .scenario, html.theme-dark .timeline, html.theme-dark .toc, html.theme-dark .defbox, html.theme-dark .notebox, html.theme-dark .examtip, html.theme-dark .assignment, html.theme-dark .cover, html.theme-dark table th,
+  html.theme-dark pre, html.theme-dark code, html.theme-dark .out, html.theme-dark .output{
+    background: #fff !important; color: #000 !important;
+  }
+}
+</style>
+
+<style id="reader-pagecounter-style">
+#reader-pagecounter{
+  position: fixed; bottom: 14px; right: 14px; z-index: 9999;
+  background: rgba(0,51,102,.92); color: #fff;
+  font-family: -apple-system, Segoe UI, Roboto, sans-serif; font-size: 12px;
+  padding: 6px 11px; border-radius: 20px; pointer-events: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25);
+  font-variant-numeric: tabular-nums; letter-spacing: .2px;
+}
+#reader-pagecounter b{ font-weight: 700; }
+html.theme-dark #reader-pagecounter{ background: rgba(138,180,248,.92); color: #11151c; }
+@media print{ #reader-pagecounter{ display: none !important; } }
+</style>
+
+<style id="reader-outline-style">
+/* keep the Aa button pinned to the right so it doesn't jump when the panel opens */
+#reader-controls{ display: flex; flex-direction: column; align-items: flex-end; }
+
+/* page counter becomes hover-interactive (was pointer-events:none) */
+#reader-nav{ position: fixed; bottom: 14px; right: 14px; z-index: 9999;
+  font-family: -apple-system, Segoe UI, Roboto, sans-serif; }
+#reader-nav #reader-pagecounter{ position: static; bottom: auto; right: auto;
+  pointer-events: auto; cursor: pointer; }
+
+#reader-outline{
+  display: none; position: absolute; bottom: 100%; right: 0; margin-bottom: 8px;
+  width: min(340px, 82vw); max-height: 70vh; overflow-y: auto;
+  background: #fff; color: #222; border: 1px solid #ccd; border-radius: 10px;
+  box-shadow: 0 8px 28px rgba(0,0,0,.22); padding: 6px 4px; font-size: 12.5px;
+}
+#reader-nav:hover #reader-outline, #reader-nav.pinned #reader-outline{ display: block; }
+#reader-outline::after{ content:""; position:absolute; left:0; right:0; top:100%; height:14px; }
+#reader-outline .ro-head{ font-weight: 700; color: #003366; padding: 4px 10px 6px;
+  border-bottom: 1px solid #e3e8f0; margin-bottom: 4px; position: sticky; top: 0; background: #fff; }
+#reader-outline .ro-item{
+  display: flex; align-items: baseline; gap: 8px; justify-content: space-between;
+  padding: 3px 10px; cursor: pointer; border-radius: 6px; text-decoration: none; color: inherit;
+}
+#reader-outline .ro-item:hover{ background: #eef3ff; }
+#reader-outline .ro-t{ overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#reader-outline .ro-p{ color: #6678a0; font-variant-numeric: tabular-nums; flex: 0 0 auto; font-size: 11px; }
+#reader-outline .ro-l0{ font-weight: 600; }
+#reader-outline .ro-l1 .ro-t{ padding-left: 14px; font-weight: 400; }
+#reader-outline .ro-l2 .ro-t{ padding-left: 28px; color: #555; font-weight: 400; }
+
+html.theme-dark #reader-outline{ background: #23262d; color: #e0e2e6; border-color: #3a3f4a; }
+html.theme-dark #reader-outline .ro-head{ background: #23262d; color: #9ec5ff; border-color: #343a44; }
+html.theme-dark #reader-outline .ro-item:hover{ background: #2f3540; }
+html.theme-dark #reader-outline .ro-p{ color: #8fa0c4; }
+html.theme-dark #reader-outline .ro-l2 .ro-t{ color: #b6bcc6; }
+
+@media print{ #reader-nav{ display: none !important; } }
+</style>
+
+<style id="reader-spy-style">
+#reader-pagecounter{ white-space: nowrap; }
+#rpc-head{ overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 230px; font-weight: 600; }
+#rpc-head:not(:empty)::after{ content: "\00B7"; margin: 0 7px; opacity: .55; font-weight: 400; }
+#reader-outline .ro-item.ro-active{ background: #dbe6ff; font-weight: 700; }
+#reader-outline .ro-item.ro-active .ro-p{ color: #003366; }
+html.theme-dark #reader-outline .ro-item.ro-active{ background: #34507e; }
+html.theme-dark #reader-outline .ro-item.ro-active .ro-p{ color: #cfe0ff; }
+</style>
+
+<style id="site-nav-style">
+#site-nav-toggle{ position:fixed; top:14px; left:14px; z-index:10001; width:40px; height:40px;
+  border-radius:8px; border:none; background:#0f2540; color:#fff; font-size:18px; line-height:1;
+  cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,.3);
+  font-family:-apple-system,Segoe UI,Roboto,sans-serif; }
+#site-nav{ position:fixed; top:0; left:0; width:250px; height:100vh; overflow-y:auto;
+  background:#0f2540; color:#cfe0ff; z-index:10000; transform:translateX(-100%);
+  transition:transform .2s ease; box-shadow:2px 0 14px rgba(0,0,0,.25);
+  font-family:-apple-system,Segoe UI,Roboto,sans-serif; }
+body.nav-open #site-nav{ transform:translateX(0); }
+#site-nav .sn-title{ font-weight:700; color:#fff; font-size:15px; padding:16px 18px 4px 58px; }
+#site-nav .sn-sub{ font-size:11px; color:#7f9cc0; padding:0 18px 12px 58px; border-bottom:1px solid #22405f; margin-bottom:6px; }
+#site-nav a.sn-link{ display:block; padding:11px 18px; color:#cfe0ff; text-decoration:none;
+  font-size:13.5px; border-left:3px solid transparent; line-height:1.35; }
+#site-nav a.sn-link:hover{ background:#163255; }
+#site-nav a.sn-link.active{ background:#1d3e66; border-left-color:#8ab4f8; color:#fff; font-weight:600; }
+#site-nav-backdrop{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:9999; }
+body.nav-open #site-nav-backdrop{ display:block; }
+@media (min-width:900px){
+  body.nav-open{ padding-left:250px; }
+  body.nav-open #site-nav-backdrop{ display:none; }
+}
+@media print{ #site-nav,#site-nav-toggle,#site-nav-backdrop{ display:none !important; } body.nav-open{ padding-left:0 !important; } }
+
+/* ===== mobile responsiveness ===== */
+@media (max-width:700px){
+  body{ margin:0 !important; }
+  .reader-container{ max-width:none !important; margin:0 !important; zoom:1 !important; padding:0 14px !important; }
+  #reader-controls{ top:10px !important; right:10px !important; }
+  #site-nav-toggle{ top:10px; left:10px; width:38px; height:38px; }
+  #reader-nav{ bottom:10px !important; right:10px !important; }
+  .reader-container table{ font-size:8.7pt; }
+  .reader-container pre, .reader-container .ascii-diagram{ font-size:8pt; }
+  h1{ font-size:17pt !important; } h2{ font-size:13.5pt !important; }
+}
+</style>
+</head>
+<body>
+<button id="site-nav-toggle" title="Menu" aria-label="Menu">☰</button>
+<nav id="site-nav">
+  <div class="sn-title">DB2 Final Study</div>
+  <div class="sn-sub">KIU Databases II · 2026</div>
+  <a class="sn-link" href="index.html">Home</a>
+  <a class="sn-link" href="5-transactions.html">5.4 · Transactions & CC</a>
+  <a class="sn-link" href="6.1-6.2-consistency.html">6.1–6.2 · Consistency & Conflicts</a>
+  <a class="sn-link" href="6.3-6.4-consensus-lwt.html">6.3–6.4 · Consensus & LWT</a>
+  <a class="sn-link active" href="7-mongodb.html">7 · MongoDB & Sharding</a>
+  <a class="sn-link" href="final-exam-prep.html">Final Exam Prep</a>
+</nav>
+<div id="site-nav-backdrop"></div>
+
+
+<div id="reader-controls">
+  <button id="rc-toggle" title="Reading settings">Aa</button>
+  <div id="rc-panel">
+    <div class="rc-row" id="rc-theme-row">
+      <span>Theme</span>
+      <div class="rc-seg">
+        <button data-theme="light" title="Light mode">&#9728;</button>
+        <button data-theme="dark" title="Dark mode">&#9790;</button>
+        <button data-theme="system" title="Match system">&#128421;</button>
+      </div>
+    </div>
+
+    <div class="rc-row">
+      <span>Font</span>
+      <button data-act="font-dec" title="Smaller">A&minus;</button>
+      <span id="rc-font-val">100%</span>
+      <button data-act="font-inc" title="Larger">A+</button>
+    </div>
+    <div class="rc-row">
+      <span>Width</span>
+      <input id="rc-width" type="range" min="300" max="1600" step="20">
+      <span id="rc-width-val">560</span>
+    </div>
+    <div class="rc-row">
+      <label><input id="rc-full" type="checkbox"> Full width</label>
+      <button data-act="reset">Reset</button>
+    </div>
+  </div>
+</div>
+
+<div class="reader-container">
+
+
+<!-- ============================================================ -->
+<!--                         COVER PAGE                          -->
+<!-- ============================================================ -->
+<div class="cover">
+  <div class="kiu-logo">KIU</div>
+  <h1>MongoDB Complete Study Guide</h1>
+  <div class="subtitle">Databases II — Module 7</div>
+  <div class="subtitle">Kutaisi International University</div>
+  <div class="meta">
+    Prof. Eva Knirsch &nbsp;|&nbsp; Final Exam Preparation<br>
+    7.1 Document Databases &amp; MongoDB &nbsp;|&nbsp; 7.2 Partitioning / Sharding<br>
+    Assignments 7 with Full Model Answers<br>
+    Date: 2026-06-22
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!--                     TABLE OF CONTENTS                       -->
+<!-- ============================================================ -->
+<div class="toc" id="toc">
+  <h2>Table of Contents</h2>
+  <ol>
+    <li><a href="#part1">PART 1: Document Databases &amp; MongoDB Data Model (7.1)</a>
+      <ol class="sub">
+        <li><a href="#data-models-review">Review of Data Models</a></li>
+        <li><a href="#doc-db-concept">What is a Document Database?</a></li>
+        <li><a href="#mongodb-document">MongoDB Documents: BSON &amp; Structure</a></li>
+        <li><a href="#embedding-vs-ref">Embedding vs. Referencing</a></li>
+        <li><a href="#embedding-limits">Limitations of the Embedding Concept</a></li>
+        <li><a href="#use-cases">Use Cases for Document Databases</a></li>
+      </ol>
+    </li>
+    <li><a href="#part2">PART 2: MongoDB Replication, Consistency &amp; Failover (7.1 continued)</a>
+      <ol class="sub">
+        <li><a href="#single-leader">Single-Leader Replication</a></li>
+        <li><a href="#replica-set">MongoDB Replica Sets</a></li>
+        <li><a href="#oplog">The Oplog (Operations Log)</a></li>
+        <li><a href="#write-concern">Write Concern</a></li>
+        <li><a href="#read-concern">Read Concern</a></li>
+        <li><a href="#read-preference">Read Preference (Read Routing)</a></li>
+        <li><a href="#replication-lag">Replication Lag &amp; Stale Reads</a></li>
+        <li><a href="#failover">Failover Strategy &amp; Automatic Failover</a></li>
+        <li><a href="#election">Election Process (Raft-based)</a></li>
+        <li><a href="#split-brain">Split Brain Problem</a></li>
+        <li><a href="#rollback">Rollback in MongoDB</a></li>
+      </ol>
+    </li>
+    <li><a href="#part3">PART 3: MongoDB Sharding / Partitioning (7.2)</a>
+      <ol class="sub">
+        <li><a href="#sharding-intro">Why Sharding?</a></li>
+        <li><a href="#sharded-cluster">Sharded Cluster Architecture</a></li>
+        <li><a href="#shard-key">Shard Key Strategies</a></li>
+        <li><a href="#chunks">Chunks &amp; the Balancer</a></li>
+        <li><a href="#shard-key-modifications">Shard Key Modifications</a></li>
+      </ol>
+    </li>
+    <li><a href="#part4">PART 4: Big Comparison Tables</a>
+      <ol class="sub">
+        <li><a href="#compare-all">PostgreSQL vs. MongoDB vs. ScyllaDB</a></li>
+        <li><a href="#replication-compare">Single-Leader vs. P2P Replication</a></li>
+      </ol>
+    </li>
+    <li><a href="#part5">PART 5: Assignments 7 — All Questions with Full Model Answers</a>
+      <ol class="sub">
+        <li><a href="#a1">Assignment: Asynchronous Replication Problems</a></li>
+        <li><a href="#a2">Assignment: Replication Lag Diagram Analysis</a></li>
+        <li><a href="#a3">Assignment: Idempotent OpLog</a></li>
+        <li><a href="#a4">Assignment: Read Preference = Primary — Stale/Dirty Reads</a></li>
+        <li><a href="#a5">Assignment: Rollback — MongoDB vs. Postgres</a></li>
+        <li><a href="#a6">Assignment: Split Brain — Scenario 1 (Primary in Europe)</a></li>
+        <li><a href="#a7">Assignment: Split Brain — Scenario 2 (Primary in US)</a></li>
+        <li><a href="#a8">Assignment: MongoDB Sharding — Camera Pictures</a></li>
+      </ol>
+    </li>
+    <li><a href="#part6">PART 6: Quick Reference Card &amp; Last-Minute Exam Tips</a></li>
+  </ol>
+</div>
+
+<!-- ============================================================ -->
+<!--      PART 1: DOCUMENT DATABASES & DATA MODEL                -->
+<!-- ============================================================ -->
+<h1 id="part1" class="pagebreak">PART 1: Document Databases &amp; MongoDB Data Model (7.1)</h1>
+
+<h2 id="data-models-review">1.1 Review of the Four Data Models</h2>
+
+<p>Before diving into MongoDB, it is essential to understand where it sits among the four database paradigms covered in this course. Each model has a fundamentally different way of organizing and accessing data.</p>
+
+<table>
+  <tr>
+    <th>Data Model</th>
+    <th>Core Concept</th>
+    <th>Example Systems</th>
+    <th>Key Characteristic</th>
+  </tr>
+  <tr>
+    <td><strong>Relational</strong></td>
+    <td>Data in tables (relations) with rows and columns. Relations linked by foreign keys.</td>
+    <td>PostgreSQL, MySQL, Oracle</td>
+    <td>Normalized, strict schema, SQL, strong ACID</td>
+  </tr>
+  <tr>
+    <td><strong>Column-Family</strong></td>
+    <td>Data organized by rows with dynamic columns. Rows grouped into column families.</td>
+    <td>ScyllaDB, Apache Cassandra, HBase</td>
+    <td>Query-driven design, wide rows, P2P distributed</td>
+  </tr>
+  <tr>
+    <td><strong>Key-Value</strong></td>
+    <td>Simple pairs: key maps to a value. Only 3 operations: SET/PUT, GET, DELETE.</td>
+    <td>Redis, DynamoDB</td>
+    <td>Extreme simplicity, very high performance, no query by value</td>
+  </tr>
+  <tr>
+    <td><strong>Document</strong></td>
+    <td>Key maps to a structured document (JSON/BSON/XML). Documents queried by field tags.</td>
+    <td>MongoDB, CouchDB</td>
+    <td>Flexible schema, self-contained documents, rich queries</td>
+  </tr>
+</table>
+
+<div class="defbox">
+  <strong>Mini-World driven vs. Query-Driven Design:</strong> In a relational DB, you model the real-world (entities, relationships) and then normalize. In ScyllaDB (column-family), you design tables around query patterns first. MongoDB takes a middle path — you model self-contained, document-like objects that reflect the real world, but you also consider how they will be queried to decide what to embed versus reference.
+</div>
+
+<div class="examtip">
+The slide on data model review asks you to fill in descriptions of all four models. Know them! Also know which databases belong to which model, and what "query-driven design" means for column-family databases compared to MongoDB's approach.
+</div>
+
+<h2 id="doc-db-concept">1.2 What is a Document Database?</h2>
+
+<p>A document database is an evolution of the key-value concept. In a pure key-value store, the value is opaque — the database cannot see inside it, so queries must always use the key. You cannot say "find all users where email = 'x@y.com'" because the database does not understand the value structure.</p>
+
+<p>Document databases solve this by making the value a <em>tagged document</em> — a structured format like JSON, BSON, or XML where each piece of data has a name (a "tag" or "field"). Because the database understands the structure, it can query by any field, not just the key.</p>
+
+<div class="defbox">
+  <strong>Document Database Definition:</strong> A NoSQL database that stores data as key-document pairs. The value part is always a document in a tagged markup format (JSON, BSON, XML). Documents in the same collection can have different fields (flexible/dynamic schema). Related documents are grouped into collections.
+</div>
+
+<h3>Key Properties of Document Databases</h3>
+
+<ul>
+  <li><strong>Queryable by tags/fields:</strong> You can filter documents by any field value, enabling sophisticated queries. This is the critical advantage over pure key-value stores.</li>
+  <li><strong>Flexible (dynamic) schema:</strong> There is no predefined schema. Each document can introduce new fields. One could also call it "schema-on-read." Schema validation rules can be added optionally at a later stage.</li>
+  <li><strong>Application responsibility:</strong> The responsibility for data structure belongs to the application, not the database schema.</li>
+  <li><strong>Self-contained documents:</strong> Unlike RDBMS where data is split across multiple normalized tables, a document database document is self-contained and independent in terms of information content.</li>
+  <li><strong>No inherent relationships:</strong> Documents are not connected to each other via formal FK-PK constraints. Relationships must be handled by the application (via embedding or manual references).</li>
+</ul>
+
+<div class="notebox">
+In a relational DB, data is distributed across different relations to avoid anomalies and to map relationships. In a document DB, each document is self-contained. This means joins are either unnecessary (because related data is embedded) or handled manually by the application (two separate queries).
+</div>
+
+<h3>Why is the tagged document better than a plain key-value for reading?</h3>
+
+<p>With a key-value store like Redis, <code>GET user:1234:email</code> gives you the email, but you cannot say "give me all users from Georgia" because the database cannot inspect values. With a document database, you can run: <code>db.users.find({ country: "Georgia" })</code> because the document's fields are visible and indexed by the database engine. This is the fundamental advantage.</p>
+
+<h2 id="mongodb-document">1.3 MongoDB Documents: BSON Structure</h2>
+
+<p>MongoDB stores data as <strong>BSON</strong> (Binary JSON) documents. BSON is a binary-encoded serialization of JSON-like documents. It is faster to parse than text JSON and supports additional data types like <code>ObjectId</code>, <code>Date</code>, and <code>BinData</code>.</p>
+
+<h3>Hierarchy: Database → Collection → Document</h3>
+
+<table>
+  <tr>
+    <th>MongoDB Concept</th>
+    <th>Relational Equivalent</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>Database</td>
+    <td>Database / Schema</td>
+    <td>Top-level namespace grouping collections</td>
+  </tr>
+  <tr>
+    <td>Collection</td>
+    <td>Table</td>
+    <td>Group of related documents. No fixed schema required.</td>
+  </tr>
+  <tr>
+    <td>Document</td>
+    <td>Row / Record</td>
+    <td>A BSON object with fields. Max 16 MB.</td>
+  </tr>
+  <tr>
+    <td>Field</td>
+    <td>Column</td>
+    <td>A key-value pair inside a document</td>
+  </tr>
+  <tr>
+    <td>Embedded Document</td>
+    <td>Joined row (denormalized)</td>
+    <td>A nested document inside another document</td>
+  </tr>
+  <tr>
+    <td>Array</td>
+    <td>Not directly possible in 1NF</td>
+    <td>An ordered list of values or sub-documents within a field</td>
+  </tr>
+</table>
+
+<h3>Real Example from the Slides — Munich Urban Colab Document</h3>
+
+<pre>{
+  "_id" : ObjectId("53e3663ccb3bd259f9252f67"),
+  "type" : ["accelerator", "maker-space", "co-lab"],    <span class="comment">// ARRAY of strings</span>
+  "name" : "Munich Urban Colab",
+  "tags" : "munich colab start-up founder space",
+  "desc" : "In the Munich Urban Colab starters and founders find the help they need...",
+  "address" : [                                          <span class="comment">// ARRAY of embedded documents</span>
+    { "street": "123 Fake Street", "floor": "15th", "pCode": "12345", "city": "Faketon" },
+    { "street": "1 Some Other Street", "pCode": "12345", "city": "Boston" },
+    { "str" : "Freddy-Mercury-Street 5", "postalCode" : 80932, "city" : "Munich" }
+  ],
+  "location" : {                                         <span class="comment">// EMBEDDED sub-document</span>
+    "type" : "Point",
+    "coordinates" : [ 7.0075, 51.45902 ]
+  }
+}</pre>
+
+<div class="defbox">
+  <strong>What would NOT be possible in a relational (normalized) table?</strong>
+  <ul>
+    <li>An array field like <code>type: ["accelerator", "maker-space", "co-lab"]</code> — in 1NF, arrays are not allowed in a single column.</li>
+    <li>An array of embedded documents for "address" with different fields in each sub-document (street vs. str, pCode vs. postalCode).</li>
+    <li>Nested objects (embedded sub-documents) directly inside a row.</li>
+    <li>Different documents in the same collection having completely different sets of fields.</li>
+  </ul>
+</div>
+
+<div class="examtip">
+The exam may ask: "Which structural elements would not be possible in a normalized relational table?" Answer: arrays, embedded sub-documents, varying fields across rows. Also know which relationship cardinalities (1:1, 1:N, N:1, N:M) are well supported by document databases. Document DBs support 1:1 and 1:N naturally (via embedding). N:M relationships are tricky — they require references and multiple queries since there are no native joins.
+</div>
+
+<h3>BSON Data Types</h3>
+
+<table>
+  <tr><th>Type</th><th>Example</th><th>Notes</th></tr>
+  <tr><td>String</td><td><code>"name": "Davit"</code></td><td>UTF-8 encoded</td></tr>
+  <tr><td>Integer (Int32/Int64)</td><td><code>"age": 22</code></td><td>32-bit or 64-bit</td></tr>
+  <tr><td>Double</td><td><code>"price": 29.99</code></td><td>Floating point</td></tr>
+  <tr><td>Boolean</td><td><code>"active": true</code></td><td>true/false</td></tr>
+  <tr><td>Array</td><td><code>"tags": ["db", "nosql"]</code></td><td>Ordered list</td></tr>
+  <tr><td>Object (embedded doc)</td><td><code>"address": { "city": "Kutaisi" }</code></td><td>Nested document</td></tr>
+  <tr><td>ObjectId</td><td><code>"_id": ObjectId("64f123...")</code></td><td>12-byte unique ID — see below</td></tr>
+  <tr><td>Date</td><td><code>"created": ISODate("2026-06-22")</code></td><td>UTC milliseconds since epoch</td></tr>
+  <tr><td>Null</td><td><code>"remark": null</code></td><td>Explicit null value</td></tr>
+  <tr><td>BinData</td><td><code>"photo": BinData(0,"...")</code></td><td>Binary data</td></tr>
+</table>
+
+<h3>The ObjectId — MongoDB's Unique Identifier</h3>
+
+<div class="defbox">
+  <strong>ObjectId Structure (12 bytes total):</strong><br>
+  <code>ObjectId("64f123456789abcdef123456")</code>
+  <ul>
+    <li><strong>4 bytes:</strong> Unix timestamp (seconds since epoch) — gives rough insertion time</li>
+    <li><strong>5 bytes:</strong> Random value per process (machine + process ID)</li>
+    <li><strong>3 bytes:</strong> Incrementing counter, initialized to random value</li>
+  </ul>
+  This design guarantees global uniqueness across distributed machines without central coordination.
+  The <code>_id</code> field is mandatory in every MongoDB document. If you do not provide one, MongoDB auto-generates an ObjectId.
+</div>
+
+<h3>Teacher Collection Example (from Slides)</h3>
+
+<pre>{
+  "_id": ObjectId("640d683998ac446f58fe76f4"),
+  "teacherID": "2",
+  "name": "Doe",
+  "mail": "doe@we-are.xx",
+  "DoB": "1998-01-15",
+  "gender": "f",
+  "Country": "Georgia",
+  "postalCode": 4600,
+  "remark": null,
+  "subjects": ["Java", "Neo4J"],              <span class="comment">// array of strings</span>
+  "references": [                              <span class="comment">// array of embedded documents</span>
+    { "fName": "Donald", "recommendation": "Great teacher" },
+    { "fName": "Flower", "recommendation": "learned a lot" }
+  ]
+}</pre>
+
+<h2 id="embedding-vs-ref">1.4 Embedding vs. Referencing Documents</h2>
+
+<p>This is one of the most important design decisions in MongoDB. Unlike a relational database where you always normalize first, MongoDB gives you a choice: embed the related data inside the parent document, or store it in a separate collection and reference it.</p>
+
+<h3>Embedded Documents</h3>
+
+<div class="defbox">
+  <strong>Embedded Documents</strong> are stored inside a parent document. Whenever a parent document is retrieved, all its embedded documents are also retrieved automatically in the same read operation. There is no separate query needed.
+</div>
+
+<p><strong>When to embed:</strong></p>
+<ul>
+  <li>When data is always accessed together (high locality)</li>
+  <li>1:1 and 1:N (small N) relationships</li>
+  <li>When the embedded data is not independently queried</li>
+  <li>When the embedded data does not grow without bound</li>
+</ul>
+
+<pre><span class="comment">// Student with embedded address — good embedding example</span>
+{
+  _id: ObjectId("6415523d0ed201caee1a9e5e"),
+  userName: 'Wolf',
+  firstName: 'Tom',
+  lastName: 'Salcher',
+  DoB: '2013-02-20',
+  gender: 'm',
+  mail: 'tom.salcher@postbox.xx',
+  lessonBalance: 0
+  <span class="comment">// address embedded directly — if always needed with student, this is fine</span>
+}</pre>
+
+<h3>Referenced Documents</h3>
+
+<div class="defbox">
+  <strong>Referenced Documents</strong> are stored in a separate collection. They reference each other using the <code>$ref</code> notation (or manually storing an ID). This reference is ONLY notational — MongoDB does NOT enforce referential integrity like a foreign key. There is no automatic join; you must run TWO separate queries.
+</div>
+
+<p><strong>When to reference:</strong></p>
+<ul>
+  <li>When the embedded data is large</li>
+  <li>When the embedded data is independently queried (queried on its own, without the parent)</li>
+  <li>When the embedded data is update-and-write heavy (frequent updates require rewriting the whole parent)</li>
+  <li>When there is a 1:N relationship where N is very large (unbounded array anti-pattern)</li>
+  <li>When the same data is shared among multiple parent documents (N:M relationship)</li>
+</ul>
+
+<pre><span class="comment">// Student referencing teacher — two-collection approach</span>
+<span class="comment">// Student document:</span>
+{
+  _id: ObjectId("6415523d0ed201caee1a9e5e"),
+  userName: 'Wolf',
+  firstName: 'Tom',
+  lastName: 'Salcher',
+  DoB: '2013-02-20',
+  gender: 'm',
+  mail: 'tom.salcher@postbox.xx',
+  lessonBalance: 0,
+  teachers: {
+    "$ref" : "teacher",
+    "$id" : ObjectId("5126bc054aed4daf9e2ab772")
+  }
+}
+
+<span class="comment">// To get the teacher, you need a SECOND query:</span>
+<span class="comment">// 1. db.student.findOne({ userName: 'Wolf' })  → get the teacher ObjectId</span>
+<span class="comment">// 2. db.teacher.findOne({ _id: ObjectId("5126bc...") })  → get teacher data</span></pre>
+
+<div class="notebox">
+MongoDB does NOT support the JOIN concept of FK-PK links. The $ref reference is only notational — it is just a convention for storing the reference. The database itself does NOT enforce it. If you delete the teacher document, the reference in the student document becomes a dangling pointer — MongoDB will not warn you.
+</div>
+
+<h2 id="embedding-limits">1.5 Limitations of the Embedding Concept</h2>
+
+<p>Embedding is the most natural and often preferred choice for MongoDB because it gives excellent read performance through data locality (everything in one document = one disk read). However, there are important limitations:</p>
+
+<div class="defbox">
+  <strong>MongoDB typically needs to load the entire document, even if only a small portion of it is accessed. On updates to a document, the entire document usually needs to be rewritten. Therefore, in regard to performance, it is better to keep documents small.</strong>
+</div>
+
+<table>
+  <tr>
+    <th>Problem Scenario</th>
+    <th>Why It's a Problem</th>
+    <th>Solution</th>
+  </tr>
+  <tr>
+    <td>Large number of embedded sub-documents</td>
+    <td>Document grows large → full document loaded on every read</td>
+    <td>Separate parent and embedded documents into two collections</td>
+  </tr>
+  <tr>
+    <td>Embedded documents have many fields themselves</td>
+    <td>Same as above — large document</td>
+    <td>Separate into two collections</td>
+  </tr>
+  <tr>
+    <td>Embedded documents are update-and-write heavy</td>
+    <td>Every update to an embedded doc rewrites the entire parent document</td>
+    <td>Separate into two collections for independent writes</td>
+  </tr>
+  <tr>
+    <td>Regular queries on embedded documents only</td>
+    <td>Need to retrieve and filter through the entire parent to get embedded data</td>
+    <td>Separate into two collections for query flexibility</td>
+  </tr>
+  <tr>
+    <td>Unbounded arrays (arrays growing forever)</td>
+    <td>Document hits the 16 MB size limit; poor performance</td>
+    <td>Reference model — separate collection for the growing data</td>
+  </tr>
+</table>
+
+<div class="examtip">
+The professor asks this question in both lecture style: "When should you embed vs. reference?" The rule of thumb is: embed when data is always accessed together and the relationship is 1:1 or 1:few. Reference when data is large, write-heavy, independently queried, or the "many" side can grow unboundedly.
+</div>
+
+<h2 id="use-cases">1.6 Use Cases for Document Databases</h2>
+
+<p>Document databases are a good fit when the business idea or application:</p>
+
+<ul>
+  <li>Can be well represented with document-like, <strong>self-contained objects</strong></li>
+  <li>Relies mainly on <strong>1:1 or 1:N relationships</strong> (not heavy N:M)</li>
+  <li><strong>Does not need many joins</strong> (support for joins is weak in document DBs)</li>
+  <li>Profits from <strong>better locality</strong> (all relevant information is ideally in one document)</li>
+  <li>Needs <strong>schema flexibility</strong> (different documents can have different fields)</li>
+</ul>
+
+<div class="defbox">
+  <strong>Concrete Use Cases:</strong> Catalog applications (products with varying attributes), Content Management Systems (CMS), web applications, user profile systems, event logging, mobile app backends.
+</div>
+
+<!-- ============================================================ -->
+<!--      PART 2: REPLICATION, CONSISTENCY & FAILOVER            -->
+<!-- ============================================================ -->
+<h1 id="part2" class="pagebreak">PART 2: MongoDB Replication, Consistency &amp; Failover</h1>
+
+<h2 id="single-leader">2.1 Single-Leader Replication</h2>
+
+<p>MongoDB uses <strong>Single-Leader Replication</strong> (also called Primary-Secondary replication). This is a fundamentally different architecture from the Peer-to-Peer (P2P) replication used by ScyllaDB/Cassandra.</p>
+
+<div class="defbox">
+  <strong>Single-Leader Replication Principle:</strong>
+  <ul>
+    <li><strong>All write requests go to the primary only.</strong> The primary processes writes and determines the order in which they are applied.</li>
+    <li>The primary sends a <strong>change log (oplog)</strong> to the secondaries — in the order writes were processed.</li>
+    <li>Secondaries apply the changes <strong>asynchronously</strong> — in the order they received them from the primary.</li>
+    <li><strong>Read operations</strong> can go to the primary OR a secondary (controlled by Read Preference).</li>
+    <li>A read operation reads from <strong>one node only</strong> (primary OR one secondary), never from multiple nodes simultaneously.</li>
+  </ul>
+</div>
+
+<div class="ascii-diagram">
+                    all write requests
+                          |
+                          v
+                     [ PRIMARY ]
+                    /           \
+                oplog           oplog
+                 /                 \
+           [ Sec1 ]           [ Sec2 ]
+
+  - Writes: PRIMARY only
+  - Reads: PRIMARY or one SECONDARY (depending on Read Preference)
+  - Secondaries apply oplog ASYNCHRONOUSLY
+
+  Chained replication also possible:
+  PRIMARY --> Sec1 --> Sec2  (Sec2 replicates from Sec1, not directly from Primary)
+</div>
+
+<div class="defbox">
+  <strong>Contrast with P2P (ScyllaDB):</strong> In P2P distributed databases, a write goes directly to ALL replicas (based on the consistency level/quorum). A read operation reads from as many replicas as the consistency level requires. There is no single "primary" — any node can accept writes. This is fundamentally different from MongoDB's single-leader model.
+</div>
+
+<p>Systems that use Single-Leader replication: Oracle, PostgreSQL, MySQL, MongoDB, CouchBase, Neo4j, and in certain configurations: Redis.</p>
+
+<h2 id="replica-set">2.2 MongoDB Replica Sets</h2>
+
+<div class="defbox">
+  <strong>Replica Set:</strong> In MongoDB, replication is implemented using a Replica Set (the <code>rs</code> object). A replica set is a set of mongod server instances that store the same data. It contains:
+  <ul>
+    <li><strong>Primary node:</strong> One primary, handles ALL write operations.</li>
+    <li><strong>Secondary nodes:</strong> One or more secondaries that replicate from primary.</li>
+    <li>Replicas are installed typically on separate servers using the same port, but can run on one system using different ports (for testing).</li>
+  </ul>
+</div>
+
+<h3>Initializing a Replica Set in mongosh</h3>
+
+<pre><span class="comment">// Connect to the primary node and run:</span>
+rs.initiate({
+  _id: "rs1",
+  members: [
+    { _id: 0, host: "localhost:27018" },
+    { _id: 1, host: "localhost:27019" },
+    { _id: 2, host: "localhost:27020" }
+  ]
+})
+<span class="comment">// Response: { ok: 1 }</span>
+
+<span class="comment">// Check replica set status:</span>
+rs.status()       <span class="comment">// Full comprehensive information on all nodes and their status</span>
+rs.status().ok    <span class="comment">// Returns 1 if the current node is ok</span>
+
+<span class="comment">// The prompt shows whether you are on primary or secondary:</span>
+<span class="comment">// rs1 [direct: primary] test>    &lt;-- you are on primary</span>
+<span class="comment">// rs1 [direct: secondary] test>  &lt;-- you are on secondary</span></pre>
+
+<div class="examtip">
+The prompt in mongosh tells you your current role. <code>rs.status()</code> returns comprehensive information. <code>rs.status().ok</code> returns 1 for the current mongod instance status. Know the difference.
+</div>
+
+<h2 id="oplog">2.3 The Oplog (Operations Log)</h2>
+
+<div class="defbox">
+  <strong>Oplog (Operations Log):</strong> A special capped collection stored on the primary node at <code>local.oplog.rs</code>. It records every write operation that modifies data on the primary. Secondaries "tail" the oplog — they continuously read new entries from it and apply those operations to their own data.
+</div>
+
+<h3>Key Properties of the Oplog</h3>
+
+<ul>
+  <li><strong>Capped collection:</strong> Has a fixed maximum size. Old entries are overwritten when the size limit is reached.</li>
+  <li><strong>Ordered:</strong> Operations are recorded in the exact order the primary processed them.</li>
+  <li><strong>Idempotent:</strong> Every operation in the oplog is idempotent — applying it once or multiple times produces the same result. This is critical for reliability.</li>
+</ul>
+
+<div class="defbox">
+  <strong>Idempotent:</strong> f(x) = f(f(x)). A function applied multiple times gives the same result as applying it once.
+  <br><br>
+  The MongoDB oplog converts non-idempotent write commands into idempotent ones before storing them. For example, <code>$inc: {price: 10}</code> is NOT idempotent — applied twice would add 20 instead of 10. The oplog would instead store the operation as a SET to the final value: <code>$set: {price: &lt;final_value&gt;}</code>. This way, replaying the oplog multiple times is safe.
+</div>
+
+<h3>Why does the oplog need idempotency?</h3>
+
+<p>When a secondary restarts after a crash or falls behind, it replays oplog entries it may have already applied. If those operations were not idempotent, replaying them would corrupt the data. With idempotent oplog entries, replaying is always safe — the result is the same regardless of how many times the entry is applied.</p>
+
+<h2 id="write-concern">2.4 MongoDB Write Concern</h2>
+
+<div class="defbox">
+  <strong>Write Concern</strong> defines what an "acknowledgment: true" returned to the client actually means — that is, how many nodes need to confirm the write before it is reported as successful. Write concern controls the <strong>durability</strong> of writes and allows the application to trade off performance vs. durability.
+</div>
+
+<table>
+  <tr>
+    <th>Write Concern</th>
+    <th>Meaning</th>
+    <th>Rollback Possible?</th>
+    <th>Performance</th>
+  </tr>
+  <tr>
+    <td><code>w: 0</code></td>
+    <td>Fire and forget — write operation is NOT acknowledged. Client does not wait for any confirmation.</td>
+    <td>Yes (no confirmation of any kind)</td>
+    <td>Highest (no waiting)</td>
+  </tr>
+  <tr>
+    <td><code>w: 1</code></td>
+    <td>Acknowledged by the primary only. Write is confirmed when successfully completed on the primary node.</td>
+    <td>Yes (if primary fails before replicating)</td>
+    <td>High</td>
+  </tr>
+  <tr>
+    <td><code>w: 2</code></td>
+    <td>Acknowledged when write completed on primary AND one secondary.</td>
+    <td>Rollback still possible (if that one secondary also fails)</td>
+    <td>Medium</td>
+  </tr>
+  <tr>
+    <td><code>w: majority</code></td>
+    <td><strong>Default.</strong> Acknowledged when write completed on majority of nodes. E.g., in a 3-node set: primary + 1 secondary must confirm.</td>
+    <td>Not possible once acknowledged</td>
+    <td>Lower (waits for majority)</td>
+  </tr>
+  <tr>
+    <td><code>w: N</code></td>
+    <td>Acknowledged when write completed on exactly N nodes. In a 3-node set, w:3 = all nodes must confirm.</td>
+    <td>Depends on N vs total nodes</td>
+    <td>Lowest for w = total nodes</td>
+  </tr>
+</table>
+
+<div class="notebox">
+Write concern allows the application to prioritize performance OR durability. With w:majority, a rollback is NOT possible after the acknowledgment is returned. This is because majority-committed writes become the "durable" baseline — even if the old primary returns, it cannot have more writes acknowledged by a majority.
+</div>
+
+<h3>Write Acknowledgment Example from the Slides</h3>
+
+<pre><span class="comment">// Update a teacher document</span>
+db.teacher.updateOne(
+  { name: "teacher_A" },
+  { $set: { remark: "You will be successful when working with me." } }
+)
+
+<span class="comment">// Response from MongoDB:</span>
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 1,
+  upsertedCount: 0
+}
+
+<span class="comment">// "acknowledged: true" means the write concern level was satisfied.</span>
+<span class="comment">// On a single-node MongoDB, this means primary wrote it.</span>
+<span class="comment">// On a replica set with default w:majority, this means majority confirmed it.</span></pre>
+
+<h3>Write Concern Timing Diagram</h3>
+
+<div class="ascii-diagram">
+  Write Concern w:majority (3-node replica set: Leader + Follower1 + Follower2)
+
+  User 1234 ---[update users SET picture_url]---------------------------[OK returned]----->
+                             |                                          ^
+              Leader --------[write]--[waiting for follower's ok]------|---> continues
+                                  \                ^
+              Follower 1 ----------[data change]--[ok sent back]---------------------------->
+                                           \                 ^
+              Follower 2 ------------------[data change]--[ok sent back]-------------------->
+
+  Leader waits for MAJORITY (Follower1 OR Follower2) to confirm before sending OK to user.
+  This diagram shows w:majority behavior.
+</div>
+
+<h2 id="read-concern">2.5 MongoDB Read Concern</h2>
+
+<div class="defbox">
+  <strong>Read Concern</strong> controls the consistency level of a read operation. It determines what version of data a read operation returns. WriteConcern and ReadConcern are independent of each other — you can combine them freely.
+</div>
+
+<table>
+  <tr>
+    <th>Read Concern</th>
+    <th>Behavior</th>
+    <th>Stale Read?</th>
+    <th>Dirty Read?</th>
+    <th>Notes</th>
+  </tr>
+  <tr>
+    <td><code>local</code></td>
+    <td>Returns the most recent data on the node being read. No consistency guarantees.</td>
+    <td>Possible (secondary may be behind)</td>
+    <td>Possible (data may be rolled back)</td>
+    <td><strong>Default.</strong> Fastest. "May be stale, even dirty read"</td>
+  </tr>
+  <tr>
+    <td><code>majority</code></td>
+    <td>Returns data acknowledged by majority of replica set. No dirty reads.</td>
+    <td>Still possible (returns the majority snapshot, which may not be the latest)</td>
+    <td>No dirty reads</td>
+    <td>More consistent but slightly slower</td>
+  </tr>
+  <tr>
+    <td><code>linearizable</code></td>
+    <td>Only for reads on the PRIMARY. Only for single document reads. Strongest guarantee.</td>
+    <td>No</td>
+    <td>No</td>
+    <td>Slowest. Reflects all majority-committed writes before the read starts.</td>
+  </tr>
+</table>
+
+<div class="defbox">
+  <strong>Application guidance (from slides):</strong>
+  <ul>
+    <li>If the application can tolerate a read that may not be durable: use <code>readConcern: local</code></li>
+    <li>If the application CANNOT tolerate a read that may not be durable: use <code>readConcern: majority</code></li>
+  </ul>
+</div>
+
+<h3>Understanding the Read Concern Timeline (from slide p. 26-27)</h3>
+
+<p>Consider a 3-node replica set (Primary, Secondary1, Secondary2) with <code>w: majority</code>. A write happens at time t0 that changes data object x from 100 to 200. The acknowledgment is sent back at t6 (after majority = Secondary1 confirms at ~t3-t5).</p>
+
+<div class="ascii-diagram">
+Write: x=100 → x=200 at time t0 with w:"majority"
+
+Timeline:
+t0        t1  t2    t3   t4 t5     t6
+|---write--|   |     |    |  |      |   Primary
+                \   /\   /         |
+                 \ /  \ /          ↑
+           t1-t2  X    X       Acknowledge sent to client at t6
+                 / \  / \
+                /   \/   \
+               t1   t4-t5  t2
+           Sec1 gets at t1, Sec2 gets at t2, acks flow back
+
+ReadConcern LOCAL:
+  - Read on Primary after t0  → returns 200  (primary already wrote it)
+  - Read on Secondary1 before t1 → returns 100  (hasn't got the update yet)
+  - Read on Secondary1 after t1  → returns 200  (it applied the oplog)
+  - Read on Secondary2 before t2 → returns 100  (still stale)
+  - Read on Secondary2 after t2  → returns 200
+
+ReadConcern MAJORITY:
+  - Read on Primary before t3  → returns 100  (majority not yet confirmed → reads old)
+  - Read on Primary after t3   → returns 200  (majority confirmed)
+  - Read on Secondary1 before t5 → returns 100
+  - Read on Secondary1 after t5  → returns 200
+  - Read on Secondary2 before t6 → returns 100
+  - Read on Secondary2 after t6  → returns 200
+</div>
+
+<div class="notebox">
+MongoDB write concern/read concern and Cassandra/ScyllaDB consistency levels are strongly related concepts — both control replica participation and determine visibility. However, they differ because MongoDB's primary-based replication is ordered and does not need conflict resolution. Primary-based replication may also discard writes (rollback), while P2P uses conflict-free resolution strategies.
+</div>
+
+<h2 id="read-preference">2.6 Read Preference (Read Routing)</h2>
+
+<div class="defbox">
+  <strong>Read Preference</strong> determines WHICH NODE (server) a read request is routed to. It does not control the consistency level (that is Read Concern's job). Read Preference can be set as a query option, a connection option, or a driver option.
+</div>
+
+<table>
+  <tr>
+    <th>Read Preference Mode</th>
+    <th>Behavior</th>
+    <th>Use Case</th>
+  </tr>
+  <tr>
+    <td><code>primary</code></td>
+    <td><strong>Default.</strong> All reads go to the primary node only.</td>
+    <td>Strong consistency needed — no stale reads possible from routing.</td>
+  </tr>
+  <tr>
+    <td><code>primaryPreferred</code></td>
+    <td>Reads go to primary if available; falls back to secondary if primary is unavailable.</td>
+    <td>High availability — can tolerate short primary downtime</td>
+  </tr>
+  <tr>
+    <td><code>secondary</code></td>
+    <td>All reads go to a secondary. Potentially stale data.</td>
+    <td>Offload read traffic from primary; analytics on secondary</td>
+  </tr>
+  <tr>
+    <td><code>secondaryPreferred</code></td>
+    <td>Reads go to secondary if available; falls back to primary.</td>
+    <td>Read scaling — most reads go to secondaries</td>
+  </tr>
+  <tr>
+    <td><code>nearest</code></td>
+    <td>Routes to the node with the lowest latency (could be primary or any secondary).</td>
+    <td>Multi-datacenter — read from nearest geographic node. A secondary in DC2 with priority:0 handles nearest reads.</td>
+  </tr>
+</table>
+
+<div class="defbox">
+  <strong>Read Preference "nearest" with multiple data centers:</strong> In the slide example, Data Center 1 has a Primary (priority:1) and a Secondary (priority:1). Data Center 2 has only a Secondary (priority:0 — cannot become primary). With Read Preference = nearest, reads from clients in Data Center 2 go to the local Secondary (lowest latency), even though that secondary may have slightly stale data.
+</div>
+
+<div class="examtip">
+Read Preference is DIFFERENT from Read Concern. Read Preference = which node to read from. Read Concern = what version of data to return. You can set Read Preference = secondary and Read Concern = majority, but note that Read Concern majority on a secondary means it will wait for the majority-acknowledged snapshot on that secondary — which may be older than what the primary has. These concepts work together but are independent.
+</div>
+
+<h2 id="replication-lag">2.7 Replication Lag and Stale Reads</h2>
+
+<div class="defbox">
+  <strong>Replication Lag:</strong> Because secondaries apply the oplog <em>asynchronously</em>, there is a delay between when the primary processes a write and when that write is reflected on a secondary. This delay is called the replication lag.
+</div>
+
+<p><strong>Consequences of replication lag:</strong></p>
+<ul>
+  <li>Read requests to secondaries may return <strong>stale data</strong> (old values not yet updated)</li>
+  <li>The more secondaries lag behind, the more likely reads return stale data</li>
+</ul>
+
+<h3>Classic Problem: Read-Your-Own-Write Anomaly (from Slides p. 29)</h3>
+
+<div class="ascii-diagram">
+User 1234 scenario:
+1. User 1234 inserts a comment: INSERT INTO comments (author, reply_to, message)
+                                VALUES (1234, 55555, 'Sounds good!')
+2. Leader processes insert → sends "insert ok" to User 1234
+3. User 1234 immediately queries: SELECT * FROM comments WHERE reply_to = 55555
+   → The query is routed to Follower 2, which hasn't applied the oplog yet
+   → Result: "no results!" — the user doesn't see their own just-written comment!
+
+This is the "read-your-own-write" problem caused by replication lag.
+</div>
+
+<p><strong>Common reasons secondaries fall behind:</strong></p>
+<ul>
+  <li>Network congestion between primary and secondary</li>
+  <li>Secondary is under heavy read load and cannot keep up with applying oplog</li>
+  <li>Secondary hardware is slower than primary</li>
+  <li>Long-running operations on secondary blocking oplog application</li>
+</ul>
+
+<p><strong>Measures to decrease replication lag (that you can control):</strong></p>
+<ul>
+  <li>Use <code>w: majority</code> write concern — the client only gets acknowledgment after majority confirms, so reads from those secondaries are fresher</li>
+  <li>Route reads to primary (Read Preference: primary) to avoid lag entirely</li>
+  <li>Reduce write load on secondary (fewer queries routed there)</li>
+  <li>Keep documents smaller (faster to apply oplog entries)</li>
+  <li>Avoid large batch writes that create many oplog entries at once</li>
+</ul>
+
+<h2 id="failover">2.8 Failover Strategy</h2>
+
+<div class="defbox">
+  <strong>Failover</strong> is needed for Primary-Secondary (single-leader) distributed databases — NOT for P2P. Reason: In P2P, any available node can accept writes, so there is no single point of failure that requires a failover procedure. In MongoDB, if the primary fails, writes are impossible until a new primary is elected.
+</div>
+
+<div class="notebox">
+Native PostgreSQL does NOT come with automatic failover. MongoDB DOES come with built-in automatic failover through the replica set election mechanism.
+</div>
+
+<p><strong>A failover system needs:</strong></p>
+<ol>
+  <li><strong>Failure detection:</strong> Ability to detect that the primary has failed or become inaccessible.</li>
+  <li><strong>Automatic failover:</strong> Ability to automatically elect a new primary from the remaining secondaries and resume normal operation.</li>
+</ol>
+
+<h2 id="election">2.9 Failure Detection and Election Process</h2>
+
+<h3>Failure Detection: Heartbeats</h3>
+
+<div class="defbox">
+  <strong>MongoDB uses heartbeats (pings) for failure detection.</strong><br>
+  From MongoDB docs: "Replica set members send heartbeats (pings) to each other every two seconds. If a heartbeat does not return within 10 seconds (heartbeatTimeout), the other members mark the delinquent member as inaccessible."
+  <br><br>
+  This timeout can be tuned with the <code>settings.heartbeatTimeoutSecs</code> parameter.
+</div>
+
+<p><strong>Desired properties of failure detection:</strong></p>
+<ol>
+  <li><strong>Completeness:</strong> All running nodes eventually notice when a member fails.</li>
+  <li><strong>Efficiency:</strong> The algorithm detects failure fast (within seconds).</li>
+  <li><strong>Accuracy:</strong> The algorithm should not falsely declare a running (but delayed) node as dead.</li>
+</ol>
+
+<div class="defbox">
+  <strong>Increasing heartbeatTimeout (e.g., 10s → 12s):</strong>
+  <ul>
+    <li>It takes <strong>longer</strong> to declare a node dead → <strong>increases accuracy</strong> (fewer false positives — a slow but running node is less likely to be declared dead)</li>
+    <li>But it takes <strong>longer</strong> to detect a real failure → <strong>decreases efficiency</strong></li>
+  </ul>
+  Answer from the slide: Increasing the timeout <strong>increases accuracy</strong> (Answer B).
+</div>
+
+<h3>Election Process</h3>
+
+<div class="defbox">
+  <strong>MongoDB Automatic Failover Election:</strong>
+  <ol>
+    <li>When a primary does not communicate with other members anymore (heartbeat timeout), eligible secondaries detect the failure.</li>
+    <li>An eligible secondary <strong>calls for an election</strong>.</li>
+    <li>An election can be held only if the <strong>majority of voting nodes</strong> is available.</li>
+    <li>The election process is based on <strong>Raft algorithm</strong> concepts.</li>
+    <li>As soon as a new primary is elected, normal operations resume.</li>
+    <li><strong>No write processing occurs during the election.</strong></li>
+  </ol>
+</div>
+
+<div class="ascii-diagram">
+BEFORE FAILURE:
+     [Primary] ←→ oplog ←→ [Secondary1]
+         ↑↕ heartbeat ↕↓
+     [Secondary2]
+
+PRIMARY FAILS:
+     [  X  ]   ← old primary fails
+
+     [Secondary1] ←→ heartbeat ←→ [Secondary2]
+
+     They see primary is down. Majority still available (2/3 = majority if total was 3).
+     Secondary1 calls for election.
+     Election happens: Secondary1 voted as new primary.
+
+AFTER ELECTION:
+     [New Primary (was Sec1)] ←→ oplog ←→ [Secondary2]
+         ↕ heartbeat ↕
+
+     Writes resume on new Primary.
+     When old primary comes back, it rejoins as Secondary (and may need to rollback uncommitted writes).
+</div>
+
+<div class="examtip">
+Know the election process step-by-step. Key points: (1) majority must be available to hold an election, (2) no writes during election, (3) election uses Raft algorithm concepts, (4) old primary rejoins as secondary. In a 3-node replica set, majority = 2 nodes. So if 2 nodes are in one datacenter and 1 in another, and the network between them breaks, the partition with 2 nodes can elect a new primary; the lone node cannot.
+</div>
+
+<h3>Election Key Parameters (from mongosh output)</h3>
+
+<pre>heartbeatIntervalMillis: Long('2000'),  <span class="comment">// heartbeat sent every 2 seconds</span>
+majorityVoteCount: 2,                  <span class="comment">// need 2 votes for majority (3-node set)</span>
+writeMajorityCount: 2,                 <span class="comment">// need 2 nodes for w:majority</span>
+votingMembersCount: 3,                 <span class="comment">// total voting members</span>
+writableVotingMembersCount: 3,         <span class="comment">// total writable+voting members</span></pre>
+
+<h2 id="split-brain">2.10 Split Brain Problem</h2>
+
+<p>The split brain problem occurs when a network partition divides a replica set into two groups that cannot communicate with each other. The key question is: can two primaries exist simultaneously?</p>
+
+<h3>Scenario 1: Primary in Europe, 3 Secondaries in US (network fault between them)</h3>
+
+<div class="ascii-diagram">
+Datacenter US:          [Network Fault]          Datacenter Europe:
+[Secondary]                                      [Primary]
+[Secondary]  ~~~ partition ~~~                   [Secondary]
+[Secondary]
+
+US side has 3 nodes, Europe side has 2 nodes (Primary + Secondary).
+Total replica set = 5 nodes. Majority = 3.
+
+Europe side (2 nodes): Europe cannot reach US. Does Europe have majority?
+  → 2 out of 5 = NO majority. Europe primary STEPS DOWN. No writes accepted.
+
+US side (3 nodes): US secondaries cannot reach primary in Europe.
+  → US has 3 nodes = majority of 5. US calls an election.
+  → New primary elected in US. Writes resume in US.
+
+Result: The old Europe primary steps down. US elects new primary.
+No split brain possible — only one side has majority.
+Can there be data loss (rollback)? YES — any writes the Europe primary accepted
+before stepping down that were NOT replicated to the US majority will be ROLLED BACK.
+</div>
+
+<h3>Scenario 2: Primary in US, 3 Secondaries in Europe (network fault)</h3>
+
+<div class="ascii-diagram">
+Datacenter US:          [Network Fault]          Datacenter Europe:
+[Primary]                                        [Secondary]
+[Secondary]  ~~~ partition ~~~                   [Secondary]
+[Secondary]
+
+US side: Primary + 2 secondaries = 3 nodes = majority of 5. Primary stays as primary.
+Europe side: 2 secondaries only. Cannot reach primary.
+  → Try to elect new primary? NO — only 2 nodes, not majority.
+  → Europe secondaries just wait/become read-only.
+
+Result: US primary continues. No split brain. Europe becomes read-only.
+Can there be data loss? Only if US primary fails before network heals.
+</div>
+
+<h3>Heartbeat Delayed Scenario (false positive)</h3>
+
+<div class="ascii-diagram">
+Datacenter US (3 secondaries) ← heartbeat delayed ← Datacenter Europe (Primary + 1 Secondary)
+
+US secondaries think primary is DOWN (heartbeat didn't come within 10s timeout).
+But primary is UP — heartbeat was just slow.
+
+US side: 3 nodes = majority. US calls election. Elects new US primary.
+Europe side: Real primary is still running! Now we have TWO primaries briefly.
+
+→ MongoDB handles this via the election epoch/term mechanism (Raft):
+  The new US primary has a higher term number.
+  The old Europe primary, when it can communicate again, sees the higher term
+  and STEPS DOWN. It becomes secondary.
+
+→ Data written to old Europe primary during this window gets ROLLED BACK.
+Split brain CAN temporarily occur, but is resolved quickly by the Raft term mechanism.
+</div>
+
+<h2 id="rollback">2.11 Rollback in MongoDB</h2>
+
+<div class="defbox">
+  <strong>MongoDB Rollback Definition:</strong> "A rollback reverts write operations on a former primary when the member rejoins its replica set after a failover. A rollback is necessary only if the primary had accepted write operations that the secondaries had NOT successfully replicated before the primary stepped down. When the primary rejoins the set as a secondary, it reverts, or 'rolls back,' its write operations to maintain database consistency with the other members."
+</div>
+
+<h3>Fundamental Difference: MongoDB Rollback vs. Postgres Rollback</h3>
+
+<table>
+  <tr>
+    <th>Aspect</th>
+    <th>MongoDB Rollback</th>
+    <th>PostgreSQL Rollback</th>
+  </tr>
+  <tr>
+    <td><strong>Cause</strong></td>
+    <td>Happens AUTOMATICALLY due to a failover/election — after the old primary rejoins as secondary. It is a REPLICATION phenomenon.</td>
+    <td>Happens INTENTIONALLY — a client explicitly issues ROLLBACK (or a transaction fails). It is a TRANSACTION phenomenon.</td>
+  </tr>
+  <tr>
+    <td><strong>Who triggers it</strong></td>
+    <td>The MongoDB system automatically — the old primary triggers its own rollback when it rejoins and sees it has diverged from the new majority.</td>
+    <td>The application or database engine (on error) — it is always triggered by a transaction ABORT command.</td>
+  </tr>
+  <tr>
+    <td><strong>What is lost</strong></td>
+    <td>Writes that were acknowledged to the client (with w:1) but not replicated to majority before the failover. These writes are PERMANENTLY LOST (written to a rollback file, but not automatically re-applied).</td>
+    <td>Changes within an open transaction that was not committed. The transaction was never visible to other transactions (depending on isolation level).</td>
+  </tr>
+  <tr>
+    <td><strong>Data loss?</strong></td>
+    <td>YES — acknowledged writes can be lost. This is why w:majority is important.</td>
+    <td>NO permanent data loss — the transaction was never committed, so nothing externally durable was lost.</td>
+  </tr>
+  <tr>
+    <td><strong>Prevention</strong></td>
+    <td>Use <code>w: majority</code> — then rollback of majority-acknowledged writes is NOT possible.</td>
+    <td>N/A — rollback is a feature, not a failure mode.</td>
+  </tr>
+</table>
+
+<div class="examtip">
+This comparison (MongoDB rollback vs. Postgres rollback) is an explicit assignment question. The key answer: MongoDB rollback is a REPLICATION phenomenon caused by failover — it can lose acknowledged data (with w:1). Postgres rollback is a TRANSACTION concept — it is intentional and does not lose committed data. MongoDB rollback can be prevented by using w:majority.
+</div>
+
+<!-- ============================================================ -->
+<!--      PART 3: SHARDING / PARTITIONING (7.2)                  -->
+<!-- ============================================================ -->
+<h1 id="part3" class="pagebreak">PART 3: MongoDB Sharding / Partitioning (7.2)</h1>
+
+<h2 id="sharding-intro">3.1 Why Sharding?</h2>
+
+<div class="defbox">
+  <strong>Sharding (Partitioning):</strong> The data is split up into subsets. These subsets are called "partitions" in P2P distributed databases, and they are called <strong>shards</strong> in MongoDB. Each shard stores a portion of the total dataset.
+</div>
+
+<p>A single replica set can only handle so much data and throughput. When you reach that limit, you need to scale horizontally — spread the data across multiple replica sets. This is sharding.</p>
+
+<p><strong>Key facts from the slides:</strong></p>
+<ul>
+  <li>Nodes (shards) are physical or virtual servers.</li>
+  <li><strong>Each shard MUST be deployed as a replica set</strong> — you get both horizontal scaling AND redundancy.</li>
+  <li>Even though replication and sharding are different concepts, they are typically combined together.</li>
+</ul>
+
+<div class="ascii-diagram">
+SHARDING + REPLICATION COMBINED (e.g., from slide "Sharding" diagram):
+
+Shard 1 (A-F range)    Shard 2 (G-P range)    Shard 3 (Q-Z range)
+┌─────────────────┐   ┌─────────────────┐   ┌─────────────────┐
+│ Master DB       │   │ Master DB       │   │ Master DB       │
+│ Read-only slave │   │ Read-only slave │   │ Read-only slave │
+│ Read-only slave │   │ Read-only slave │   │ Read-only slave │
+└─────────────────┘   └─────────────────┘   └─────────────────┘
+         ↑                    ↑                     ↑
+         |____________________|_____________________|
+                              ↑
+                    Memcached servers
+                              ↑
+                      Web servers (3x)
+
+Each shard is itself a replica set (master + 2 read-only slaves).
+Sharding handles the PARTITION of data. Replication handles REDUNDANCY within each shard.
+</div>
+
+<h2 id="sharded-cluster">3.2 Sharded Cluster Architecture</h2>
+
+<p>A MongoDB sharded cluster has three types of components:</p>
+
+<div class="defbox">
+  <strong>1. Shards</strong>: Each shard is a replica set that stores a subset of the data. In the diagram, Shard1, Shard2, ... ShardN, each with Primary + Secondary + Secondary.
+  <br><br>
+  <strong>2. Mongos (Router)</strong>: The client connects to mongos, NOT directly to shards. Mongos is a query router that knows (from the config server) which shard holds which data. It routes client queries to the correct shard(s). Multiple mongos routers can exist for high availability.
+  <br><br>
+  <strong>3. Config Server</strong>: Stores the configuration settings of the whole cluster — specifically the chunk map (which shard key range lives on which shard). Must ALSO be deployed as a replica set. Mongos caches the chunk map from the config server.
+</div>
+
+<div class="ascii-diagram">
+Complete MongoDB Sharded Cluster Architecture:
+
+     Application
+         |
+      [Driver]
+         |
+    .----+----.
+    |         |
+[Mongos]  [Mongos]  ...   ←→  [Config Server Replica Set]
+    |         |               (Primary + Secondary + Secondary)
+    |_________|
+         |
+    .----+-------+--------.
+    |            |         |
+[Shard 1]   [Shard 2]  [Shard N]
+[Primary ]  [Primary ] [Primary ]
+[Sec     ]  [Sec     ] [Sec     ]
+[Sec     ]  [Sec     ] [Sec     ]
+
+Each shard = full replica set.
+Config Server = replica set storing metadata (chunk distribution).
+Mongos = stateless router; caches chunk map from config server.
+</div>
+
+<h2 id="shard-key">3.3 Shard Key Strategies</h2>
+
+<div class="defbox">
+  <strong>Shard Key:</strong> The field (or set of fields) used to distribute documents across shards. The shard key controls the distribution of data. It is one of the most critical decisions in a sharded MongoDB deployment.
+</div>
+
+<p>MongoDB divides the shard key's value space into <strong>chunks</strong>. Each chunk is assigned to a shard. When you insert a document, MongoDB hashes or evaluates the shard key value and routes the document to the appropriate chunk (and therefore shard).</p>
+
+<h3>Strategy 1: Range Key (Range Sharding)</h3>
+
+<div class="defbox">
+  <strong>Range Sharding:</strong> The shard key partitions the data into ranges. Each shard holds a contiguous range of shard key values.
+  <br><br>
+  Example: Shard key = postalCode, ranges: 10000–30000, 30000–60000, 60000–99999
+  <br>Each shard holds all documents with postal codes in its range.
+</div>
+
+<pre><span class="comment">// Range sharding visual (from slide p.8 left side):</span>
+Document { X: 25 } → falls in range [10 ≤ X &lt; 20]? No. Falls in [20 ≤ X &lt; maxKey]? Yes → Chunk C → Shard 3
+Document { X: 26 } → falls in [20 ≤ X &lt; maxKey]? Yes → Chunk C → Shard 3
+Document { X: 27 } → falls in [20 ≤ X &lt; maxKey]? Yes → Chunk C → Shard 3
+
+<span class="comment">// Problem: all three documents go to the SAME shard. This is a "hot spot".</span></pre>
+
+<p><strong>Advantages of Range Sharding:</strong></p>
+<ul>
+  <li>Range queries are highly efficient — all documents in a range are on the same shard (or a few shards). The mongos can route the query to just one or a few shards (targeted query).</li>
+  <li>Useful for applications that frequently retrieve sets of items using range queries (e.g., "get all orders from January to March").</li>
+  <li>Groups related items together on the same shard.</li>
+</ul>
+
+<p><strong>Disadvantages of Range Sharding:</strong></p>
+<ul>
+  <li><strong>Hot spots:</strong> If the shard key is monotonically increasing (like a timestamp or auto-increment ID), all new insertions always go to the last chunk (highest range) on one shard. That shard becomes a bottleneck while others sit idle.</li>
+  <li>Uneven distribution if the data is not uniformly distributed across the key range.</li>
+</ul>
+
+<h3>Strategy 2: Hashed Key (Hash Sharding)</h3>
+
+<div class="defbox">
+  <strong>Hash Sharding:</strong> The shard key value is hashed by a hash function. The hash value determines which chunk (and shard) the document goes to. The hash distributes documents uniformly across shards regardless of the shard key's natural ordering.
+</div>
+
+<pre><span class="comment">// Hash sharding visual (from slide p.8 right side):</span>
+Document { X: 25 } → hash(25) = some_hash_value → could map to Chunk A, B, or C randomly
+Document { X: 26 } → hash(26) = different_hash → maps to a different chunk
+Document { X: 27 } → hash(27) = yet another → maps to yet another chunk
+
+<span class="comment">// Even though 25, 26, 27 are sequential, they land on DIFFERENT shards → no hot spot!</span></pre>
+
+<p><strong>Advantages of Hash Sharding:</strong></p>
+<ul>
+  <li>Reduces the chance of hot spots — distributes data across nodes evenly even with sequential shard keys.</li>
+  <li>Good for high-throughput insert workloads.</li>
+</ul>
+
+<p><strong>Disadvantages of Hash Sharding:</strong></p>
+<ul>
+  <li><strong>Range queries are expensive (scatter-gather):</strong> Documents with similar shard key values are scattered across all shards. A range query like "find all orders from January" must be sent to ALL shards and the results aggregated by mongos — a scatter-gather operation.</li>
+  <li>No data locality for related data.</li>
+</ul>
+
+<table>
+  <tr>
+    <th>Strategy</th>
+    <th>Range Queries</th>
+    <th>Insert Distribution</th>
+    <th>Hot Spot Risk</th>
+    <th>Best For</th>
+  </tr>
+  <tr>
+    <td><strong>Range Sharding</strong></td>
+    <td>Efficient (targeted query)</td>
+    <td>Can be uneven</td>
+    <td>High with sequential keys</td>
+    <td>Analytical queries on ranges, time-based data (if not monotonic)</td>
+  </tr>
+  <tr>
+    <td><strong>Hash Sharding</strong></td>
+    <td>Scatter-gather (expensive)</td>
+    <td>Very even</td>
+    <td>Low</td>
+    <td>High write throughput, uniform distribution</td>
+  </tr>
+</table>
+
+<h3>Choosing a Good Shard Key for the Teacher Collection</h3>
+
+<p>From the slide example, the teacher collection has fields: teacherID, name, mail, DoB, gender, Country, postalCode, subjects (array), references (array).</p>
+
+<p>The question: "Which field makes a good range shard key that distributes data roughly evenly?"</p>
+
+<div class="defbox">
+  <strong>Analysis of candidate shard keys for the teacher collection:</strong>
+  <ul>
+    <li><strong>teacherID</strong> — Sequential integer. BAD for range sharding (hot spot). Good for hash sharding.</li>
+    <li><strong>name</strong> — Not uniformly distributed (many "Smith"s). Mediocre.</li>
+    <li><strong>postalCode</strong> — Geographic distribution. Could be reasonable if teachers are spread geographically. Allows range queries like "all teachers in postal code 4000–5000". Reasonable choice for range sharding IF distribution is roughly even.</li>
+    <li><strong>gender</strong> — Very low cardinality (m/f/other). TERRIBLE shard key — all data goes to 2-3 values, no distribution.</li>
+    <li><strong>Country</strong> — Low cardinality for a single-country school. Bad choice.</li>
+    <li><strong>DoB</strong> — Reasonable distribution. Could work for range sharding.</li>
+  </ul>
+  <strong>Best answer for range shard key:</strong> <code>postalCode</code> — it has relatively high cardinality, reasonable geographic distribution, and allows efficient range queries on location-based data.
+</div>
+
+<h3>Shard Key Modifications</h3>
+
+<p>The slide (p.10) raises important edge cases about shard key behavior:</p>
+
+<div class="defbox">
+  <strong>If the value of a shard key changes:</strong> (e.g., teacher with ID1 moves from postal code 0100 to 0101)
+  <br>Since the shard key determines which shard the document lives on, changing it means the document must MOVE to a different shard. MongoDB 5.0+ supports shard key value updates, but the operation involves deleting from the old shard and inserting on the new shard. Before MongoDB 5.0, the shard key was immutable.
+  <br><br>
+  <strong>If the shard key value is missing:</strong> Since schema is flexible in MongoDB, a document might not have the shard key field. MongoDB treats a missing shard key value as <code>null</code>, placing the document in the "null" chunk, usually on the first shard. This can create hot spots if many documents lack the shard key.
+</div>
+
+<h2 id="chunks">3.4 Chunks and the Balancer</h2>
+
+<div class="defbox">
+  <strong>Chunk:</strong> MongoDB divides the shard key's value range into chunks. Each chunk has a minimum and maximum shard key value (e.g., minKey ≤ X &lt; 10, 10 ≤ X &lt; 20, 20 ≤ X &lt; maxKey). Each chunk lives on exactly one shard at any given time.
+</div>
+
+<p><strong>Chunk lifecycle:</strong></p>
+<ul>
+  <li><strong>Auto-split:</strong> When a chunk grows beyond the maximum chunk size (default 128MB), MongoDB automatically splits it into two smaller chunks.</li>
+  <li><strong>Balancer:</strong> A background process that runs on the config server. It monitors chunk distribution across shards. When one shard has significantly more chunks than others, the balancer moves chunks to less-loaded shards.</li>
+  <li><strong>Balancing window:</strong> In production, balancing is often configured to run during off-peak hours to avoid performance impact.</li>
+</ul>
+
+<div class="examtip">
+The chunk/balancer concept connects directly to the shard key strategy. With range sharding and a sequential key, one shard keeps getting new data (hot spot) and the balancer has to keep moving chunks — this is extra overhead and not ideal. Hash sharding avoids this by distributing inserts from the start.
+</div>
+
+<h2 id="shard-key-modifications">3.5 Targeted vs. Scatter-Gather Queries in Sharding</h2>
+
+<div class="defbox">
+  <strong>Targeted Query:</strong> A query that includes the shard key in its filter. Mongos can look up the chunk map and route the query to exactly the shard(s) holding the relevant data. Very efficient.
+  <br><br>
+  <strong>Scatter-Gather Query:</strong> A query that does NOT include the shard key. Mongos must send the query to ALL shards and then merge/aggregate the results. Expensive — grows linearly with the number of shards.
+</div>
+
+<pre><span class="comment">// Shard key = postalCode</span>
+
+<span class="comment">// TARGETED query — includes shard key:</span>
+db.teachers.find({ postalCode: { $gte: 4000, $lte: 5000 } })
+<span class="comment">// Mongos routes to only the shard(s) holding postal codes 4000-5000. Fast!</span>
+
+<span class="comment">// SCATTER-GATHER query — no shard key:</span>
+db.teachers.find({ gender: "f" })
+<span class="comment">// Mongos sends to ALL shards. Each shard searches locally. Results merged. Slow!</span></pre>
+
+<!-- ============================================================ -->
+<!--      PART 4: BIG COMPARISON TABLES                          -->
+<!-- ============================================================ -->
+<h1 id="part4" class="pagebreak">PART 4: Big Comparison Tables</h1>
+
+<h2 id="compare-all">4.1 Full System Comparison: PostgreSQL vs. MongoDB vs. ScyllaDB</h2>
+
+<table>
+  <tr>
+    <th>Feature</th>
+    <th>PostgreSQL (Relational)</th>
+    <th>MongoDB (Document)</th>
+    <th>ScyllaDB / Cassandra (Column-Family)</th>
+  </tr>
+  <tr>
+    <td><strong>Data Model</strong></td>
+    <td>Tables, rows, columns. Strict schema. Foreign keys.</td>
+    <td>Collections of BSON documents. Flexible schema.</td>
+    <td>Tables with wide rows. Column families. Query-driven schema.</td>
+  </tr>
+  <tr>
+    <td><strong>Architecture</strong></td>
+    <td>Single-node (centralized). Streaming replication available but native failover requires external tools.</td>
+    <td>Primary-Secondary (Single Leader). Replica sets. Sharding for horizontal scale.</td>
+    <td>Peer-to-Peer (P2P). All nodes equal. No single leader. Consistent hashing ring.</td>
+  </tr>
+  <tr>
+    <td><strong>Replication</strong></td>
+    <td>Streaming replication (optional, external). No built-in automatic failover.</td>
+    <td>Single-leader replication via oplog. Built-in automatic failover via elections.</td>
+    <td>P2P replication. All replicas accept writes. No failover needed.</td>
+  </tr>
+  <tr>
+    <td><strong>Schema</strong></td>
+    <td>Strict, predefined schema. DDL (CREATE TABLE) required before inserting.</td>
+    <td>Flexible/dynamic schema. No DDL needed. Optional schema validation.</td>
+    <td>Flexible for column values, but table structure is defined. Query-driven design.</td>
+  </tr>
+  <tr>
+    <td><strong>Consistency Model</strong></td>
+    <td>Strong ACID (single node). Serializable isolation.</td>
+    <td>Single-document atomicity always. Multi-document ACID transactions (replica set + sharded). Default: eventual on reads from secondaries.</td>
+    <td>Eventual consistency (default). Tunable via consistency levels (ONE, QUORUM, ALL). Strong eventual consistency via CRDTs.</td>
+  </tr>
+  <tr>
+    <td><strong>Write Handling</strong></td>
+    <td>All writes to single node (or primary in replication setup).</td>
+    <td>All writes to PRIMARY only. Secondaries replicate asynchronously.</td>
+    <td>Writes go directly to all/quorum replicas. Any node can accept writes.</td>
+  </tr>
+  <tr>
+    <td><strong>Read Handling</strong></td>
+    <td>All reads from single node (or can read from replica).</td>
+    <td>Reads from PRIMARY or SECONDARY (one node). Controlled by Read Preference.</td>
+    <td>Reads from as many replicas as consistency level requires. Coordinator merges.</td>
+  </tr>
+  <tr>
+    <td><strong>Scaling</strong></td>
+    <td>Vertical scaling (bigger machine). Horizontal read scaling with replicas.</td>
+    <td>Vertical within a replica set. Horizontal via sharding (multiple replica sets).</td>
+    <td>Horizontal scaling native. Add nodes to the ring at any time.</td>
+  </tr>
+  <tr>
+    <td><strong>Failover</strong></td>
+    <td>Manual or external tools (Patroni, etc.). Not built-in.</td>
+    <td>Automatic failover via election process. Built-in.</td>
+    <td>No failover needed. P2P — all nodes are equal.</td>
+  </tr>
+  <tr>
+    <td><strong>Query Language</strong></td>
+    <td>SQL</td>
+    <td>MQL (MongoDB Query Language) — JavaScript-like document queries</td>
+    <td>CQL (Cassandra Query Language) — SQL-like but with restrictions</td>
+  </tr>
+  <tr>
+    <td><strong>Joins</strong></td>
+    <td>Full JOIN support (INNER, OUTER, CROSS, etc.)</td>
+    <td>No native JOIN. Use embedding or $lookup aggregation stage (limited).</td>
+    <td>No JOIN support. Denormalize data into query-optimized tables.</td>
+  </tr>
+  <tr>
+    <td><strong>Transactions</strong></td>
+    <td>Full ACID multi-statement transactions. MVCC-based.</td>
+    <td>Single-document always atomic. Multi-document ACID transactions available (v4.0+, higher overhead).</td>
+    <td>Lightweight transactions (LWT) using Paxos. Limited scope. Expensive.</td>
+  </tr>
+  <tr>
+    <td><strong>Rollback</strong></td>
+    <td>Transaction ROLLBACK — intentional, no data loss for committed data.</td>
+    <td>Replication rollback — automatic, can lose acknowledged writes (with w:1).</td>
+    <td>No rollback concept in same sense. Conflict resolution via timestamps/CRDTs.</td>
+  </tr>
+  <tr>
+    <td><strong>Relationships</strong></td>
+    <td>FK-PK, referential integrity enforced by DB.</td>
+    <td>No enforced FK. Manual references ($ref) or embedding. Application manages integrity.</td>
+    <td>No FK. Denormalize. Application manages relationships.</td>
+  </tr>
+  <tr>
+    <td><strong>Partitioning</strong></td>
+    <td>Table partitioning (within one server). No native distributed sharding.</td>
+    <td>Sharding: each shard is a replica set. Range or hash partitioning.</td>
+    <td>Native consistent hashing partitioning. Automatic rebalancing when nodes added/removed.</td>
+  </tr>
+  <tr>
+    <td><strong>Use Cases</strong></td>
+    <td>Complex queries, reporting, financial systems, ERPs, normalized data with many relationships.</td>
+    <td>Catalogs, CMS, user profiles, web apps, semi-structured data, document-like objects.</td>
+    <td>High write throughput, time-series, IoT, large-scale analytics, geographically distributed.</td>
+  </tr>
+</table>
+
+<h2 id="replication-compare">4.2 Single-Leader vs. Peer-to-Peer Replication</h2>
+
+<table>
+  <tr>
+    <th>Aspect</th>
+    <th>Single-Leader (MongoDB)</th>
+    <th>Peer-to-Peer (ScyllaDB)</th>
+  </tr>
+  <tr>
+    <td><strong>Write routing</strong></td>
+    <td>ALL writes to primary only</td>
+    <td>Writes to ALL/quorum replicas directly</td>
+  </tr>
+  <tr>
+    <td><strong>Read routing</strong></td>
+    <td>Reads from ONE node (primary or one secondary)</td>
+    <td>Reads from as many replicas as consistency level requires</td>
+  </tr>
+  <tr>
+    <td><strong>Write ordering</strong></td>
+    <td>Primary determines order. Ordered oplog sent to secondaries.</td>
+    <td>Each replica accepts independently. Concurrent write conflicts can occur. Use timestamps.</td>
+  </tr>
+  <tr>
+    <td><strong>Consistency</strong></td>
+    <td>Ordered replication avoids conflicts. Stale reads possible from secondaries.</td>
+    <td>Eventual consistency. Conflict resolution via LWW (Last Write Wins) or CRDTs.</td>
+  </tr>
+  <tr>
+    <td><strong>Failover needed?</strong></td>
+    <td>YES — primary is single point of failure. Election process required.</td>
+    <td>NO — any node can accept writes. No single point of failure.</td>
+  </tr>
+  <tr>
+    <td><strong>Replication mechanism</strong></td>
+    <td>Oplog (change log): primary records all writes, secondaries tail the oplog.</td>
+    <td>Hinted handoff, read repair, anti-entropy</td>
+  </tr>
+  <tr>
+    <td><strong>Data loss on failure</strong></td>
+    <td>Possible if primary fails before replication (rollback). Prevented by w:majority.</td>
+    <td>No rollback. Missed writes may cause inconsistency (repaired eventually).</td>
+  </tr>
+  <tr>
+    <td><strong>Replication lag</strong></td>
+    <td>YES — asynchronous by default. Can be mitigated by higher write concern.</td>
+    <td>Concept is different — hinted handoff stores writes for unavailable nodes.</td>
+  </tr>
+</table>
+
+<!-- ============================================================ -->
+<!--      PART 5: ASSIGNMENTS 7 — FULL MODEL ANSWERS             -->
+<!-- ============================================================ -->
+<h1 id="part5" class="pagebreak">PART 5: Assignments 7 — All Questions with Full Model Answers</h1>
+
+<div class="assignment">
+  <h3 id="a1">Assignment Block 1: Asynchronous Replication Problems</h3>
+  <p><em>Context: MongoDB – as other single-leader distributed databases – replicates asynchronously.</em></p>
+
+  <div class="question">Q1: Name at least 2 problems that stem from asynchronous replication and explain the problems.</div>
+
+  <div class="answer-box">
+    <strong>Problem 1: Stale Reads</strong><br>
+    Because secondaries apply the oplog asynchronously, there is a delay (replication lag) between when a write is committed on the primary and when it appears on a secondary. If a client reads from a secondary during this lag, it receives old (stale) data — data that does not reflect the most recent committed write. This is called a stale read. Example: A price is updated to 50€ on the primary, but a secondary still shows 45€ because it hasn't processed the oplog entry yet.
+    <br><br>
+    <strong>Problem 2: Read-Your-Own-Write / Non-Monotonic Reads</strong><br>
+    A user inserts a document (e.g., a comment) and the primary confirms it. But then the user's next read is routed to a secondary that hasn't yet replicated that document. The user doesn't see their own just-written comment — this is the "read-your-own-write" anomaly. This can confuse users ("I just posted that, where did it go?").
+    <br><br>
+    <strong>Problem 3: Dirty Reads / Rollback Risk</strong><br>
+    With readConcern: local (default), a client may read a write from the primary that has NOT yet been replicated to a majority. If the primary fails before that write is replicated, it gets rolled back. The client then has data that "never officially existed" — a dirty read that was subsequently rolled back.
+    <br><br>
+    <strong>Problem 4: Loss of Data on Failover (Rollback)</strong><br>
+    If the primary accepts writes with w:1 and then fails before those writes reach a majority of secondaries, when a new primary is elected, those writes are rolled back. Acknowledged writes are permanently lost.
+  </div>
+
+  <div class="question">Q2: How can you force MongoDB replication to behave synchronously?</div>
+
+  <div class="answer-box">
+    Use <strong>Write Concern w:majority</strong>. With w:majority, the primary waits until a majority of replica set nodes (e.g., 2 out of 3) have confirmed they received and applied the write before sending acknowledgment to the client. This effectively makes replication synchronous from the client's perspective — the client does not get the "success" response until the write has been propagated to majority. Note: the replication mechanism itself is still technically asynchronous under the hood, but the client is blocked until the majority confirms, making the observable behavior synchronous.
+    <br><br>
+    Alternatively, use <strong>w:N</strong> where N is the total number of nodes to force all nodes to confirm (fully synchronous), at the cost of higher latency.
+  </div>
+</div>
+
+<div class="assignment">
+  <h3 id="a2">Assignment Block 2: Replication Lag Diagram Analysis</h3>
+  <p><em>Context: The diagram shows User 1234 inserting a comment (author=1234, reply_to=55555, message='Sounds good!'). The Leader confirms "insert ok". Then User 1234 queries by reply_to=55555, the query hits Follower 2 which hasn't applied the oplog yet, and returns "no results!"</em></p>
+
+  <div class="question">Q1: What write concern is used here?</div>
+
+  <div class="answer-box">
+    Write concern <strong>w:1</strong>. The leader immediately sends "insert ok" to the client as soon as the primary wrote it, without waiting for any follower. We can see this because the "insert ok" is returned before Follower 1 and certainly before Follower 2 have processed the insert. With w:majority, the leader would have waited for at least Follower 1 to confirm before sending "insert ok".
+  </div>
+
+  <div class="question">Q2: Describe the replication lag problem displayed in the picture.</div>
+
+  <div class="answer-box">
+    The diagram shows the read-your-own-write anomaly caused by replication lag:
+    <ol>
+      <li>User 1234 inserts a comment. The leader (primary) processes it and sends back "insert ok" immediately (w:1).</li>
+      <li>The leader begins sending the insert operation to followers asynchronously via the oplog. Follower 1 receives and applies it relatively quickly. But Follower 2 receives and applies it much later (significant replication lag).</li>
+      <li>After receiving "insert ok", User 1234 immediately queries for their comment (WHERE reply_to = 55555). This read is routed to Follower 2 (e.g., via secondaryPreferred read preference).</li>
+      <li>Follower 2 has NOT yet applied the insert oplog entry. So the query returns "no results!" — even though the user just successfully inserted the comment seconds ago.</li>
+    </ol>
+    This is the replication lag problem: the secondary is behind the primary, leading to inconsistent reads where a client cannot see data it just wrote.
+  </div>
+
+  <div class="question">Q3: What measures can you take to decrease replication lag? (Only list measures you can control — not hardware/network improvements.)</div>
+
+  <div class="answer-box">
+    Controllable measures to decrease replication lag:
+    <ol>
+      <li><strong>Use higher write concern (w:majority or w:all)</strong>: The primary waits for secondaries before acknowledging. This ensures secondaries are up-to-date before the client reads again.</li>
+      <li><strong>Route reads to primary (readPreference: primary)</strong>: By reading from primary instead of secondaries, replication lag is irrelevant for reads. The tradeoff is more load on primary.</li>
+      <li><strong>Reduce the read load on secondaries</strong>: If secondaries are overwhelmed with read queries, they fall behind applying the oplog. Reducing reads on secondaries gives them more CPU/IO for oplog application.</li>
+      <li><strong>Keep documents smaller</strong>: Large documents create larger oplog entries. Smaller documents are faster to replicate and apply.</li>
+      <li><strong>Avoid large bulk operations</strong>: Writing many documents in one batch creates a burst of oplog entries that secondaries must process all at once, causing temporary spikes in lag.</li>
+      <li><strong>Read Preference: primaryPreferred</strong>: Combined with application logic to detect when reading recently written data, ensures the primary is used for reads that need freshness.</li>
+    </ol>
+  </div>
+</div>
+
+<div class="assignment">
+  <h3 id="a3">Assignment Block 3: MongoDB Replication Idempotent OpLog</h3>
+  <p><em>Context: "Each operation in the oplog is idempotent. That is, oplog operations produce the same results whether applied once or multiple times to the target dataset." idempotent: f(x) = f(f(x))</em></p>
+
+  <div class="question">Q1: In what cases / scenarios do oplog operations need to be applied more than once?</div>
+
+  <div class="answer-box">
+    Oplog operations may need to be applied more than once in the following scenarios:
+    <ul>
+      <li><strong>Secondary crashes mid-replication:</strong> A secondary may crash while applying oplog entries and not record which entries were fully applied. On restart, it may re-apply some oplog entries that were already applied before the crash. Idempotency ensures no harm is done.</li>
+      <li><strong>Network interruption during oplog tailing:</strong> A secondary is tailing the primary's oplog. A network hiccup interrupts the connection. When the connection is restored, the secondary may request oplog entries from a slightly earlier point (to be safe) and some entries get applied a second time.</li>
+      <li><strong>Rollback and resync:</strong> When a former primary rejoins as secondary after failover, it may need to replay oplog operations to catch up to the new primary. Some entries may overlap.</li>
+      <li><strong>Initial sync retry:</strong> During initial synchronization of a new secondary, if the sync is interrupted and restarted, some operations may be applied multiple times.</li>
+    </ul>
+  </div>
+
+  <div class="question">Q2: Update commands may or may not be idempotent per se. Give an example of an update command that is NOT idempotent. Assume we have a collection of product documents.</div>
+
+  <div class="answer-box">
+    A non-idempotent update command using <code>$inc</code>:
+    <pre>db.product.updateOne(
+  { _id: ObjectId("64f123456789abcdef123456") },
+  { $inc: { price: 10 } }
+)
+<span class="comment">// Applied once:  price goes from 100 → 110</span>
+<span class="comment">// Applied twice: price goes from 100 → 120  (NOT the same result!)</span>
+<span class="comment">// Applied three times: price → 130</span>
+<span class="comment">// This is NOT idempotent: f(f(x)) ≠ f(x)</span></pre>
+    Similarly, <code>$mul: { price: 1.2 }</code> (multiply price by 1.2) is not idempotent — applied twice would multiply the price twice.
+    <br><br>
+    Also non-idempotent: <code>$push: { items: "new_item" }</code> — applied twice pushes the same item twice into the array.
+  </div>
+
+  <div class="question">Q3: What about non-deterministic functions? Give an example.</div>
+
+  <div class="answer-box">
+    Non-deterministic functions produce different results each time they are called, even with the same input. Example: using the current timestamp or a random number as part of an update:
+    <pre>db.product.updateOne(
+  { _id: ObjectId("64f123...") },
+  { $set: { last_modified: new Date() } }  <span class="comment">// new Date() = current time — different each call!</span>
+)
+<span class="comment">// Applied at 10:00 → last_modified = 10:00</span>
+<span class="comment">// Applied again at 10:05 → last_modified = 10:05  (different result!)</span></pre>
+    Another example: <code>$set: { discount: Math.random() * 10 }</code> — every application gives a different discount value.
+    <br><br>
+    The MongoDB oplog handles this by storing the RESULT of the non-deterministic function, not the function call itself. So the oplog entry would store <code>$set: { last_modified: ISODate("2026-06-22T10:00:00Z") }</code> — the concrete value, not <code>new Date()</code>. This makes the oplog entry deterministic and idempotent.
+  </div>
+
+  <div class="question">Q4: What does an oplog update operation entry need to contain in order to be idempotent? Give an example using the product collection.</div>
+
+  <div class="answer-box">
+    To be idempotent, an oplog update entry must use a <strong>$set operation with the absolute final value</strong>, not a relative change. It must store the result state, not the delta.
+    <br><br>
+    Example:
+    <br>
+    Original user command (NOT idempotent): <code>db.product.updateOne({ _id: ... }, { $inc: { price: 10 } })</code>
+    <br>
+    Oplog stores the idempotent version: <code>{ op: "u", ns: "shop.product", o: { $v: 2, diff: { u: { price: 110 } } }, o2: { _id: ObjectId("...") } }</code>
+    <br><br>
+    In plain terms: the oplog records "SET price TO 110" (the final absolute value), not "ADD 10 TO price". If this is applied once or multiple times, price always ends up at 110. This is the key principle:
+    <ul>
+      <li>Original command: <code>{ $inc: { price: 10 } }</code> → NOT idempotent</li>
+      <li>Oplog transformation: <code>{ $set: { price: 110 } }</code> → IS idempotent</li>
+    </ul>
+    The oplog must contain:
+    <ol>
+      <li>The operation type (insert, update, delete)</li>
+      <li>The exact document _id being modified (so repeated application hits the same document)</li>
+      <li>An absolute $set of the final field values (not relative changes like $inc, $mul, $push)</li>
+    </ol>
+  </div>
+</div>
+
+<div class="assignment">
+  <h3 id="a4">Assignment Block 4: Read Preference = Primary — Stale and Dirty Reads</h3>
+  <p><em>Context: Assume that you set the MongoDB Read Preference to Primary.</em></p>
+
+  <div class="question">Q1: In this case, can a read request still return stale data? If yes, precisely explain when and why. If no, precisely explain why not.</div>
+
+  <div class="answer-box">
+    <strong>Answer: No, with Read Preference = Primary, stale reads are not possible from a routing perspective.</strong>
+    <br><br>
+    When Read Preference is set to Primary, ALL read requests are routed exclusively to the primary node. The primary is the node where ALL writes happen first. It always has the most up-to-date version of the data. Since reads go to the primary and writes also go to the primary, there is no lag between write and read — the primary always has the latest committed data.
+    <br><br>
+    Note: "stale" in the context of replication lag means reading from a secondary that is behind the primary. Since we never read from secondaries in this configuration, replication lag cannot cause stale reads.
+    <br><br>
+    However, note that with readConcern: local (default), there is a theoretical edge case: the primary may have accepted a write that has not yet been replicated to majority and may be rolled back. The read would return data that is "fresh" (not stale in terms of lag) but may later be rolled back (dirty). See Q2 for this case.
+  </div>
+
+  <div class="question">Q2: In this case, can a read request still return dirty reads that may be rolled back? If yes, precisely explain when and why. If no, precisely explain why not.</div>
+
+  <div class="answer-box">
+    <strong>Answer: YES, with Read Preference = Primary AND readConcern: local (default), dirty reads are still possible.</strong>
+    <br><br>
+    Here is the scenario:
+    <ol>
+      <li>A write is sent to the primary with write concern w:1.</li>
+      <li>The primary writes the data and immediately returns "acknowledged: true" to the client.</li>
+      <li>A read (with readConcern: local, Read Preference: primary) is executed and returns this new data.</li>
+      <li>BUT: the write has NOT yet been replicated to any secondary (or to majority).</li>
+      <li>The primary then FAILS before replicating the write.</li>
+      <li>A new primary is elected. It does NOT have this write (it was only on the old primary).</li>
+      <li>When the old primary rejoins as secondary, it rolls back this write.</li>
+    </ol>
+    The read in step 3 returned data that was subsequently rolled back — this is a dirty read.
+    <br><br>
+    <strong>How to prevent it:</strong> Use <code>readConcern: majority</code>. With this setting, the primary only returns data that has been acknowledged by the majority of the replica set — data that CANNOT be rolled back. Even though you are reading from the primary, majority-read-concern ensures you only see durable data.
+  </div>
+</div>
+
+<div class="assignment">
+  <h3 id="a5">Assignment Block 5: Rollback — MongoDB vs. Postgres</h3>
+
+  <div class="question">What is the fundamental difference between a rollback in MongoDB and a rollback in Postgres?</div>
+
+  <div class="answer-box">
+    <strong>MongoDB Rollback:</strong>
+    <ul>
+      <li>Cause: Happens AUTOMATICALLY due to a PRIMARY FAILOVER in a replica set. It is a replication/distributed systems phenomenon.</li>
+      <li>When: After a failover, the old primary rejoins as secondary. If it had writes that were NOT replicated to the majority before it failed, those writes conflict with the new primary's state. The old primary automatically rolls back those writes to align with the new primary.</li>
+      <li>Data loss: YES — acknowledged writes (with w:1) may be permanently lost. The rolled-back data is written to a special rollback file but is NOT automatically re-applied.</li>
+      <li>Application impact: The application may have already received confirmation of the write and even presented the data to users. That data then disappears.</li>
+      <li>Prevention: Use w:majority. With majority write concern, once acknowledged, a write CANNOT be rolled back because majority means it is on enough nodes that the new primary will also have it.</li>
+    </ul>
+    <strong>PostgreSQL Rollback:</strong>
+    <ul>
+      <li>Cause: Happens INTENTIONALLY when a client issues ROLLBACK, or AUTOMATICALLY when a transaction fails due to an error (constraint violation, deadlock, etc.).</li>
+      <li>When: Within a single transaction that has not yet been COMMITTED. The transaction changes are undone.</li>
+      <li>Data loss: NO — since the transaction was never committed, no externally visible, durable data is lost. Other transactions were never able to see the uncommitted changes (depending on isolation level).</li>
+      <li>Application impact: Clean — the application knows the operation failed and can retry.</li>
+    </ul>
+    <br>
+    <strong>Key fundamental difference in one sentence:</strong> A Postgres rollback is an <em>intentional transaction abort within a single node</em> that never loses committed data. A MongoDB rollback is an <em>automatic, involuntary loss of already-acknowledged writes</em> triggered by a failover event in a distributed system — it can lose data the client was told was successfully saved.
+  </div>
+</div>
+
+<div class="assignment">
+  <h3 id="a6">Assignment Block 6: Split Brain — Scenario 1 (Primary in Europe, 3 Secondaries in US)</h3>
+  <p><em>Context: 5-node replica set: Datacenter Europe has [Primary + 1 Secondary]. Datacenter US has [3 Secondaries]. Network fault cuts connection between US and Europe.</em></p>
+
+  <div class="question">What happens when the network connection breaks? How do Europe nodes react? How do US nodes react? Can there be a split brain? Can there be data loss (rollback)?</div>
+
+  <div class="answer-box">
+    <strong>Setup:</strong> 5-node replica set total. Europe: Primary (1) + Secondary (1) = 2 nodes. US: 3 Secondaries = 3 nodes. Majority of 5 = 3.
+    <br><br>
+    <strong>Europe nodes react:</strong>
+    <ul>
+      <li>Europe has 2 nodes. They can still communicate with each other.</li>
+      <li>Europe's primary can no longer reach the 3 US secondaries.</li>
+      <li>The primary checks: do I still have a quorum (majority)? 2 out of 5 total = NOT a majority. The primary STEPS DOWN voluntarily. It can no longer accept writes.</li>
+      <li>The Europe secondary also cannot become primary (only 2/5 nodes available = not majority).</li>
+      <li>Europe nodes become read-only (no primary, no writes accepted). Note: with readPreference:secondaryPreferred, reads can still be served from Europe's secondary.</li>
+    </ul>
+    <strong>US nodes react:</strong>
+    <ul>
+      <li>US has 3 secondaries. They can communicate with each other but not with Europe.</li>
+      <li>US sees that the primary (in Europe) is unreachable — heartbeat timeout exceeded.</li>
+      <li>US calls an election. They have 3 votes = majority of 5. An election is valid.</li>
+      <li>One of the US secondaries is elected as the new primary.</li>
+      <li>Writes resume on the new US primary. Normal operations continue in the US datacenter.</li>
+    </ul>
+    <strong>Can there be a split brain?</strong>
+    No. A split brain would mean two primaries exist simultaneously. However, because the majority rule is enforced: the Europe side (2 nodes) cannot elect a primary (not majority), so it steps down. Only the US side (3 nodes = majority) can hold an election. At no point do two primaries coexist.
+    <br><br>
+    <strong>Can there be data loss (rollback)?</strong>
+    YES, there can be data loss. Any writes that the Europe primary accepted (with w:1) BEFORE it stepped down and that were NOT yet replicated to any of the US secondaries will be rolled back when the network heals and the Europe primary rejoins as secondary. The old Europe primary will revert those writes. With w:majority, such a rollback would not be possible since majority (US nodes) would have had to confirm.
+  </div>
+</div>
+
+<div class="assignment">
+  <h3 id="a7">Assignment Block 7: Split Brain — Scenario 2 (Heartbeat Delayed — "False Positive" scenario)</h3>
+  <p><em>Context: 5-node replica set: Datacenter Europe has [Primary + 1 Secondary]. Datacenter US has [3 Secondaries]. Heartbeat from primary (Europe) is delayed to US — US thinks primary is down but primary is actually up.</em></p>
+
+  <div class="question">What happens? How do Europe nodes react? How do US nodes react? Can there be a split brain? Can there be data loss (rollback)?</div>
+
+  <div class="answer-box">
+    <strong>US nodes react:</strong>
+    <ul>
+      <li>The 3 US secondaries do not receive heartbeat from the Europe primary within the heartbeatTimeout (10 seconds by default).</li>
+      <li>US concludes the primary is dead and calls an election.</li>
+      <li>US has 3 votes = majority of 5. Election is valid. A new primary is elected in the US.</li>
+      <li>US starts accepting writes on the new primary.</li>
+    </ul>
+    <strong>Europe nodes react:</strong>
+    <ul>
+      <li>The old Europe primary is still UP and running. It still believes it is primary.</li>
+      <li>The Europe primary continues accepting writes from clients who connect to it.</li>
+      <li>The Europe secondary continues replicating from the Europe primary.</li>
+    </ul>
+    <strong>Can there be a split brain?</strong>
+    YES — temporarily there are TWO primaries: the old Europe primary and the newly elected US primary. This is a temporary split-brain condition. However, MongoDB uses the Raft-based election term/epoch mechanism:
+    <ul>
+      <li>When the delayed heartbeat finally arrives, or when the network heals, the old Europe primary communicates with the US nodes.</li>
+      <li>The US nodes are now in a higher election term (they held an election).</li>
+      <li>The old Europe primary detects it is in a stale term. It immediately steps down and becomes a secondary.</li>
+      <li>The split brain is resolved. Only the US primary remains.</li>
+    </ul>
+    <strong>Can there be data loss (rollback)?</strong>
+    YES — during the window when both primaries were active, writes went to both the old Europe primary and the new US primary. When the Europe primary steps down and rejoins as secondary, any writes it accepted that were NOT replicated to the US majority will be ROLLED BACK. Those writes are permanently lost (unless manually recovered from the rollback file). This is why w:majority is critical: with w:majority, the Europe primary would have needed US nodes to confirm — but US nodes were unreachable — so the writes would have timed out (wtimeout) rather than being acknowledged. No acknowledged-then-rolled-back scenario.
+  </div>
+</div>
+
+<div class="assignment">
+  <h3 id="a8">Assignment Block 8: MongoDB Sharding — Camera Pictures (Duckey Town Cars)</h3>
+  <p><em>Context: Store pictures from cameras of Duckey town cars in a MongoDB collection for later analysis. Many pictures → shard the documents. Pictures are small enough to be stored directly in documents.</em></p>
+
+  <div class="question">Q1: Model a camera picture document. Assume that the pictures are small enough to be stored directly in the documents.</div>
+
+  <div class="answer-box">
+    <pre>{
+  _id: ObjectId("64f123456789abcdef123456"),
+  camera_id: "CAM-042",             <span class="comment">// which camera took this picture</span>
+  car_id: "DT-TRUCK-017",           <span class="comment">// which car (vehicle ID)</span>
+  timestamp: ISODate("2026-06-22T14:35:22Z"),  <span class="comment">// when the picture was taken</span>
+  location: {                        <span class="comment">// GPS coordinates at time of capture</span>
+    type: "Point",
+    coordinates: [42.2679, 42.7081]  <span class="comment">// [longitude, latitude]</span>
+  },
+  image_data: BinData(0, "..."),     <span class="comment">// binary image data (BSON BinData type)</span>
+  image_format: "JPEG",
+  resolution: { width: 1920, height: 1080 },
+  file_size_bytes: 245760,
+  tags: [],                          <span class="comment">// optional: analysis tags added later</span>
+  metadata: {
+    exposure: "1/500s",
+    iso: 200,
+    weather: "clear"
+  }
+}</pre>
+  </div>
+
+  <div class="question">Q2: What range shard key would you choose? Explain.</div>
+
+  <div class="answer-box">
+    <strong>Recommended range shard key: <code>camera_id</code> (or a compound key of <code>{ camera_id: 1, timestamp: 1 }</code>)</strong>
+    <br><br>
+    <strong>Reasoning:</strong>
+    <ul>
+      <li><strong>camera_id as range shard key:</strong> All pictures from the same camera are stored on the same shard. This supports common analytical queries like "get all pictures from camera CAM-042 in the last week" — these queries are targeted (go to one shard only). The number of cameras (cardinality) determines distribution — if there are many cameras, data is distributed across many shards.</li>
+      <li><strong>Why NOT timestamp alone?</strong> Timestamp is monotonically increasing — all new pictures always go to the "latest" chunk, causing a hot spot on one shard. This is the classic bad range shard key. However, timestamp within each camera_id is fine as a secondary sort key.</li>
+      <li><strong>Why NOT image_data?</strong> Binary data should not be a shard key.</li>
+      <li><strong>Compound key { camera_id: 1, timestamp: 1 }:</strong> Even better — distributes by camera, and within each camera, orders by time. Supports queries like "all pictures from CAM-042 between time A and B" as targeted queries.</li>
+    </ul>
+    <strong>Alternative: Hash shard key on camera_id</strong> — if the goal is purely uniform distribution (no need for camera-specific range queries), hashing camera_id distributes evenly. But for analysis use cases where you query by camera, range is better.
+    <br><br>
+    <strong>Final answer:</strong> Choose <code>camera_id</code> as the range shard key. It has relatively high cardinality (many cameras), provides data locality for camera-based analytical queries, and avoids hot spots as long as the cameras are relatively uniformly active. Do NOT choose timestamp alone as the shard key because it is monotonically increasing and would create a hot spot.
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!--      PART 6: QUICK REFERENCE CARD & EXAM TIPS              -->
+<!-- ============================================================ -->
+<h1 id="part6" class="pagebreak">PART 6: Quick Reference Card &amp; Last-Minute Exam Tips</h1>
+
+<h2>6.1 MongoDB Commands Quick Reference</h2>
+
+<h3>Replica Set Commands</h3>
+<pre><span class="comment">// Initialize a replica set</span>
+rs.initiate({ _id: "rs1", members: [
+  { _id: 0, host: "localhost:27018" },
+  { _id: 1, host: "localhost:27019" },
+  { _id: 2, host: "localhost:27020" }
+]})
+
+<span class="comment">// Check replica set status</span>
+rs.status()          <span class="comment">// full status of all members</span>
+rs.status().ok       <span class="comment">// returns 1 if ok</span>
+
+<span class="comment">// Update with write concern</span>
+db.product.updateOne(
+  { _id: ObjectId("64f123456789abcdef123456") },
+  { $inc: { price: 10 } },
+  { writeConcern: { w: "majority", wtimeout: 5000 } }
+)
+
+<span class="comment">// Find with read concern and read preference</span>
+db.product.findOne(
+  { _id: ObjectId("64f123456789abcdef123456") },
+  {},
+  { readConcern: { level: "majority" } }
+)</pre>
+
+<h3>CRUD Quick Reference</h3>
+<pre><span class="comment">// INSERT</span>
+db.teachers.insertOne({ name: "Knirsch", subject: "Databases", country: "Georgia" })
+db.teachers.insertMany([{ name: "A" }, { name: "B" }])
+
+<span class="comment">// FIND</span>
+db.teachers.find({ country: "Georgia" })                  <span class="comment">// all Georgian teachers</span>
+db.teachers.find({ postalCode: { $gte: 4000, $lt: 5000 } }) <span class="comment">// range query</span>
+db.teachers.findOne({ _id: ObjectId("...") })
+db.teachers.find({ "subjects": "Java" })                   <span class="comment">// query array field</span>
+db.teachers.find({ gender: "f" }, { name: 1, mail: 1, _id: 0 }) <span class="comment">// projection</span>
+
+<span class="comment">// UPDATE</span>
+db.teachers.updateOne({ name: "Doe" }, { $set: { remark: "Excellent" } })
+db.teachers.updateMany({}, { $inc: { lessonBalance: 1 } })
+db.product.updateOne({ _id: ObjectId("...") }, { $mul: { price: 1.2 } })
+
+<span class="comment">// DELETE</span>
+db.teachers.deleteOne({ _id: ObjectId("...") })
+db.teachers.deleteMany({ lessonBalance: { $lt: 0 } })</pre>
+
+<h3>Key Update Operators</h3>
+<table>
+  <tr><th>Operator</th><th>Meaning</th><th>Idempotent?</th></tr>
+  <tr><td><code>$set</code></td><td>Set field to an absolute value</td><td>YES</td></tr>
+  <tr><td><code>$unset</code></td><td>Remove a field</td><td>YES</td></tr>
+  <tr><td><code>$inc</code></td><td>Increment a numeric field by N</td><td>NO</td></tr>
+  <tr><td><code>$mul</code></td><td>Multiply a numeric field by N</td><td>NO</td></tr>
+  <tr><td><code>$push</code></td><td>Add element to array</td><td>NO</td></tr>
+  <tr><td><code>$pull</code></td><td>Remove elements from array matching condition</td><td>YES</td></tr>
+  <tr><td><code>$addToSet</code></td><td>Add to array only if not already present</td><td>YES</td></tr>
+  <tr><td><code>$rename</code></td><td>Rename a field</td><td>YES</td></tr>
+</table>
+
+<h2>6.2 Key Formulas &amp; Numbers to Remember</h2>
+
+<table>
+  <tr><th>Fact</th><th>Value</th></tr>
+  <tr><td>ObjectId size</td><td>12 bytes (4 timestamp + 5 random + 3 counter)</td></tr>
+  <tr><td>Max document size</td><td>16 MB</td></tr>
+  <tr><td>Heartbeat interval</td><td>Every 2 seconds</td></tr>
+  <tr><td>Heartbeat timeout (default)</td><td>10 seconds (heartbeatTimeoutSecs)</td></tr>
+  <tr><td>Default chunk size</td><td>128 MB</td></tr>
+  <tr><td>Majority of 3-node set</td><td>2 nodes</td></tr>
+  <tr><td>Majority of 5-node set</td><td>3 nodes</td></tr>
+  <tr><td>Default read concern</td><td>local</td></tr>
+  <tr><td>Default write concern</td><td>w: majority (in modern MongoDB versions)</td></tr>
+  <tr><td>Default read preference</td><td>primary</td></tr>
+  <tr><td>Election algorithm</td><td>Based on Raft algorithm concepts</td></tr>
+</table>
+
+<h2>6.3 Conceptual Exam Tips — What Prof. Knirsch Tests</h2>
+
+<div class="examtip">
+<strong>Document database vs. key-value:</strong> The key advantage of document DB over key-value is that the tagged document can be QUERIED by field values — not just by key. This enables sophisticated queries.
+</div>
+
+<div class="examtip">
+<strong>Embed vs. Reference — the decision:</strong> Embed when: always accessed together, 1:1/1:few, not independently queried. Reference when: data is large, independently queried, update-heavy, or array is unbounded. MongoDB loads the ENTIRE document even for partial access — keep documents small.
+</div>
+
+<div class="examtip">
+<strong>Write concern vs. read concern vs. read preference:</strong> These are THREE separate independent settings. Write concern = how many nodes confirm the write. Read concern = what version of data to return. Read preference = which node to read from. They are independent and can be combined.
+</div>
+
+<div class="examtip">
+<strong>Rollback in MongoDB:</strong> A MongoDB rollback is NOT like a Postgres transaction rollback. It is an automatic event caused by failover that can lose ACKNOWLEDGED writes (w:1). Prevention: use w:majority. This is a frequently tested distinction.
+</div>
+
+<div class="examtip">
+<strong>Split brain and majority:</strong> MongoDB prevents split brain via the majority voting rule — only the partition with more than half the voting members can elect a primary. The minority partition steps down or cannot elect. Know the math: 5-node set, 3 nodes in one partition, 2 in another → the 3-node partition can elect, the 2-node cannot.
+</div>
+
+<div class="examtip">
+<strong>Failover needed?</strong> YES for single-leader (MongoDB, Postgres). NO for P2P (ScyllaDB). This is a direct exam question from the slide.
+</div>
+
+<div class="examtip">
+<strong>Heartbeat timeout accuracy vs. efficiency:</strong> Increasing heartbeatTimeout → more time before declaring a node dead → higher ACCURACY (fewer false positives) but lower EFFICIENCY (slower detection). The slide explicitly tests this.
+</div>
+
+<div class="examtip">
+<strong>Idempotent oplog:</strong> The oplog converts non-idempotent operations ($inc, $mul, $push, new Date()) into idempotent $set operations storing the final absolute value. This is required so replaying the oplog (e.g., after secondary crash) is always safe.
+</div>
+
+<div class="examtip">
+<strong>Shard key choice — range vs. hash:</strong> Range = good for range queries, bad with sequential keys (hot spot). Hash = uniform distribution, bad for range queries (scatter-gather). Never choose a monotonically increasing field (timestamp, autoincrement) as a RANGE shard key.
+</div>
+
+<div class="examtip">
+<strong>$ref is only notational:</strong> MongoDB does NOT enforce references. There are no foreign key constraints. If you delete a referenced document, the reference becomes dangling and MongoDB will NOT warn you. This is the application's responsibility.
+</div>
+
+<div class="examtip">
+<strong>Read-Your-Own-Write problem:</strong> With w:1, a write is confirmed quickly. But reading from a lagging secondary afterwards may not show the written data. Solution: use readPreference:primary for reads that need to see the latest write, or use w:majority + readConcern:majority.
+</div>
+
+<h2>6.4 Key Terminology Summary</h2>
+
+<table>
+  <tr><th>Term</th><th>Definition (exam-ready)</th></tr>
+  <tr><td>Replica Set</td><td>A set of mongod instances storing the same data. One primary, one or more secondaries. Provides redundancy and automatic failover.</td></tr>
+  <tr><td>Primary</td><td>The node in a replica set that handles ALL write operations. The "leader" in single-leader replication.</td></tr>
+  <tr><td>Secondary</td><td>Replicates from primary via oplog. Can serve reads (depending on Read Preference).</td></tr>
+  <tr><td>Oplog</td><td>Operations Log — a special capped collection on the primary recording every write, in order. Secondaries tail it to stay in sync. All oplog entries are idempotent.</td></tr>
+  <tr><td>Write Concern</td><td>Controls durability: how many nodes must acknowledge a write before success is returned to client.</td></tr>
+  <tr><td>Read Concern</td><td>Controls consistency: what version of data (local/majority/linearizable) a read returns.</td></tr>
+  <tr><td>Read Preference</td><td>Controls routing: which node (primary/secondary/nearest) a read is sent to.</td></tr>
+  <tr><td>Replication Lag</td><td>Delay between write on primary and application on secondary. Causes stale reads on secondaries.</td></tr>
+  <tr><td>Failover</td><td>Automatic election of a new primary when the current primary fails. Requires majority of voting nodes.</td></tr>
+  <tr><td>Rollback (MongoDB)</td><td>Automatic reversion of writes on the old primary when it rejoins after failover, if those writes were not replicated to majority.</td></tr>
+  <tr><td>Split Brain</td><td>A network partition causing two nodes to both believe they are primary. MongoDB prevents stable split brain via majority voting.</td></tr>
+  <tr><td>Shard</td><td>A replica set holding a subset of the sharded collection's data.</td></tr>
+  <tr><td>Mongos</td><td>Query router in a sharded cluster. Client connects to mongos, which routes to the correct shard.</td></tr>
+  <tr><td>Config Server</td><td>Stores the chunk map (which shard key range lives on which shard). Must be a replica set.</td></tr>
+  <tr><td>Chunk</td><td>A contiguous range of shard key values. Lives on exactly one shard. Split and migrated by the balancer.</td></tr>
+  <tr><td>Range Sharding</td><td>Shard key value directly determines chunk assignment. Good for range queries, bad with sequential keys (hot spots).</td></tr>
+  <tr><td>Hash Sharding</td><td>Hash of shard key determines chunk assignment. Uniform distribution, but range queries scatter to all shards.</td></tr>
+  <tr><td>Hot Spot</td><td>One shard receiving disproportionately more traffic/data than others — a bottleneck in sharding.</td></tr>
+  <tr><td>Scatter-Gather</td><td>A query that must be sent to ALL shards because the shard key is not in the filter. Expensive.</td></tr>
+  <tr><td>Targeted Query</td><td>A query including the shard key. Mongos routes to only the relevant shard(s). Efficient.</td></tr>
+  <tr><td>Embedded Document</td><td>A sub-document stored inside a parent document. Loaded together with parent in a single read.</td></tr>
+  <tr><td>Referenced Document</td><td>A document in a separate collection. Linked via $ref notation (notational only — not enforced). Requires 2 queries to access.</td></tr>
+  <tr><td>Idempotent</td><td>f(x) = f(f(x)). Applying an operation once or multiple times gives the same result. Required property of all MongoDB oplog entries.</td></tr>
+  <tr><td>BSON</td><td>Binary JSON — the binary-encoded storage format of MongoDB documents. Extends JSON with types like ObjectId, Date, BinData.</td></tr>
+  <tr><td>ObjectId</td><td>12-byte globally unique identifier: 4 bytes timestamp + 5 bytes random + 3 bytes counter. Auto-generated _id if none provided.</td></tr>
+</table>
+
+<hr>
+<p style="text-align:center; color:#666; font-size:9pt; margin-top:30px;">
+  KIU Databases II — Module 7 MongoDB Study Guide | Prof. Eva Knirsch | Prepared: 2026-06-22<br>
+  Sources: 7.1.MongoDB.pdf, 7.2.MongoDB.Sharding.pdf, 2026-06-06.Assignments7.pdf
+</p>
+
+
+</div>
+
+<script>
+(function(){
+  var KEY = 'readerPrefs2:db2site';
+  var root = document.documentElement;
+  var body = document.body;
+  var DEF = { fs: 1.5, cw: 560, full: false };
+  var st = Object.assign({}, DEF);
+  try { st = Object.assign(st, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch(e){}
+
+  var ctl = document.getElementById('reader-controls');
+  var toggle = document.getElementById('rc-toggle');
+  var fontVal = document.getElementById('rc-font-val');
+  var widthInput = document.getElementById('rc-width');
+  var widthVal = document.getElementById('rc-width-val');
+  var fullChk = document.getElementById('rc-full');
+
+  function clamp(v, lo, hi){ return Math.min(hi, Math.max(lo, v)); }
+
+  function apply(){
+    root.style.setProperty('--rfs', st.fs);
+    root.style.setProperty('--rcw', st.cw + 'px');
+    body.classList.toggle('reader-full', !!st.full);
+    fontVal.textContent = Math.round(st.fs * 100) + '%';
+    widthInput.value = st.cw;
+    widthVal.textContent = st.full ? 'full' : st.cw;
+    widthInput.disabled = !!st.full;
+    fullChk.checked = !!st.full;
+  }
+  function save(){
+    try { localStorage.setItem(KEY, JSON.stringify(st)); } catch(e){}
+  }
+
+  toggle.addEventListener('click', function(){ ctl.classList.toggle('open'); });
+
+  ctl.addEventListener('click', function(e){
+    var act = e.target.getAttribute('data-act');
+    if(!act) return;
+    if(act === 'font-inc') st.fs = clamp(Math.round((st.fs + 0.1)*10)/10, 0.7, 2.2);
+    else if(act === 'font-dec') st.fs = clamp(Math.round((st.fs - 0.1)*10)/10, 0.7, 2.2);
+    else if(act === 'reset') st = Object.assign({}, DEF);
+    apply(); save();
+  });
+
+  widthInput.addEventListener('input', function(){
+    st.cw = clamp(parseInt(widthInput.value, 10) || DEF.cw, 300, 1600);
+    apply(); save();
+  });
+  fullChk.addEventListener('change', function(){
+    st.full = fullChk.checked;
+    apply(); save();
+  });
+
+  apply();
+})();
+</script>
+
+
+<script>
+(function(){
+  var KEY='readerTheme:db2site';
+  var root=document.documentElement;
+  var mql=window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  var theme=null;
+  try{ theme=localStorage.getItem(KEY); }catch(e){}
+  if(theme!=='light' && theme!=='dark' && theme!=='system') theme='system';
+
+  var row=document.getElementById('rc-theme-row');
+  function effective(){ return theme==='system' ? (mql && mql.matches ? 'dark':'light') : theme; }
+  function apply(){
+    root.classList.toggle('theme-dark', effective()==='dark');
+    if(row){ row.querySelectorAll('[data-theme]').forEach(function(b){
+      b.classList.toggle('active', b.getAttribute('data-theme')===theme); }); }
+  }
+  if(row){
+    row.addEventListener('click', function(e){
+      var b=e.target.closest('[data-theme]'); if(!b) return;
+      theme=b.getAttribute('data-theme');
+      try{ localStorage.setItem(KEY, theme); }catch(err){}
+      apply();
+    });
+  }
+  if(mql){
+    var onChange=function(){ if(theme==='system') apply(); };
+    if(mql.addEventListener) mql.addEventListener('change', onChange);
+    else if(mql.addListener) mql.addListener(onChange);
+  }
+  apply();
+})();
+</script>
+
+<div id="reader-pagecounter">Page <span id="rpc-cur">1</span> / <span id="rpc-total">1</span></div>
+
+<script>
+(function(){
+  var PAGE_PX = 1000;            // fixed LOGICAL page height -> identical unit across all files
+  var root = document.documentElement;
+  var curEl = document.getElementById('rpc-cur');
+  var totEl = document.getElementById('rpc-total');
+
+  function fontScale(){
+    var v = parseFloat(getComputedStyle(root).getPropertyValue('--rfs'));
+    return (v && v > 0) ? v : 1;
+  }
+  function update(){
+    var fs = fontScale();
+    var pp = PAGE_PX * fs;                       // page height in rendered px
+    var docH = Math.max(root.scrollHeight, document.body.scrollHeight);
+    var total = Math.max(1, Math.ceil(docH / pp));
+    var cur = Math.min(total, Math.floor((window.scrollY || window.pageYOffset || 0) / pp) + 1);
+    curEl.textContent = cur;
+    totEl.textContent = total;
+  }
+
+  var ticking = false;
+  function onScroll(){
+    if(ticking) return; ticking = true;
+    requestAnimationFrame(function(){ update(); ticking = false; });
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', update);
+
+  // recompute when font/width settings change the document height
+  var rc = document.querySelector('.reader-container');
+  if(window.ResizeObserver && rc){
+    new ResizeObserver(update).observe(rc);
+  } else {
+    setInterval(update, 1000);
+  }
+  update();
+})();
+</script>
+
+
+<script>
+(function(){
+  var PAGE_PX = 1000;
+  var root = document.documentElement;
+  var rc = document.querySelector('.reader-container');
+  var pc = document.getElementById('reader-pagecounter');
+  if(!rc || !pc) return;
+
+  // wrap counter + outline so hover stays active when moving between them
+  var nav = document.createElement('div'); nav.id = 'reader-nav';
+  pc.parentNode.insertBefore(nav, pc); nav.appendChild(pc);
+  var outline = document.createElement('div'); outline.id = 'reader-outline';
+  nav.appendChild(outline);
+
+  function fontScale(){
+    var v = parseFloat(getComputedStyle(root).getPropertyValue('--rfs'));
+    return (v && v > 0) ? v : 1;
+  }
+  function esc(s){ return s.replace(/[&<>"]/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+  function build(){
+    var pp = PAGE_PX * fontScale();
+    var hs = rc.querySelectorAll('h1, h2, h3');
+    var sy = window.scrollY || window.pageYOffset || 0;
+    var html = '<div class="ro-head">Contents &middot; page</div>';
+    hs.forEach(function(h){
+      if(h.closest('.toc, .cover')) return;          // skip TOC / cover headings
+      var txt = (h.textContent || '').trim();
+      if(!txt) return;
+      var lvl = h.tagName === 'H1' ? 0 : (h.tagName === 'H2' ? 1 : 2);
+      var top = h.getBoundingClientRect().top + sy;
+      var pg = Math.max(1, Math.floor(top / pp) + 1);
+      html += '<a class="ro-item ro-l' + lvl + '" data-top="' + Math.round(top) + '">' +
+              '<span class="ro-t">' + esc(txt) + '</span>' +
+              '<span class="ro-p">p.' + pg + '</span></a>';
+    });
+    outline.innerHTML = html;
+  }
+
+  nav.addEventListener('mouseenter', build);   // rebuild fresh each hover (page #s stay correct)
+  outline.addEventListener('click', function(e){
+    var a = e.target.closest('.ro-item'); if(!a) return;
+    var y = parseFloat(a.getAttribute('data-top')) - 12;
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  });
+})();
+</script>
+
+
+<script>
+(function(){
+  var PAGE_PX = 1000, SPY_OFFSET = 90;
+  var root = document.documentElement;
+  var rc = document.querySelector('.reader-container');
+  var pc = document.getElementById('reader-pagecounter');
+  var outline = document.getElementById('reader-outline');
+  var nav = document.getElementById('reader-nav');
+  if(!rc || !pc || !outline || !nav) return;
+
+  // current-heading label inside the pill (before the "Page X / Y" text)
+  var head = document.createElement('span'); head.id = 'rpc-head';
+  /* current heading shown in the outline only, not in the pill */
+
+  // cache the real section headings (skip TOC / cover)
+  var heads = [];
+  rc.querySelectorAll('h1, h2, h3').forEach(function(h){
+    if(h.closest('.toc, .cover')) return;
+    if(!(h.textContent || '').trim()) return;
+    heads.push(h);
+  });
+
+  function fontScale(){
+    var v = parseFloat(getComputedStyle(root).getPropertyValue('--rfs'));
+    return (v && v > 0) ? v : 1;
+  }
+  function esc(s){ return s.replace(/[&<>"]/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function topsAndCurrent(){
+    var sy = window.scrollY || window.pageYOffset || 0;
+    var tops = heads.map(function(h){ return h.getBoundingClientRect().top + sy; });
+    var cur = -1;
+    for(var i=0;i<tops.length;i++){ if(tops[i] <= sy + SPY_OFFSET) cur = i; else break; }
+    if(cur < 0 && tops.length) cur = 0;
+    return { tops: tops, cur: cur, sy: sy };
+  }
+
+  function build(){
+    var st = topsAndCurrent();
+    var pp = PAGE_PX * fontScale();
+    var html = '<div class="ro-head">Contents &middot; page</div>';
+    heads.forEach(function(h, i){
+      var lvl = h.tagName === 'H1' ? 0 : (h.tagName === 'H2' ? 1 : 2);
+      var pg = Math.max(1, Math.floor(st.tops[i] / pp) + 1);
+      html += '<a class="ro-item ro-l' + lvl + (i === st.cur ? ' ro-active' : '') +
+              '" data-i="' + i + '" data-top="' + Math.round(st.tops[i]) + '">' +
+              '<span class="ro-t">' + esc((h.textContent||'').trim()) + '</span>' +
+              '<span class="ro-p">p.' + pg + '</span></a>';
+    });
+    outline.innerHTML = html;
+    var act = outline.querySelector('.ro-active');
+    if(act) outline.scrollTop = act.offsetTop - outline.clientHeight / 2;
+  }
+
+  // run AFTER the earlier outline builder so this (spy-aware) version wins
+  nav.addEventListener('mouseenter', build);
+  pc.addEventListener('click', function(){ nav.classList.toggle('pinned'); if(nav.classList.contains('pinned')) build(); });
+  document.addEventListener('click', function(e){ if(nav.classList.contains('pinned') && !nav.contains(e.target)) nav.classList.remove('pinned'); });
+
+  var ticking = false;
+  function onScroll(){
+    if(ticking) return; ticking = true;
+    requestAnimationFrame(function(){
+      var st = topsAndCurrent();
+      head.textContent = st.cur >= 0 ? (heads[st.cur].textContent || '').trim() : '';
+      // live-highlight active item if the outline is currently shown
+      var items = outline.children;
+      for(var i=0;i<items.length;i++){
+        var el = items[i]; if(!el.classList || !el.classList.contains('ro-item')) continue;
+        el.classList.toggle('ro-active', parseInt(el.getAttribute('data-i'),10) === st.cur);
+      }
+      ticking = false;
+    });
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', onScroll);
+
+  // initial current-heading label
+  var st0 = topsAndCurrent();
+  head.textContent = st0.cur >= 0 ? (heads[st0.cur].textContent || '').trim() : '';
+})();
+</script>
+
+
+<script>
+(function(){
+  var KEY='siteNavOpen', body=document.body;
+  var wide=window.matchMedia('(min-width:900px)');
+  var saved=null; try{ saved=localStorage.getItem(KEY); }catch(e){}
+  var open = saved===null ? wide.matches : saved==='1';
+  function apply(){ body.classList.toggle('nav-open', open); }
+  var t=document.getElementById('site-nav-toggle');
+  if(t) t.addEventListener('click', function(){ open=!open; try{localStorage.setItem(KEY,open?'1':'0');}catch(e){} apply(); });
+  var bd=document.getElementById('site-nav-backdrop');
+  if(bd) bd.addEventListener('click', function(){ open=false; try{localStorage.setItem(KEY,'0');}catch(e){} apply(); });
+  apply();
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,2030 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Module 5 – Transactions & Concurrency Control</title>
+<style>
+  body { font-family: Georgia, serif; font-size: 13pt; line-height: 1.7; color: #1a1a1a; margin: 2cm 2.5cm; }
+  h1 { font-size: 2.2em; color: #003399; border-bottom: 4px solid #003399; padding-bottom: 10px; margin-top: 40px; page-break-before: always; }
+  h1:first-of-type { page-break-before: avoid; }
+  h2 { font-size: 1.55em; color: #0055aa; border-left: 5px solid #0055aa; padding-left: 12px; margin-top: 35px; }
+  h3 { font-size: 1.2em; color: #333; margin-top: 25px; }
+  h4 { font-size: 1.05em; color: #555; margin-top: 18px; font-style: italic; }
+  .box { background: #f0f4ff; border: 1px solid #99b3ff; border-radius: 6px; padding: 14px 18px; margin: 18px 0; }
+  .warn { background: #fff8e1; border: 1px solid #f9a825; border-radius: 6px; padding: 12px 16px; margin: 15px 0; }
+  .key { background: #e8f5e9; border: 1px solid #4caf50; border-radius: 6px; padding: 12px 16px; margin: 15px 0; }
+  .exam { background: #fce4ec; border: 2px solid #e91e63; border-radius: 6px; padding: 14px 18px; margin: 20px 0; }
+  .exam-title { font-weight: bold; color: #c2185b; font-size: 1.05em; margin-bottom: 8px; }
+  pre, code { font-family: 'Courier New', monospace; font-size: 11pt; background: #f5f5f5; padding: 2px 5px; border-radius: 3px; }
+  pre { display: block; padding: 14px; border: 1px solid #ddd; border-radius: 5px; white-space: pre-wrap; line-height: 1.5; margin: 12px 0; }
+  table { border-collapse: collapse; width: 100%; margin: 16px 0; font-size: 11.5pt; }
+  th { background: #003399; color: white; padding: 9px 12px; text-align: left; }
+  td { border: 1px solid #ccc; padding: 8px 12px; vertical-align: top; }
+  tr:nth-child(even) td { background: #f9f9f9; }
+  ul, ol { margin: 8px 0 8px 22px; }
+  li { margin: 5px 0; }
+  .toc { background: #f7f7f7; border: 1px solid #ddd; border-radius: 6px; padding: 18px 24px; margin: 20px 0; }
+  .toc h2 { margin-top: 0; border: none; padding: 0; }
+  .toc ol { margin-left: 16px; }
+  .toc li { margin: 6px 0; }
+  .subtitle { color: #666; font-size: 1.1em; margin-top: 5px; }
+  .answer { background: #e3f2fd; border-left: 4px solid #1976d2; padding: 12px 16px; margin: 12px 0; }
+</style>
+
+<style id="reader-controls-style">
+/* ===== Injected reading controls ===== */
+:root{ --rfs:1.5; --rcw:560px; }
+.reader-container{
+  max-width: var(--rcw);
+  margin-left: auto;
+  margin-right: auto;
+  zoom: var(--rfs);
+}
+body.reader-full .reader-container{ max-width: none; }
+
+#reader-controls{
+  position: fixed; top: 14px; right: 14px; z-index: 9999;
+  font-family: -apple-system, Segoe UI, Roboto, sans-serif;
+}
+#reader-controls #rc-toggle{
+  width: 40px; height: 40px; border-radius: 50%;
+  border: none; background: #003366; color: #fff;
+  font-size: 16px; font-weight: bold; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.3);
+}
+#reader-controls #rc-panel{
+  display: none; margin-top: 8px; width: 240px;
+  background: #fff; color: #222; border: 1px solid #ccd;
+  border-radius: 10px; padding: 12px 14px;
+  box-shadow: 0 6px 24px rgba(0,0,0,.2); font-size: 13px;
+}
+#reader-controls.open #rc-panel{ display: block; }
+#reader-controls .rc-row{
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; margin: 8px 0;
+}
+#reader-controls .rc-row:first-child{ margin-top: 0; }
+#reader-controls .rc-row > span:first-child{ font-weight: 600; color: #003366; min-width: 42px; }
+#reader-controls button[data-act]{
+  border: 1px solid #aac; background: #f0f4ff; color: #003366;
+  border-radius: 6px; padding: 3px 10px; cursor: pointer; font-size: 13px;
+}
+#reader-controls button[data-act]:hover{ background: #dde6ff; }
+#reader-controls #rc-font-val, #reader-controls #rc-width-val{
+  min-width: 44px; text-align: center; font-variant-numeric: tabular-nums;
+}
+#reader-controls input[type=range]{ flex: 1; }
+#reader-controls label{ display: flex; align-items: center; gap: 6px; cursor: pointer; }
+@media print{
+  #reader-controls{ display: none !important; }
+  .reader-container{ zoom: 1 !important; max-width: none !important; margin: 0 !important; }
+}
+</style>
+
+<script>
+(function(){try{
+  var k='readerTheme:db2site';
+  var t=localStorage.getItem(k)||'system';
+  var dark = t==='dark' || (t==='system' && window.matchMedia &&
+            window.matchMedia('(prefers-color-scheme: dark)').matches);
+  if(dark) document.documentElement.classList.add('theme-dark');
+}catch(e){}})();
+</script>
+
+<style id="theme-dark-style">
+/* ===== Dark theme (scoped to html.theme-dark) ===== */
+html.theme-dark, html.theme-dark body{
+  background: #16181c !important;
+  color: #d2d5da !important;
+}
+html.theme-dark h1, html.theme-dark h2, html.theme-dark h3, html.theme-dark h4{
+  color: #9ec5ff !important;
+  border-color: #33425a !important;
+}
+html.theme-dark a{ color: #8ab4f8 !important; }
+html.theme-dark .subtitle, html.theme-dark .meta, html.theme-dark .sub{ color: #9aa0a8 !important; }
+
+/* callout / card boxes -> dark surface, keep their accent border */
+html.theme-dark .box, html.theme-dark .warn, html.theme-dark .key, html.theme-dark .exam, html.theme-dark .answer, html.theme-dark .def, html.theme-dark .imp, html.theme-dark .tip, html.theme-dark .scenario, html.theme-dark .timeline, html.theme-dark .toc, html.theme-dark .defbox, html.theme-dark .notebox, html.theme-dark .examtip, html.theme-dark .assignment, html.theme-dark .cover{
+  background: #1e2230 !important;
+  color: #d2d5da !important;
+}
+html.theme-dark .cover{ background: #1a1d28 !important; }
+html.theme-dark .exam-title, html.theme-dark .examtip,
+html.theme-dark .notebox, html.theme-dark .kiu-logo{ color: #c7d2e8 !important; }
+
+/* tables */
+html.theme-dark table th{ background: #243044 !important; color: #e8eef7 !important; }
+html.theme-dark table td, html.theme-dark table th{ border-color: #3a3f49 !important; }
+html.theme-dark table tr:nth-child(even){ background: #1b1e24 !important; }
+html.theme-dark table tr:nth-child(odd){ background: transparent !important; }
+
+/* code blocks: darken any light ones; leave already-dark ones consistent */
+html.theme-dark pre, html.theme-dark code{
+  background: #0e0f12 !important;
+  color: #e2e2e2 !important;
+  border-color: #2c2f36 !important;
+}
+html.theme-dark .out, html.theme-dark .output{ background: #0f1a10 !important; }
+
+/* the settings panel itself in dark mode */
+html.theme-dark #reader-controls #rc-panel{
+  background: #23262d !important; color: #e0e2e6 !important; border-color: #3a3f4a !important;
+}
+html.theme-dark #reader-controls button[data-act]{
+  background: #2d323c !important; color: #cfe0ff !important; border-color: #3a4150 !important;
+}
+html.theme-dark #reader-controls button[data-act]:hover{ background: #39404d !important; }
+html.theme-dark #reader-controls .rc-row > span:first-child{ color: #9ec5ff !important; }
+
+/* theme segmented control */
+#reader-controls .rc-seg{ display: inline-flex; gap: 4px; }
+#reader-controls .rc-seg button{
+  border: 1px solid #aac; background: #f0f4ff; color: #003366;
+  border-radius: 6px; padding: 3px 8px; cursor: pointer; font-size: 14px; line-height: 1;
+}
+#reader-controls .rc-seg button.active{ background: #003366; color: #fff; border-color: #003366; }
+html.theme-dark #reader-controls .rc-seg button{ background: #2d323c; color: #cfe0ff; border-color: #3a4150; }
+html.theme-dark #reader-controls .rc-seg button.active{ background: #8ab4f8; color: #11151c; border-color: #8ab4f8; }
+
+@media print{
+  /* never print a black page even if dark mode is on */
+  html.theme-dark, html.theme-dark body,
+  html.theme-dark .box, html.theme-dark .warn, html.theme-dark .key, html.theme-dark .exam, html.theme-dark .answer, html.theme-dark .def, html.theme-dark .imp, html.theme-dark .tip, html.theme-dark .scenario, html.theme-dark .timeline, html.theme-dark .toc, html.theme-dark .defbox, html.theme-dark .notebox, html.theme-dark .examtip, html.theme-dark .assignment, html.theme-dark .cover, html.theme-dark table th,
+  html.theme-dark pre, html.theme-dark code, html.theme-dark .out, html.theme-dark .output{
+    background: #fff !important; color: #000 !important;
+  }
+}
+</style>
+
+<style id="reader-pagecounter-style">
+#reader-pagecounter{
+  position: fixed; bottom: 14px; right: 14px; z-index: 9999;
+  background: rgba(0,51,102,.92); color: #fff;
+  font-family: -apple-system, Segoe UI, Roboto, sans-serif; font-size: 12px;
+  padding: 6px 11px; border-radius: 20px; pointer-events: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25);
+  font-variant-numeric: tabular-nums; letter-spacing: .2px;
+}
+#reader-pagecounter b{ font-weight: 700; }
+html.theme-dark #reader-pagecounter{ background: rgba(138,180,248,.92); color: #11151c; }
+@media print{ #reader-pagecounter{ display: none !important; } }
+</style>
+
+<style id="reader-outline-style">
+/* keep the Aa button pinned to the right so it doesn't jump when the panel opens */
+#reader-controls{ display: flex; flex-direction: column; align-items: flex-end; }
+
+/* page counter becomes hover-interactive (was pointer-events:none) */
+#reader-nav{ position: fixed; bottom: 14px; right: 14px; z-index: 9999;
+  font-family: -apple-system, Segoe UI, Roboto, sans-serif; }
+#reader-nav #reader-pagecounter{ position: static; bottom: auto; right: auto;
+  pointer-events: auto; cursor: pointer; }
+
+#reader-outline{
+  display: none; position: absolute; bottom: 100%; right: 0; margin-bottom: 8px;
+  width: min(340px, 82vw); max-height: 70vh; overflow-y: auto;
+  background: #fff; color: #222; border: 1px solid #ccd; border-radius: 10px;
+  box-shadow: 0 8px 28px rgba(0,0,0,.22); padding: 6px 4px; font-size: 12.5px;
+}
+#reader-nav:hover #reader-outline, #reader-nav.pinned #reader-outline{ display: block; }
+#reader-outline::after{ content:""; position:absolute; left:0; right:0; top:100%; height:14px; }
+#reader-outline .ro-head{ font-weight: 700; color: #003366; padding: 4px 10px 6px;
+  border-bottom: 1px solid #e3e8f0; margin-bottom: 4px; position: sticky; top: 0; background: #fff; }
+#reader-outline .ro-item{
+  display: flex; align-items: baseline; gap: 8px; justify-content: space-between;
+  padding: 3px 10px; cursor: pointer; border-radius: 6px; text-decoration: none; color: inherit;
+}
+#reader-outline .ro-item:hover{ background: #eef3ff; }
+#reader-outline .ro-t{ overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#reader-outline .ro-p{ color: #6678a0; font-variant-numeric: tabular-nums; flex: 0 0 auto; font-size: 11px; }
+#reader-outline .ro-l0{ font-weight: 600; }
+#reader-outline .ro-l1 .ro-t{ padding-left: 14px; font-weight: 400; }
+#reader-outline .ro-l2 .ro-t{ padding-left: 28px; color: #555; font-weight: 400; }
+
+html.theme-dark #reader-outline{ background: #23262d; color: #e0e2e6; border-color: #3a3f4a; }
+html.theme-dark #reader-outline .ro-head{ background: #23262d; color: #9ec5ff; border-color: #343a44; }
+html.theme-dark #reader-outline .ro-item:hover{ background: #2f3540; }
+html.theme-dark #reader-outline .ro-p{ color: #8fa0c4; }
+html.theme-dark #reader-outline .ro-l2 .ro-t{ color: #b6bcc6; }
+
+@media print{ #reader-nav{ display: none !important; } }
+</style>
+
+<style id="reader-spy-style">
+#reader-pagecounter{ white-space: nowrap; }
+#rpc-head{ overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 230px; font-weight: 600; }
+#rpc-head:not(:empty)::after{ content: "\00B7"; margin: 0 7px; opacity: .55; font-weight: 400; }
+#reader-outline .ro-item.ro-active{ background: #dbe6ff; font-weight: 700; }
+#reader-outline .ro-item.ro-active .ro-p{ color: #003366; }
+html.theme-dark #reader-outline .ro-item.ro-active{ background: #34507e; }
+html.theme-dark #reader-outline .ro-item.ro-active .ro-p{ color: #cfe0ff; }
+</style>
+
+<style id="site-nav-style">
+#site-nav-toggle{ position:fixed; top:14px; left:14px; z-index:10001; width:40px; height:40px;
+  border-radius:8px; border:none; background:#0f2540; color:#fff; font-size:18px; line-height:1;
+  cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,.3);
+  font-family:-apple-system,Segoe UI,Roboto,sans-serif; }
+#site-nav{ position:fixed; top:0; left:0; width:250px; height:100vh; overflow-y:auto;
+  background:#0f2540; color:#cfe0ff; z-index:10000; transform:translateX(-100%);
+  transition:transform .2s ease; box-shadow:2px 0 14px rgba(0,0,0,.25);
+  font-family:-apple-system,Segoe UI,Roboto,sans-serif; }
+body.nav-open #site-nav{ transform:translateX(0); }
+#site-nav .sn-title{ font-weight:700; color:#fff; font-size:15px; padding:16px 18px 4px 58px; }
+#site-nav .sn-sub{ font-size:11px; color:#7f9cc0; padding:0 18px 12px 58px; border-bottom:1px solid #22405f; margin-bottom:6px; }
+#site-nav a.sn-link{ display:block; padding:11px 18px; color:#cfe0ff; text-decoration:none;
+  font-size:13.5px; border-left:3px solid transparent; line-height:1.35; }
+#site-nav a.sn-link:hover{ background:#163255; }
+#site-nav a.sn-link.active{ background:#1d3e66; border-left-color:#8ab4f8; color:#fff; font-weight:600; }
+#site-nav-backdrop{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:9999; }
+body.nav-open #site-nav-backdrop{ display:block; }
+@media (min-width:900px){
+  body.nav-open{ padding-left:250px; }
+  body.nav-open #site-nav-backdrop{ display:none; }
+}
+@media print{ #site-nav,#site-nav-toggle,#site-nav-backdrop{ display:none !important; } body.nav-open{ padding-left:0 !important; } }
+
+/* ===== mobile responsiveness ===== */
+@media (max-width:700px){
+  body{ margin:0 !important; }
+  .reader-container{ max-width:none !important; margin:0 !important; zoom:1 !important; padding:0 14px !important; }
+  #reader-controls{ top:10px !important; right:10px !important; }
+  #site-nav-toggle{ top:10px; left:10px; width:38px; height:38px; }
+  #reader-nav{ bottom:10px !important; right:10px !important; }
+  .reader-container table{ font-size:8.7pt; }
+  .reader-container pre, .reader-container .ascii-diagram{ font-size:8pt; }
+  h1{ font-size:17pt !important; } h2{ font-size:13.5pt !important; }
+}
+</style>
+</head>
+<body>
+<button id="site-nav-toggle" title="Menu" aria-label="Menu">☰</button>
+<nav id="site-nav">
+  <div class="sn-title">DB2 Final Study</div>
+  <div class="sn-sub">KIU Databases II · 2026</div>
+  <a class="sn-link" href="index.html">Home</a>
+  <a class="sn-link active" href="5-transactions.html">5.4 · Transactions & CC</a>
+  <a class="sn-link" href="6.1-6.2-consistency.html">6.1–6.2 · Consistency & Conflicts</a>
+  <a class="sn-link" href="6.3-6.4-consensus-lwt.html">6.3–6.4 · Consensus & LWT</a>
+  <a class="sn-link" href="7-mongodb.html">7 · MongoDB & Sharding</a>
+  <a class="sn-link" href="final-exam-prep.html">Final Exam Prep</a>
+</nav>
+<div id="site-nav-backdrop"></div>
+
+
+<div id="reader-controls">
+  <button id="rc-toggle" title="Reading settings">Aa</button>
+  <div id="rc-panel">
+    <div class="rc-row" id="rc-theme-row">
+      <span>Theme</span>
+      <div class="rc-seg">
+        <button data-theme="light" title="Light mode">&#9728;</button>
+        <button data-theme="dark" title="Dark mode">&#9790;</button>
+        <button data-theme="system" title="Match system">&#128421;</button>
+      </div>
+    </div>
+
+    <div class="rc-row">
+      <span>Font</span>
+      <button data-act="font-dec" title="Smaller">A&minus;</button>
+      <span id="rc-font-val">100%</span>
+      <button data-act="font-inc" title="Larger">A+</button>
+    </div>
+    <div class="rc-row">
+      <span>Width</span>
+      <input id="rc-width" type="range" min="300" max="1600" step="20">
+      <span id="rc-width-val">560</span>
+    </div>
+    <div class="rc-row">
+      <label><input id="rc-full" type="checkbox"> Full width</label>
+      <button data-act="reset">Reset</button>
+    </div>
+  </div>
+</div>
+
+<div class="reader-container">
+
+
+<h1 style="page-break-before:avoid; font-size:2.8em; text-align:center; border-bottom:6px solid #003399; padding-bottom:20px;">
+  KIU Databases II — Exam Study Guide
+</h1>
+<p style="text-align:center; font-size:1.3em; color:#555;">Module 5: Transactions &amp; Concurrency Control</p>
+<p style="text-align:center; color:#888;">5.1 Transactions · 5.2 Isolation Levels · 5.3 Concurrency Protocols · 5.4 MVCC Wrap-Up</p>
+
+<div class="toc">
+<h2>Table of Contents</h2>
+<ol>
+  <li>What is a Transaction? — ACID Properties</li>
+  <li>WAL (Write-Ahead Log) — Durability in PostgreSQL</li>
+  <li>Buffer Pool, Pages &amp; Checkpoints</li>
+  <li>Isolation Anomalies (All 6 Problems)</li>
+  <li>Isolation Levels — SQL Standard &amp; PostgreSQL Specifics</li>
+  <li>Concurrency Control: 2PL vs MVCC Overview</li>
+  <li>Lock-Based Concurrency Control (2PL) — Deep Dive</li>
+  <li>MVCC — Multi-Version Concurrency Control Deep Dive</li>
+  <li>Deadlocks — Detection, Prevention, PostgreSQL Handling</li>
+  <li>MVCC Version Storage — HOT Updates, COLD Updates, Vacuum</li>
+  <li>SELECT ... FOR UPDATE</li>
+  <li>Write Skew Anomaly</li>
+  <li>PostgreSQL Serializable (SSI) — Predicate Locking</li>
+  <li>Assignment 5 — Exercises with Model Answers</li>
+</ol>
+</div>
+
+<h1>1. What is a Transaction? — ACID Properties</h1>
+
+<p>A <strong>transaction</strong> is a logical unit of work in a database — a sequence of SQL operations treated as a single atomic operation. Transactions are the mechanism that makes multi-user databases safe.</p>
+
+<h2>1.1 Basic Transaction Commands</h2>
+<pre>BEGIN;            -- start a transaction
+  UPDATE product SET stock = stock - 1 WHERE product_id = 3;
+  INSERT INTO order_item(order_id, product_id) VALUES (99, 3);
+COMMIT;           -- make changes permanent
+
+-- OR:
+ROLLBACK;         -- undo all changes since BEGIN</pre>
+
+<p>In PostgreSQL's <strong>autocommit mode</strong>, every single SQL statement is automatically wrapped in its own transaction. When you run <code>BEGIN</code>, you start a multi-statement transaction.</p>
+
+<h2>1.2 ACID — The Four Properties</h2>
+
+<div class="box">
+<strong>ACID</strong> is the set of guarantees a DBMS provides for transactions:
+</div>
+
+<h3>A — Atomicity</h3>
+<p>Either <em>all</em> operations in a transaction succeed and are committed, or <em>none</em> of them are. There is no partial commit. If anything fails, the entire transaction is rolled back.</p>
+<ul>
+  <li><strong>Example:</strong> A bank transfer deducting €100 from Account A and adding €100 to Account B. If the deduction succeeds but the addition crashes, atomicity ensures the deduction is also rolled back. No money is lost.</li>
+  <li>Implemented via the <strong>undo log</strong> (PostgreSQL: old versions in heap) and <strong>WAL</strong>.</li>
+</ul>
+
+<h3>C — Consistency</h3>
+<p>A transaction brings the database from one <em>consistent state</em> to another. All defined constraints (primary keys, foreign keys, check constraints, uniqueness) must hold before and after every transaction.</p>
+<ul>
+  <li><strong>Example:</strong> If the rule is "stock ≥ 0", a transaction that would set stock to −1 violates consistency and must be aborted.</li>
+  <li>The DBMS enforces constraints automatically; the application must also maintain application-level invariants (business logic).</li>
+</ul>
+
+<h3>I — Isolation</h3>
+<p>Concurrent transactions appear to execute in isolation — as if they ran serially, one after another. One transaction's intermediate state is not visible to other transactions.</p>
+<ul>
+  <li><strong>Example:</strong> If T1 is in the middle of updating a row, T2 should not see the half-updated row.</li>
+  <li>Isolation is the most complex ACID property — it has levels (Read Committed, Repeatable Read, Serializable) because full isolation is expensive.</li>
+  <li>Implemented via <strong>locking (2PL)</strong> or <strong>multiversion concurrency control (MVCC)</strong>.</li>
+</ul>
+
+<h3>D — Durability</h3>
+<p>Once a transaction has been <strong>committed</strong>, its changes are permanent — they survive crashes, power failures, or any system error. The committed data will not be lost.</p>
+<ul>
+  <li>Implemented via the <strong>Write-Ahead Log (WAL)</strong> in PostgreSQL.</li>
+  <li>The WAL is flushed to disk before the COMMIT returns to the client.</li>
+</ul>
+
+<div class="key">
+<strong>Key Exam Point:</strong> Atomicity and Durability are about individual transaction correctness over time (recovery). Consistency is about constraints. Isolation is about concurrent correctness — preventing interference between concurrent transactions.
+</div>
+
+
+<h1>2. WAL — Write-Ahead Log (Durability in PostgreSQL)</h1>
+
+<h2>2.1 The Problem WAL Solves</h2>
+<p>Databases keep data in a <strong>Buffer Pool</strong> in RAM for performance. A page must be read from disk into RAM before it can be modified. Modified pages (called <strong>dirty pages</strong>) sit in RAM but may not be written back to disk immediately. If the system crashes before a dirty page is flushed, data is lost.</p>
+<p><strong>The WAL rule:</strong> Before any dirty page is written to disk, all WAL log records describing that page's changes must first be written to the WAL on disk. This is the "write-ahead" guarantee.</p>
+
+<h2>2.2 How WAL Works</h2>
+
+<div class="box">
+<strong>WAL = Sequential append-only log of every change made to the database.</strong><br>
+Every INSERT, UPDATE, DELETE, COMMIT generates WAL records that are written <em>before</em> the actual data pages are modified on disk.
+</div>
+
+<ul>
+  <li>WAL is stored as a series of files in <code>$PGDATA/pg_wal/</code></li>
+  <li>Each WAL record has a <strong>Log Sequence Number (LSN)</strong> — a unique, monotonically increasing 64-bit number (e.g., <code>0/08D74A80</code>)</li>
+  <li>Each record has a <code>prev</code> pointer to the previous LSN — forming a chain</li>
+  <li>Every WAL record specifies: which transaction, which resource manager (Heap, Btree, Transaction), what operation</li>
+</ul>
+
+<h3>WAL Record Types (seen via pg_waldump)</h3>
+<pre>rmgr: Heap        desc: INSERT  tx: 3296  lsn: 0/08D74A80
+rmgr: Heap        desc: UPDATE  tx: 3297
+rmgr: Heap        desc: HOT_UPDATE  tx: 3296  (heap-only-tuple, no index update)
+rmgr: Btree       desc: INSERT_LEAF  tx: 3297  (new index entry)
+rmgr: Transaction desc: COMMIT  tx: 3296  timestamp: 2025-04-06 09:40:25</pre>
+
+<h2>2.3 WAL and COMMIT — Durability</h2>
+<p>When you run <code>COMMIT</code>:</p>
+<ol>
+  <li>PostgreSQL writes a <strong>COMMIT record</strong> to the WAL</li>
+  <li>The WAL buffer is <strong>flushed (fsync)</strong> to disk</li>
+  <li>Only then does PostgreSQL return "COMMIT" to the client</li>
+  <li>The actual data pages (heap, index) may still be in the buffer pool as dirty pages — they will be written later</li>
+</ol>
+<p>This means after a crash, PostgreSQL can <strong>replay the WAL</strong> from the last checkpoint to reconstruct any lost dirty pages. The data is not lost because the WAL is already on disk.</p>
+
+<h2>2.4 Reading the WAL with pg_waldump</h2>
+<pre>-- Find current WAL file location:
+SELECT pg_current_wal_lsn();
+
+-- Show WAL from a specific LSN:
+pg_waldump --start=0/08D74A00 $PGDATA/pg_wal/000000010000000000000008
+
+-- Show WAL for a specific transaction:
+pg_waldump --xid=3297 $PGDATA/pg_wal/000000010000000000000008</pre>
+
+<p>Example WAL output:</p>
+<pre>rmgr: Heap   len: 65, tx: 3296, lsn: 0/08D74A80, prev 0/08D74A48,
+   desc: HOT_UPDATE old_xmax: 3296, old_off: 52, new_xmax: 0, new_off: 53
+rmgr: Transaction len: 34, tx: 3296, lsn: 0/08D75C48,
+   desc: COMMIT 2025-04-06 09:40:25</pre>
+
+<div class="key">
+<strong>Key point:</strong> HOT_UPDATE in the WAL means the update stayed on the same heap page and did not require an index update (non-indexed column changed, or space available on page). A plain UPDATE means a new CTID was assigned and all indexes were updated.
+</div>
+
+<h2>2.5 Checkpoints</h2>
+<p>A <strong>checkpoint</strong> is a point in time where PostgreSQL guarantees that all dirty buffer pool pages have been flushed to disk. After a checkpoint, crash recovery only needs to replay WAL from the checkpoint forward (not from the beginning).</p>
+<ul>
+  <li>Checkpoints happen periodically (<code>checkpoint_timeout</code>, default 5 min) or when WAL fills (<code>max_wal_size</code>)</li>
+  <li>A checkpoint record is written to WAL marking the checkpoint LSN</li>
+  <li>After a crash, recovery starts from the last checkpoint LSN</li>
+</ul>
+
+<div class="box">
+<strong>Summary: WAL guarantees Durability (D in ACID)</strong>
+<ul>
+  <li>WAL is written before data pages → survives crashes</li>
+  <li>COMMIT waits for WAL fsync → committed data is permanent</li>
+  <li>Checkpoints limit recovery time → only replay WAL since last checkpoint</li>
+  <li>WAL also enables replication (streaming WAL to standby servers)</li>
+</ul>
+</div>
+
+<h1>3. Buffer Pool, Pages and the Storage Layer</h1>
+
+<h2>3.1 The Buffer Pool</h2>
+<p>The PostgreSQL <strong>buffer pool</strong> is a region of shared memory that caches disk pages. All reads and writes go through the buffer pool:</p>
+<ol>
+  <li>To read a row, PostgreSQL finds which heap page it's on, reads that page into the buffer pool (if not already there), then extracts the row</li>
+  <li>To write a row, PostgreSQL modifies the page in the buffer pool (the page is now "dirty")</li>
+  <li>Eventually, a background process flushes dirty pages to disk</li>
+</ol>
+
+<h2>3.2 Heap Pages and Index Pages</h2>
+<p>PostgreSQL stores data in fixed-size <strong>8KB pages</strong>:</p>
+<ul>
+  <li><strong>Heap pages</strong> — store the actual rows (tuples) of a table</li>
+  <li><strong>Btree leaf pages</strong> — store index entries pointing to heap tuples via (page_number, slot) = <strong>ctid</strong></li>
+</ul>
+
+<h3>ctid — Physical Row Address</h3>
+<p><code>ctid</code> is a PostgreSQL system column containing the physical location of a tuple: <code>(page_number, slot_number)</code>. For example, <code>(0,1)</code> means page 0, slot 1.</p>
+<pre>SELECT ctid, xmin, xmax, * FROM product;
+-- ctid  | xmin | xmax | product_id | name                 | price | stock
+-- (0,1) | 3969 |    0 |          1 | Wireless Mouse       | 25.99 |   100
+-- (0,2) | 3969 |    0 |          2 | USB-C Hub            | 45.00 |    50</pre>
+
+<p>When a row is <strong>updated</strong> under MVCC, a new version is created at a new ctid. The old version stays until Vacuum cleans it up.</p>
+
+
+<h1>4. Isolation Anomalies — The 6 Problems of Concurrent Transactions</h1>
+
+<p>When multiple transactions run concurrently without proper isolation, several types of anomalies (bugs) can occur. The SQL standard defines 4 classic anomalies; there are also 2 additional serialization anomalies that PostgreSQL handles:</p>
+
+<h2>4.1 Dirty Write</h2>
+<p>T1 writes a value. Before T1 commits, T2 overwrites that value and commits. Then T1 rolls back. Now T2's committed value has been rolled back too — but T2 doesn't know!</p>
+<div class="box">
+<strong>Example:</strong><br>
+T1: BEGIN; UPDATE product SET price = 50 WHERE product_id = 1; (not committed)<br>
+T2: BEGIN; UPDATE product SET price = 60 WHERE product_id = 1; COMMIT;<br>
+T1: ROLLBACK; — This rolls back both writes! Price goes back to original, losing T2's commit.<br>
+<br>
+<strong>Prevented by:</strong> All isolation levels (even Read Uncommitted in standard SQL) prevent dirty writes. PostgreSQL never allows dirty writes.
+</div>
+
+<h2>4.2 Dirty Read</h2>
+<p>T1 reads data written by T2, but T2 has not yet committed. T2 may later rollback, meaning T1 read data that "never happened".</p>
+<div class="box">
+<strong>Example:</strong><br>
+T2: BEGIN; UPDATE product SET stock = 0 WHERE product_id = 3;<br>
+T1: SELECT stock FROM product WHERE product_id = 3; → reads 0 (uncommitted!)<br>
+T2: ROLLBACK; — The stock was never really 0, but T1 already acted on that value.<br>
+<br>
+<strong>Prevented by:</strong> Read Committed and above. PostgreSQL's minimum isolation level is Read Committed so dirty reads never happen in PostgreSQL.
+</div>
+
+<h2>4.3 Non-Repeatable Read (NRR)</h2>
+<p>T1 reads a row. T2 updates and commits that row. T1 reads the same row again within the same transaction and gets a different value.</p>
+<div class="box">
+<strong>Example (from slides — headphone inventory):</strong><br>
+T1: SELECT stock FROM product WHERE product_id = 5; → returns 10<br>
+T2: UPDATE product SET stock = 8 WHERE product_id = 5; COMMIT;<br>
+T1: SELECT stock FROM product WHERE product_id = 5; → returns 8 (different!)<br>
+T1 sees two different values for the same row within one transaction.<br>
+<br>
+<strong>Prevented by:</strong> Repeatable Read and above.
+</div>
+
+<h2>4.4 Phantom Read (PR)</h2>
+<p>T1 runs a query with a WHERE condition and gets a set of rows. T2 inserts new rows (or deletes rows) that match T1's WHERE condition. T1 runs the same query again and gets a different set of rows — rows that "appeared" or "disappeared".</p>
+<div class="box">
+<strong>Example:</strong><br>
+T1: SELECT * FROM product WHERE price &lt; 100; → 5 rows<br>
+T2: INSERT INTO product(name, price, stock) VALUES ('Cable', 9.99, 200); COMMIT;<br>
+T1: SELECT * FROM product WHERE price &lt; 100; → 6 rows (a phantom appeared!)<br>
+<br>
+<strong>Prevented by:</strong> Serializable (in SQL standard). In PostgreSQL, also prevented by Repeatable Read (due to MVCC snapshot)!
+</div>
+
+<h2>4.5 Lost Update</h2>
+<p>Two transactions both read the same value, compute an update based on it, and write back. One transaction's update overwrites (loses) the other's.</p>
+<div class="box">
+<strong>Example (SSD stock):</strong><br>
+T1: reads stock = 10, computes 10 - 1 = 9<br>
+T2: reads stock = 10, computes 10 - 1 = 9<br>
+T1: UPDATE product SET stock = 9; COMMIT;<br>
+T2: UPDATE product SET stock = 9; COMMIT; ← This is wrong! Two items sold but stock only decreased by 1.<br>
+<br>
+<strong>Prevented by:</strong> Repeatable Read in PostgreSQL (NOT in SQL standard!). In standard SQL RR, Lost Update is possible; PostgreSQL's MVCC RR prevents it by aborting the second writer.
+</div>
+
+<h2>4.6 Write Skew</h2>
+<p>Two transactions both read a set of rows to check a condition, and each writes to <em>different</em> rows based on what they read — but together their writes violate a global invariant that neither write alone would violate.</p>
+<div class="box">
+<strong>Example (from slides — promotion invariant):</strong><br>
+Business rule: At most ONE product can have promotion = true.<br>
+<br>
+T1: SELECT * FROM product WHERE promotion = true; → 0 rows (no promotions active)<br>
+T2: SELECT * FROM product WHERE promotion = true; → 0 rows (no promotions active)<br>
+T1: UPDATE product SET promotion = true WHERE product_id = 4; COMMIT; ✓ (1 promotion)<br>
+T2: UPDATE product SET promotion = true WHERE product_id = 6; COMMIT; ✓ (1 promotion)<br>
+<br>
+Result: 2 products now have promotion = true. Invariant violated!<br>
+Neither T1 nor T2 individually violated anything — they each promoted exactly one product after checking none were promoted. But concurrently they both read "0 promotions" and acted on that.<br>
+<br>
+<strong>Prevented by:</strong> Only Serializable isolation level.
+</div>
+
+<h2>4.7 Complete Anomaly Table</h2>
+<table>
+  <tr>
+    <th>Isolation Level</th>
+    <th>Dirty Write<br>(prevents)</th>
+    <th>Dirty Read<br>(prevents)</th>
+    <th>NRR<br>(prevents)</th>
+    <th>Phantom Read<br>(prevents)</th>
+    <th>Lost Update<br>(prevents)</th>
+    <th>Write Skew<br>(prevents)</th>
+  </tr>
+  <tr>
+    <td>Read Uncommitted</td>
+    <td style="color:green">✓</td>
+    <td style="color:red">✗</td>
+    <td style="color:red">✗</td>
+    <td style="color:red">✗</td>
+    <td style="color:red">✗</td>
+    <td style="color:red">✗</td>
+  </tr>
+  <tr>
+    <td>Read Committed</td>
+    <td style="color:green">✓</td>
+    <td style="color:green">✓</td>
+    <td style="color:red">✗</td>
+    <td style="color:red">✗</td>
+    <td style="color:red">✗</td>
+    <td style="color:red">✗</td>
+  </tr>
+  <tr>
+    <td>Repeatable Read (standard)</td>
+    <td style="color:green">✓</td>
+    <td style="color:green">✓</td>
+    <td style="color:green">✓</td>
+    <td style="color:red">✗</td>
+    <td>Depends</td>
+    <td style="color:red">✗</td>
+  </tr>
+  <tr>
+    <td><strong>Repeatable Read (PostgreSQL)</strong></td>
+    <td style="color:green">✓</td>
+    <td style="color:green">✓</td>
+    <td style="color:green">✓</td>
+    <td style="color:green"><strong>✓</strong></td>
+    <td style="color:green"><strong>✓</strong></td>
+    <td style="color:red">✗</td>
+  </tr>
+  <tr>
+    <td>Serializable</td>
+    <td style="color:green">✓</td>
+    <td style="color:green">✓</td>
+    <td style="color:green">✓</td>
+    <td style="color:green">✓</td>
+    <td style="color:green">✓</td>
+    <td style="color:green">✓</td>
+  </tr>
+</table>
+
+<div class="warn">
+<strong>PostgreSQL-specific:</strong> PostgreSQL's Repeatable Read (implemented via MVCC) also prevents Phantom Reads and Lost Updates — beyond what the SQL standard requires for RR. This is because MVCC gives T1 a consistent snapshot of the entire database at transaction start, so new inserts/deletes by other transactions don't appear.
+</div>
+
+
+<h1>5. Isolation Levels</h1>
+
+<h2>5.1 Setting Isolation Levels in PostgreSQL</h2>
+<pre>-- Set for current transaction (must be right after BEGIN):
+BEGIN;
+SET TRANSACTION ISOLATION LEVEL READ COMMITTED;   -- default
+SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
+SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+
+-- Or in shorthand:
+BEGIN ISOLATION LEVEL REPEATABLE READ;
+BEGIN ISOLATION LEVEL SERIALIZABLE;</pre>
+
+<h2>5.2 Read Committed (PostgreSQL Default)</h2>
+<ul>
+  <li>Each <strong>statement</strong> within the transaction gets a fresh snapshot — it sees all data committed before that statement started</li>
+  <li>If T2 commits between two SELECTs in T1, T1's second SELECT sees T2's changes</li>
+  <li>Prevents: Dirty Writes, Dirty Reads</li>
+  <li>Does NOT prevent: NRR, Phantom Read, Lost Update, Write Skew</li>
+</ul>
+
+<div class="box">
+<strong>RC behavior example:</strong><br>
+T1 (RC): BEGIN; SELECT stock FROM product WHERE product_id=3; → 40<br>
+T2: UPDATE product SET stock = 38 WHERE product_id=3; COMMIT;<br>
+T1 (RC): SELECT stock FROM product WHERE product_id=3; → 38 (T2's commit is visible!)<br>
+T1: COMMIT;<br>
+<br>
+T1 saw two different values — this is a Non-Repeatable Read. Allowed at RC.
+</div>
+
+<h2>5.3 Repeatable Read (PostgreSQL)</h2>
+<ul>
+  <li>The <strong>entire transaction</strong> uses a snapshot taken at the moment the first statement executes</li>
+  <li>T1 always sees the same data regardless of what other transactions commit during T1's execution</li>
+  <li>If a write-write conflict occurs (T2 commits an update to a row that T1 also wants to update), T1 gets an error: <code>ERROR: could not serialize access due to concurrent update</code> and must retry</li>
+  <li>Prevents: Dirty Write, Dirty Read, NRR, Phantom Read, Lost Update (PostgreSQL-specific)</li>
+  <li>Does NOT prevent: Write Skew</li>
+</ul>
+
+<div class="box">
+<strong>RR behavior example:</strong><br>
+T1: BEGIN ISOLATION LEVEL REPEATABLE READ; SELECT stock FROM product WHERE product_id=3; → 40<br>
+T2: UPDATE product SET stock = 38 WHERE product_id=3; COMMIT;<br>
+T1: SELECT stock FROM product WHERE product_id=3; → still 40 (snapshot!)<br>
+T1: COMMIT;<br>
+<br>
+T1 always sees 40 — the snapshot was fixed at T1's start. Repeatable Read is maintained.
+</div>
+
+<h2>5.4 Serializable (PostgreSQL SSI)</h2>
+<ul>
+  <li>Highest isolation level — guarantees that concurrent transactions appear to have executed serially</li>
+  <li>Uses MVCC (like RR) + additional <strong>predicate locking</strong> to detect rw-dependencies</li>
+  <li>If PostgreSQL detects that a set of concurrent transactions could not have produced the same result in any serial order, it aborts one with: <code>ERROR: could not serialize access due to read/write dependencies among transactions</code></li>
+  <li>Prevents all anomalies including Write Skew</li>
+  <li>More overhead than RR — predicate locks must be tracked</li>
+</ul>
+
+<h2>5.5 Isolation Levels in Different DBMS</h2>
+<table>
+  <tr>
+    <th>DBMS</th>
+    <th>Default Isolation Level</th>
+    <th>CC Method</th>
+  </tr>
+  <tr><td>PostgreSQL</td><td>Read Committed</td><td>MVCC</td></tr>
+  <tr><td>MySQL InnoDB</td><td>Repeatable Read</td><td>MVCC + partial 2PL</td></tr>
+  <tr><td>MS SQL Server</td><td>Read Committed</td><td>2PL (default) or MVCC (with RCSI)</td></tr>
+  <tr><td>Oracle</td><td>Read Committed</td><td>MVCC (Delta storage)</td></tr>
+  <tr><td>SAP HANA</td><td>Snapshot Isolation</td><td>MVCC (Time-Travel storage)</td></tr>
+</table>
+
+<h1>6. Concurrency Control: 2PL vs MVCC Overview</h1>
+
+<p>There are two fundamentally different approaches to concurrency control:</p>
+
+<table>
+  <tr>
+    <th>Property</th>
+    <th>2PL (Two-Phase Locking)</th>
+    <th>MVCC (Multiversion CC)</th>
+  </tr>
+  <tr>
+    <td>Approach</td>
+    <td>Pessimistic — assume conflicts will happen, block preemptively</td>
+    <td>Optimistic — allow reads always, detect conflicts on write</td>
+  </tr>
+  <tr>
+    <td>Read blocks Write?</td>
+    <td>Yes — S-lock blocks X-lock requests</td>
+    <td>No — reads never block writes</td>
+  </tr>
+  <tr>
+    <td>Write blocks Read?</td>
+    <td>Yes — X-lock blocks S-lock requests</td>
+    <td>No — writes never block reads</td>
+  </tr>
+  <tr>
+    <td>Guarantees Serializability?</td>
+    <td>Yes (strict 2PL)</td>
+    <td>No (only with Serializable/SSI)</td>
+  </tr>
+  <tr>
+    <td>Age</td>
+    <td>Introduced ~1976 (50 years ago)</td>
+    <td>Introduced ~1996 (30 years ago)</td>
+  </tr>
+  <tr>
+    <td>Used by</td>
+    <td>MS SQL Server (default), MySQL/MariaDB (partly)</td>
+    <td>PostgreSQL, Oracle, MySQL InnoDB, SAP HANA</td>
+  </tr>
+  <tr>
+    <td>Key insight</td>
+    <td>One version of each row; lock it to access it</td>
+    <td>Multiple versions of each row; choose correct version by timestamp</td>
+  </tr>
+</table>
+
+<div class="key">
+<strong>Why MVCC wins in practice:</strong> The key advantage of MVCC is that reads never block writes and writes never block reads. In a typical web application, reads are far more frequent than writes. With 2PL, every read blocks a potential write and vice versa, creating serious performance bottlenecks at scale. MVCC avoids this by keeping multiple versions.
+</div>
+
+
+<h1>7. Lock-Based Concurrency Control (2PL) — Deep Dive</h1>
+
+<h2>7.1 Lock Modes and Compatibility</h2>
+
+<p>There are two basic lock modes in lock-based CC:</p>
+<ul>
+  <li><strong>S (Shared / Read Lock):</strong> Acquired when a transaction wants to READ an object. Multiple transactions can hold S-locks simultaneously — reads don't conflict with reads.</li>
+  <li><strong>X (Exclusive / Write Lock):</strong> Acquired when a transaction wants to WRITE an object. Only one transaction can hold an X-lock at a time, and it blocks all other S and X lock requests.</li>
+</ul>
+
+<h3>Lock Compatibility Matrix</h3>
+<table>
+  <tr>
+    <th>Requester →</th>
+    <th>S (wants to read)</th>
+    <th>X (wants to write)</th>
+  </tr>
+  <tr>
+    <td><strong>Holder: S (reading)</strong></td>
+    <td style="background:#e8f5e9; color:green; text-align:center">✓ Compatible</td>
+    <td style="background:#ffebee; color:red; text-align:center">✗ Block</td>
+  </tr>
+  <tr>
+    <td><strong>Holder: X (writing)</strong></td>
+    <td style="background:#ffebee; color:red; text-align:center">✗ Block</td>
+    <td style="background:#ffebee; color:red; text-align:center">✗ Block</td>
+  </tr>
+</table>
+
+<p><strong>Summary:</strong> SS = compatible (both can read). SX, XS, XX = block (wait).</p>
+
+<h2>7.2 Lock Granularity</h2>
+<p>Locks can be applied at different granularities:</p>
+<ul>
+  <li><strong>Table-level locks</strong> — easy to manage, low overhead, but very coarse (entire table locked)</li>
+  <li><strong>Page-level locks</strong> — medium granularity</li>
+  <li><strong>Row-level locks</strong> — fine-grained, allows high concurrency (different rows can be locked by different transactions)</li>
+</ul>
+<p>PostgreSQL uses <strong>row-level locks</strong> for DML (INSERT/UPDATE/DELETE) and table-level locks for DDL (ALTER TABLE, DROP TABLE).</p>
+
+<h2>7.3 Why Simple Locking is Not Enough — The Airline Example</h2>
+
+<p>Consider an airline serving two routes: <strong>Kutaisi–Munich</strong> and <strong>Kutaisi–Berlin</strong>, both costing €100. Business invariant: both routes always cost the same. Two applications run concurrently:</p>
+<ul>
+  <li><strong>App1 (A1):</strong> Increase price of both routes by 10%</li>
+  <li><strong>App2 (A2):</strong> Add €10 CO₂ tax to both routes</li>
+</ul>
+
+<p>Serial execution results: Either 120€ (A2 then A1: 100+10=110, 110×1.1=121 — wait, or A1 then A2: 100×1.1=110, 110+10=120). Both routes stay equal.</p>
+
+<p>With naive locking (locks released immediately after each operation):</p>
+
+<table>
+  <tr><th>Op#</th><th>T1 (App1: ×1.1)</th><th>T2 (App2: +10)</th></tr>
+  <tr><td>1</td><td>BEGIN; s-lock(a); read(a)=100</td><td></td></tr>
+  <tr><td>2</td><td>x-lock(a); write(a)=110; unlock(a)</td><td></td></tr>
+  <tr><td>3</td><td></td><td>BEGIN; s-lock(a); read(a)=110; x-lock(a); write(a)=120; unlock(a)</td></tr>
+  <tr><td>4</td><td></td><td>s-lock(b); read(b)=100; x-lock(b); write(b)=110; unlock(b); COMMIT</td></tr>
+  <tr><td>5</td><td>s-lock(b); read(b)=110; x-lock(b); write(b)=121; unlock(b); COMMIT</td><td></td></tr>
+</table>
+
+<p><strong>Result: a=120, b=121</strong> — the two routes have different prices! The invariant is violated. This result is not achievable by any serial execution.</p>
+
+<div class="warn">
+<strong>Problem:</strong> Locks were released too early. T1 unlocked (a) before it finished, allowing T2 to interleave in a non-serializable way. We need a protocol that <em>guarantees</em> serializability.
+</div>
+
+<h2>7.4 Two-Phase Locking (2PL)</h2>
+
+<div class="box">
+<strong>2PL Rule:</strong> Split each transaction into two phases:
+<ol>
+  <li><strong>Growth Phase (Lock Phase):</strong> Acquire all needed locks. During this phase, NO lock may be released.</li>
+  <li><strong>Release Phase (Shrink Phase):</strong> Release locks. Once you release the first lock (starting the shrink phase), you can NEVER acquire a new lock.</li>
+</ol>
+<em>"No LOCK after an UNLOCK."</em>
+</div>
+
+<p>The "lock point" is the peak — the moment when a transaction holds all its locks. Any conflicting transaction must either wait (if it hasn't reached its lock point yet) or is already releasing locks (and therefore no longer acquiring new ones).</p>
+
+<p><strong>Key theorem:</strong> If every transaction in a schedule follows 2PL, the entire schedule is guaranteed to be serializable.</p>
+
+<h2>7.5 Strict 2PL — How Commercial DBMS Actually Do It</h2>
+<p>Basic 2PL allows releasing locks during the shrink phase, but this can cause <strong>cascading rollbacks</strong>: if T1 releases a lock and T2 reads T1's data, then T1 aborts — T2 must also abort because it read uncommitted data.</p>
+
+<p>Commercial databases avoid cascading rollbacks by using <strong>Strict 2PL</strong>:</p>
+<div class="box">
+<strong>Strict 2PL:</strong> ALL locks are held until the end of the transaction (COMMIT or ROLLBACK). Locks are only released at commit/rollback, not during the transaction.<br><br>
+The growth phase goes all the way to commit. There is no shrink phase until the very end.
+</div>
+
+<div class="key">
+<strong>PostgreSQL note:</strong> PostgreSQL does NOT implement 2PL. It uses MVCC. However, PostgreSQL always holds its (write) locks until transaction end — like strict 2PL would. This is because in MVCC, PostgreSQL uses locks only for write-write conflicts (not for reads), and keeps those write locks until commit.
+</div>
+
+<h2>7.6 2PL Solves the Airline Problem</h2>
+
+<p>With strict 2PL applied to the airline example:</p>
+<table>
+  <tr><th>Op#</th><th>T1 (App1: ×1.1)</th><th>T2 (App2: +10)</th></tr>
+  <tr><td>1</td><td>BEGIN; s-lock(a)</td><td></td></tr>
+  <tr><td>2</td><td>read(a)=100; x-lock(a)</td><td></td></tr>
+  <tr><td>3</td><td>write(a)=110; s-lock(b)</td><td>BEGIN → tries s-lock(a) → BLOCKED (T1 holds x-lock!)</td></tr>
+  <tr><td>4</td><td>read(b)=100; x-lock(b); write(b)=110</td><td>⏳ waiting...</td></tr>
+  <tr><td>5</td><td>COMMIT → releases all locks</td><td></td></tr>
+  <tr><td>6</td><td></td><td>s-lock(a) granted; read(a)=110; x-lock(a); write(a)=120</td></tr>
+  <tr><td>7</td><td></td><td>s-lock(b); read(b)=110; x-lock(b); write(b)=120; COMMIT</td></tr>
+</table>
+
+<p><strong>Result: a=120, b=120</strong> — both routes cost the same. Serializable! (Equivalent to T1 first, then T2.)</p>
+
+<h2>7.7 2PL Schedule Analysis — Can These Run Under 2PL?</h2>
+
+<div class="exam">
+<div class="exam-title">Exam Exercise Type: "Would this schedule run under 2PL?"</div>
+
+<strong>Schedule 1:</strong>
+<table>
+  <tr><th>T1</th><th>T2</th></tr>
+  <tr><td>Begin; Read(A)</td><td></td></tr>
+  <tr><td></td><td>Begin; Read(A)</td></tr>
+  <tr><td></td><td>Commit</td></tr>
+  <tr><td>Read(A); Commit</td><td></td></tr>
+</table>
+<div class="answer">
+T1 holds S-lock(A) at first Read. T2 requests S-lock(A) — SS is compatible! Both can hold S-locks simultaneously. T2 commits, releasing its S-lock. T1 reads A again (still holds S-lock). Commits. <strong>YES, this runs under 2PL.</strong>
+</div>
+
+<strong>Schedule 2:</strong>
+<table>
+  <tr><th>T1</th><th>T2</th></tr>
+  <tr><td>Begin; Read(A)</td><td></td></tr>
+  <tr><td></td><td>Begin; Write(A); Commit</td></tr>
+  <tr><td>Read(A); Commit</td><td></td></tr>
+</table>
+<div class="answer">
+T1 holds S-lock(A). T2 requests X-lock(A) — SX conflicts! T2 is BLOCKED until T1 releases its S-lock. But under strict 2PL, T1 holds its S-lock until commit. So T2 must wait for T1 to commit. <strong>Under 2PL, T2 blocks until T1 commits.</strong> The schedule as written (T2 commits before T1's second read) cannot happen under 2PL — it would be serialized as T1 then T2.
+</div>
+</div>
+
+
+<h1>8. MVCC — Multi-Version Concurrency Control Deep Dive</h1>
+
+<h2>8.1 The Core Idea of MVCC</h2>
+
+<div class="box">
+<strong>MVCC fundamental rule:</strong> When a transaction writes an object, a <em>new version</em> of that object is created. Old versions are kept. When a transaction reads, it reads the appropriate <em>version</em> for its snapshot — not necessarily the latest version.
+</div>
+
+<p>This means:</p>
+<ul>
+  <li><strong>Readers never block writers</strong> — a read transaction reads an old version, the writer creates a new version; no conflict</li>
+  <li><strong>Writers never block readers</strong> — same reason</li>
+  <li>Only <strong>write-write conflicts</strong> require coordination (one writer must wait for the other)</li>
+</ul>
+
+<h3>Comparison: 2PL vs MVCC Lock Table</h3>
+<table>
+  <tr><th>Object A — who holds what</th><th>2PL: T2 wants to Read</th><th>2PL: T2 wants to Write</th></tr>
+  <tr><td>T1 is Reading (holds S-lock)</td><td style="color:green">✓</td><td style="color:red">✗ Block</td></tr>
+  <tr><td>T1 is Writing (holds X-lock)</td><td style="color:red">✗ Block</td><td style="color:red">✗ Block</td></tr>
+</table>
+<table style="margin-top:12px">
+  <tr><th>Object A — who holds what</th><th>MVCC: T2 wants to Read</th><th>MVCC: T2 wants to Write</th></tr>
+  <tr><td>T1 is Reading</td><td style="color:green">✓</td><td style="color:green">✓ (reads old version)</td></tr>
+  <tr><td>T1 is Writing</td><td style="color:green">✓ (reads old version)</td><td style="color:red">✗ Block (write-write)</td></tr>
+</table>
+
+<h2>8.2 MVCC Version Chain — The Basics</h2>
+
+<p>In PostgreSQL, every row has two hidden system columns:</p>
+<ul>
+  <li><strong>xmin</strong> (created_by): the transaction ID (txid) of the transaction that created this version</li>
+  <li><strong>xmax</strong> (deleted_by): the transaction ID that deleted/superseded this version (0 = still valid)</li>
+</ul>
+
+<h3>Operations and Version Effects</h3>
+<table>
+  <tr><th>Operation</th><th>What Happens</th><th>Version</th><th>xmin (created_by)</th><th>xmax (deleted_by)</th></tr>
+  <tr><td>INSERT</td><td>Create new version</td><td>A0</td><td>TS(Ti)</td><td>0</td></tr>
+  <tr><td>DELETE</td><td>Mark existing version for deletion</td><td>A0</td><td>TS(Ti)</td><td>TS(Td)</td></tr>
+  <tr><td>UPDATE</td><td>Mark old version deleted + create new version</td><td>A0 (old)</td><td>TS(Ti)</td><td>TS(Tu)</td></tr>
+  <tr><td></td><td></td><td>A1 (new)</td><td>TS(Tu)</td><td>0</td></tr>
+</table>
+
+<h3>Concrete Example</h3>
+<pre>-- Initial state (inserted by transaction 3939):
+Version A0: value=x, xmin=3939, xmax=0  (valid)
+
+-- Transaction 4066 updates it:
+Version A0: value=x, xmin=3939, xmax=4066  (superseded)
+Version A1: value=y, xmin=4066, xmax=0    (current)</pre>
+
+<p>To check what happened:</p>
+<pre>SELECT ctid, xmin, xmax, * FROM customer;
+-- If xmax=0: row is currently valid
+-- If xmax=4066: row was deleted/updated by transaction 4066
+-- Check status: SELECT pg_xact_status('4066'::xid8);
+-- → 'committed' means A0 is dead, A1 is live
+-- → 'aborted' means A0 is still live, A1 is gone</pre>
+
+<h2>8.3 MVCC Visibility Rules</h2>
+
+<h3>Read Committed — Per-Statement Snapshot</h3>
+<div class="box">
+A transaction in RC reads the latest committed version as of when each <em>statement</em> started.<br><br>
+Visibility rules for a READ statement:
+<ol>
+  <li>Writes by transactions that were active (not committed) when this statement started → <strong>ignored</strong>. If they later commit, they become visible to the <em>next</em> statement.</li>
+  <li>Writes by aborted transactions → <strong>ignored</strong></li>
+  <li>Writes by transactions that committed AFTER this transaction started (but before this statement started) → <strong>visible</strong></li>
+  <li>All other committed writes → <strong>visible</strong></li>
+</ol>
+</div>
+
+<h3>Repeatable Read — Per-Transaction Snapshot</h3>
+<div class="box">
+A transaction in RR takes one snapshot at the moment its FIRST statement runs, and uses that snapshot for all subsequent statements.<br><br>
+Visibility rules for RR:
+<ol>
+  <li>Writes by transactions that were active when this <em>transaction</em> started → <strong>ignored</strong>, even if they later commit</li>
+  <li>Writes by aborted transactions → <strong>ignored</strong></li>
+  <li>Writes by transactions that started AFTER this transaction → <strong>ignored</strong>, regardless of commit status</li>
+  <li>All other committed writes → <strong>visible</strong></li>
+</ol>
+</div>
+
+<h2>8.4 MVCC with the Kiushop Product Table — Step by Step</h2>
+
+<p>In the kiushop2026 database, <code>product_id=3</code> is the Mechanical Keyboard with stock=40.</p>
+
+<pre>-- Session 1 (T1): Start and read
+BEGIN;
+SELECT txid_current_if_assigned();  -- Not yet assigned (no write done)
+SELECT ctid, xmin, xmax, * FROM product WHERE product_id = 3;
+-- ctid  | xmin | xmax | product_id | name                | price | stock
+-- (0,3) | 3800 |    0 |          3 | Mechanical Keyboard | 89.99 |    40
+
+-- Session 2 (T2): Update stock
+BEGIN;
+SELECT ctid, xmin, xmax, * FROM product WHERE product_id = 3; -- same: stock=40
+UPDATE product SET stock = stock - 2 WHERE product_id = 3;
+SELECT txid_current_if_assigned();  -- → 4051 (T2 got a txid)
+SELECT ctid, xmin, xmax, * FROM product WHERE product_id = 3;
+-- ctid  | xmin | xmax | ...
+-- (0,8) | 4051 |    0 |   3 | Mechanical Keyboard | 89.99 | 38  ← NEW version
+
+-- Session 1 (T1): Read again BEFORE T2 commits
+SELECT ctid, xmin, xmax, * FROM product WHERE product_id = 3;
+-- UNDER RC: still sees (0,3) stock=40 because T2 not committed yet
+-- (T2's xmin=4051 is active → ignored)
+
+-- Session 2 (T2): Commit
+COMMIT;
+
+-- Session 1 (T1): Read again AFTER T2 commits
+SELECT ctid, xmin, xmax, * FROM product WHERE product_id = 3;
+-- UNDER RC: NOW sees (0,8) stock=38 → T2's commit is visible to new statement
+-- UNDER RR: STILL sees (0,3) stock=40 → snapshot was fixed at T1 start, T2's txid > T1's snapshot
+T1: COMMIT;</pre>
+
+<div class="key">
+<strong>Key difference RC vs RR in MVCC:</strong><br>
+RC: "fresh snapshot per statement" → sees T2's commit after T2 commits<br>
+RR: "fixed snapshot per transaction" → never sees T2's changes (even after T2 commits), because T2 started after T1
+</div>
+
+<h2>8.5 MVCC Write-Write Conflicts</h2>
+
+<p>Even though MVCC avoids read-write conflicts, two writers on the same row still conflict. PostgreSQL uses <strong>exclusive row-level locks</strong> for writes.</p>
+
+<h3>Under Read Committed (RC):</h3>
+<p>T1 writes row A (sets xmax=T1_txid, creates A1 with xmin=T1_txid). T2 also wants to write row A:</p>
+<ol>
+  <li>T2 sees the X-lock on A (T1's write is in progress) and WAITS</li>
+  <li>T1 commits → A0 is officially deleted, A1 is the new version</li>
+  <li>T2 wakes up, gets a fresh snapshot (RC!), now sees A1</li>
+  <li>T2 can write A1 to create A2 — but this may cause a <strong>Lost Update</strong> if T2's update was based on the original A0 value</li>
+</ol>
+
+<h3>Under Repeatable Read (RR):</h3>
+<ol>
+  <li>T2 waits for T1's write (same as RC)</li>
+  <li>T1 commits</li>
+  <li>T2 wakes up. In RR, T2 sees A0 (its snapshot is fixed — T1's update is invisible to T2's snapshot).</li>
+  <li>But T2 sees that A0's xmax is T1's committed transaction ID. A0 is dead AND there's a newer version T2 can't see.</li>
+  <li><strong>PostgreSQL ABORTS T2</strong> with: <code>ERROR: could not serialize access due to concurrent update</code></li>
+  <li>T2 must retry its transaction from scratch.</li>
+</ol>
+
+<div class="warn">
+<strong>Why this prevents Lost Updates under RR:</strong> In the headphone example, T1 sets stock=9 (was 10, sold 1). T2 also read stock=10 and computed 9. Under RR, T2 is aborted when T1 commits, preventing T2 from blindly writing 9 on top of T1's committed change. T2 retries, reads the new stock=9, computes 8, and writes 8 correctly.
+</div>
+
+
+<h1>9. Deadlocks — Detection, Prevention &amp; PostgreSQL Handling</h1>
+
+<h2>9.1 What Is a Deadlock?</h2>
+
+<div class="box">
+A <strong>deadlock</strong> occurs when two or more transactions are each waiting for a lock held by the other — creating a circular dependency. None of them can proceed because each is waiting for a resource the other holds.
+</div>
+
+<p><strong>Classic 2-transaction deadlock (from slides — Airline example with strict 2PL):</strong></p>
+<table>
+  <tr><th>Op#</th><th>T1 (×1.1 on a and b)</th><th>T2 (+10 on a and b)</th></tr>
+  <tr><td>1</td><td>BEGIN</td><td></td></tr>
+  <tr><td>2</td><td></td><td>BEGIN</td></tr>
+  <tr><td>3</td><td>x-Lock(a) ✓; write(a)=a×1.1</td><td></td></tr>
+  <tr><td>4</td><td></td><td>x-Lock(b) ✓; write(b)=b+10</td></tr>
+  <tr><td>5</td><td>tries x-Lock(b) → <strong>BLOCKED</strong> (T2 holds b)</td><td></td></tr>
+  <tr><td>6</td><td>⏳ waiting...</td><td>tries x-Lock(a) → <strong>BLOCKED</strong> (T1 holds a)</td></tr>
+  <tr><td>7</td><td colspan="2">☠️ DEADLOCK — both waiting forever</td></tr>
+</table>
+
+<div class="warn">
+<strong>Important from slides:</strong> Deadlocks happen not only under 2PL but also under MVCC! PostgreSQL uses MVCC for reads but uses row-level locks for writes. Two transactions can deadlock on write locks.
+</div>
+
+<h2>9.2 Waits-For Graph (WFG)</h2>
+
+<p>The standard method to detect deadlocks is the <strong>Waits-For Graph</strong>:</p>
+<ul>
+  <li>Each active transaction is a <strong>node</strong></li>
+  <li>An <strong>edge from T1 to T2</strong> means "T1 is waiting for a lock held by T2"</li>
+  <li>A <strong>cycle in the graph</strong> means a deadlock exists</li>
+</ul>
+
+<p>Example from slides — a 3-transaction deadlock in PostgreSQL:</p>
+<pre>ERROR: deadlock detected
+DETAIL: Process 1456 waits for ShareLock on transaction 1700; blocked by process 8264.
+        Process 8264 waits for ShareLock on transaction 1701; blocked by process 10628.
+        Process 10628 waits for ShareLock on transaction 1702; blocked by process 1456.</pre>
+
+<p>Waits-For Graph cycle: 1456 → 1700 → (held by 8264) → 8264 → 1701 → (held by 10628) → 10628 → 1702 → (held by 1456) → back to 1456. Cycle! Deadlock.</p>
+
+<p><strong>In PostgreSQL, a transaction ID gets its own lock</strong> (a ShareLock on the transaction ID itself). When T2 must wait for T1 to finish (because T1 holds a write lock T2 needs), T2 acquires a ShareLock on T1's transaction ID. T1 releases this lock at commit/rollback, signaling T2 to proceed.</p>
+
+<h2>9.3 How PostgreSQL Detects &amp; Handles Deadlocks</h2>
+
+<p>PostgreSQL uses an <strong>optimistic approach</strong> — it does NOT try to prevent deadlocks (prevention is too costly). Instead:</p>
+
+<ol>
+  <li>When a transaction waits for a lock, PostgreSQL sets a <strong>Deadlock-Timeout</strong> (default: <strong>1 second</strong>)</li>
+  <li>After 1 second without progress, PostgreSQL runs the <strong>Waits-For-Graph Algorithm</strong> to check for a cycle</li>
+  <li>If a cycle is found, PostgreSQL picks one transaction as the <strong>victim</strong> and rolls it back</li>
+  <li>The victim gets an error: <code>ERROR: deadlock detected</code></li>
+  <li>The other transactions can then proceed</li>
+</ol>
+
+<p>Why wait 1 second before checking? The WFG algorithm is computationally expensive. PostgreSQL bets that most waits are just normal blocking (not deadlocks) and will resolve quickly. Only if a wait exceeds 1 second is it worth running the expensive check.</p>
+
+<h2>9.4 Preventing Deadlocks</h2>
+
+<h3>Method 1: Preclaiming (Conservative 2PL)</h3>
+<p>All locks that a transaction might ever need are acquired at the very start (before any operation).</p>
+<ul>
+  <li>Cannot deadlock — transaction has all its locks before anyone else starts</li>
+  <li><strong>Problem:</strong> Transaction must know ALL objects it will touch at start time — often impossible. Also severely limits concurrency — objects are locked far longer than needed.</li>
+  <li>Also called <strong>Conservative 2PL</strong></li>
+</ul>
+
+<h3>Method 2: Timestamp-Based (Wait/Die and Wound/Wait)</h3>
+<p>Each transaction gets a timestamp when started. Older transactions have lower timestamps. In case of conflict:</p>
+<ul>
+  <li><strong>Wait/Die:</strong> If T1 (older) wants a lock held by T2 (younger): T1 WAITS. If T2 (younger) wants a lock held by T1 (older): T2 DIES (rollbacks and retries later). Older transactions always get priority.</li>
+  <li><strong>Wound/Wait:</strong> Opposite — if an older transaction wants a lock, it WOUNDS (preempts) the younger. The younger dies.</li>
+</ul>
+<p><strong>Commercial DBMS typically use WFG detection</strong> rather than timestamp-based prevention because prevention requires knowing timestamps upfront and limits concurrency.</p>
+
+<h2>9.5 Dealing with Deadlocks from the Application Side</h2>
+<p>Since deadlocks can't be fully prevented in practice, applications must be prepared:</p>
+<ol>
+  <li><strong>Detect deadlock error</strong> in application code (<code>SQLSTATE 40P01</code> in PostgreSQL)</li>
+  <li><strong>Retry the transaction</strong> from scratch</li>
+  <li><strong>Keep transactions short</strong> — less time holding locks = less chance of deadlock</li>
+  <li><strong>Access objects in the same order</strong> — if T1 always locks table A before B, and T2 does too, they can never deadlock on A and B</li>
+  <li><strong>Avoid long interactive transactions</strong> — don't leave a BEGIN open for minutes waiting for user input</li>
+  <li><strong>Limit use of SELECT ... FOR UPDATE</strong> — it acquires write locks on rows prematurely</li>
+</ol>
+
+
+<h1>10. MVCC Version Storage — HOT Updates, COLD Updates, Vacuum</h1>
+
+<h2>10.1 PostgreSQL MVCC: Append-Only Version Storage</h2>
+
+<p>PostgreSQL uses an <strong>Append-Only</strong> storage strategy for MVCC:</p>
+<ul>
+  <li>All physical versions of a logical tuple are stored in the <strong>same table (heap file)</strong></li>
+  <li>New versions are appended to the table (or stored in freed-up space after vacuum)</li>
+  <li>Versions of different rows are interleaved on the same pages</li>
+</ul>
+
+<h3>Initial State — Heap Page 0</h3>
+<table>
+  <tr><th>line-pointer</th><th>Key</th><th>score</th><th>xmin (created_by)</th><th>xmax (deleted_by)</th><th>Hot Chain</th></tr>
+  <tr><td>1</td><td>alice@xx.ge</td><td>100</td><td>3969</td><td>0</td><td></td></tr>
+  <tr><td>2</td><td>bob@xx.ge</td><td>50</td><td>3969</td><td>0</td><td></td></tr>
+</table>
+<table style="margin-top:10px">
+  <tr><th>PK Btree Leaf Page — Key</th><th>Pointer (ctid)</th></tr>
+  <tr><td>alice@xx.ge</td><td>(0,1)</td></tr>
+  <tr><td>bob@xx.ge</td><td>(0,2)</td></tr>
+</table>
+
+<h3>After 3 updates (Alice score updated twice, Bob once):</h3>
+<table>
+  <tr><th>lp</th><th>Key</th><th>score</th><th>xmin</th><th>xmax</th><th>Hot Chain</th></tr>
+  <tr><td>1</td><td>alice@xx.ge</td><td>100</td><td>3969</td><td>4000</td><td>→ 3</td></tr>
+  <tr><td>2</td><td>bob@xx.ge</td><td>50</td><td>3969</td><td>4050</td><td>→ 4</td></tr>
+  <tr><td>3</td><td>alice@xx.ge</td><td>150</td><td>4000</td><td>4100</td><td>→ 5</td></tr>
+  <tr><td>4</td><td>bob@xx.ge</td><td>60</td><td>4050</td><td>0</td><td></td></tr>
+  <tr><td>5</td><td>alice@xx.ge</td><td>200</td><td>4100</td><td>0</td><td></td></tr>
+</table>
+
+<p>The Btree index still points to <code>(0,1)</code> for alice and <code>(0,2)</code> for bob — the <strong>original</strong> line pointers. Finding the current version requires following the <strong>HOT chain</strong>: start at (0,1), follow chain pointer to slot 3 (score=150, deleted by 4100), follow to slot 5 (score=200, current). This is what <code>SELECT * FROM customer WHERE cu_email='alice@xx.ge'</code> does internally.</p>
+
+<h2>10.2 HOT Updates vs COLD Updates</h2>
+
+<p>When a row is updated in PostgreSQL under MVCC, either a <strong>HOT update</strong> or a <strong>COLD update</strong> happens:</p>
+
+<table>
+  <tr><th>Property</th><th>HOT Update (Heap-Only Tuple)</th><th>COLD Update</th></tr>
+  <tr><td>What is it?</td><td>New version on the same heap page, non-indexed column changed</td><td>Indexed column changed, OR no space on page</td></tr>
+  <tr><td>Indexes updated?</td><td><strong>NO</strong> — existing index entries still point to original line pointer</td><td><strong>YES</strong> — new index entry added with new ctid</td></tr>
+  <tr><td>New CTID?</td><td>Yes (new slot on same page)</td><td>Yes (new slot, possibly new page)</td></tr>
+  <tr><td>How to find current version</td><td>Follow re-direct / HOT chain from original line pointer</td><td>Btree index has new ctid directly</td></tr>
+  <tr><td>Performance</td><td>Faster — no index writes</td><td>Slower — all indexes must be updated</td></tr>
+  <tr><td>Requirement</td><td>Space on current page AND non-indexed column</td><td>Always possible (no requirements)</td></tr>
+</table>
+
+<h3>Decision Tree for Updates</h3>
+<pre>UPDATE on a row
+    ↓
+Is an indexed column being changed?
+    YES → COLD UPDATE (must update all indexes)
+    NO  → Is there space on the current page?
+              YES → HOT UPDATE (no index change needed)
+              NO  → COLD UPDATE (new page, index must point to new ctid)</pre>
+
+<h3>HOT Update Practical Implications</h3>
+<ol>
+  <li><strong>Do NOT put indexes on heavily-updated columns</strong> (like score, stock, price) — this forces expensive COLD updates that require writing to all indexes</li>
+  <li><strong>Use fill factor &lt; 100%</strong> to leave space on pages for HOT update versions:
+    <pre>ALTER TABLE customer SET (fillfactor = 70);
+-- Postgres fills pages only 70%, leaving 30% for HOT updates
+SELECT relname, reloptions FROM pg_class WHERE relname = 'customer';</pre>
+  </li>
+</ol>
+
+<h3>WAL and HOT vs COLD</h3>
+<p>HOT updates appear in WAL as <code>HOT_UPDATE</code>; cold updates appear as <code>UPDATE</code> and also generate <code>INSERT_LEAF</code> entries for each index.</p>
+
+<h2>10.3 Vacuum — Garbage Collection</h2>
+
+<p>Over time, old versions of rows accumulate in the heap. <strong>Vacuum</strong> is PostgreSQL's garbage collector that removes dead tuples:</p>
+
+<pre>VACUUM product;          -- reclaim space from dead tuples
+VACUUM ANALYZE product;  -- also updates table statistics
+
+-- Check dead tuples before vacuum:
+CREATE EXTENSION IF NOT EXISTS pgstattuple;
+SELECT * FROM pgstattuple('product'::regclass);
+
+-- Check HOT update statistics:
+SELECT relname, n_tup_upd, n_tup_del, n_tup_hot_upd, n_tup_newpage_upd
+FROM pg_stat_user_tables WHERE relname = 'product';</pre>
+
+<h3>What Vacuum Does</h3>
+<ol>
+  <li><strong>Identifies dead tuples:</strong> Rows where xmax is a committed transaction and no active transaction can still see the old version (xmax &lt; oldest active snapshot)</li>
+  <li><strong>Reclaims heap space:</strong> Marks dead line-pointer slots as free (available for new inserts/updates)</li>
+  <li><strong>Updates line pointers:</strong> After vacuum, line pointers that were in a HOT chain are converted to "re-direct" pointers, so indexes can still find the current version</li>
+  <li><strong>Cleans up Btree indexes:</strong> Removes dead index entries pointing to dead tuples</li>
+</ol>
+
+<h3>After Vacuum on the Customer Table (from slides)</h3>
+<table>
+  <tr><th>lp</th><th>lp_flag</th><th>Key</th><th>score</th><th>xmin</th><th>xmax</th></tr>
+  <tr><td>1</td><td>re-direct</td><td colspan="4">(points to slot 5 — Alice's current version)</td></tr>
+  <tr><td>2</td><td>re-direct</td><td colspan="4">(points to slot 4 — Bob's current version)</td></tr>
+  <tr><td>3</td><td></td><td>—</td><td>—</td><td>—</td><td>— (freed)</td></tr>
+  <tr><td>4</td><td></td><td>bob@xx.ge</td><td>60</td><td>4050</td><td>0</td></tr>
+  <tr><td>5</td><td></td><td>alice@xx.ge</td><td>200</td><td>4100</td><td>0</td></tr>
+</table>
+
+<p>The Btree index still points to (0,1) and (0,2) — but now those line pointers are "re-direct" pointers that immediately jump to slots 5 and 4. No HOT chain needed.</p>
+
+<h2>10.4 MVCC in Other DBMS</h2>
+
+<h3>MySQL/MariaDB/Oracle: Delta (Undo Log) Storage</h3>
+<ul>
+  <li>The <strong>main table always contains the current version</strong> only</li>
+  <li>On every update, the <strong>old version is written to the Undo Log</strong></li>
+  <li>The current row has a pointer to its most recent undo log entry</li>
+  <li>Undo log entries chain from newest to oldest (for transactions that need very old versions)</li>
+  <li>Secondary indexes always point directly to the current version in the main table</li>
+  <li><strong>Advantage vs PostgreSQL Append-Only:</strong> No index entries need to be changed on update (indexes always point to the same row in the main table)</li>
+  <li><strong>Disadvantage:</strong> Reading old versions requires following the undo chain (potentially slow if many old versions)</li>
+</ul>
+
+<h3>SAP HANA: Time-Travel Storage</h3>
+<ul>
+  <li>On every update, the full old version is inserted into a separate <strong>Time-Travel table (history table)</strong></li>
+  <li>The main table always holds the current version</li>
+  <li>Versions are linked by PK + validity interval metadata (valid_from, valid_to)</li>
+  <li>No pointers needed — you find old versions by searching the time-travel table by PK + time</li>
+</ul>
+
+
+<h1>11. SELECT ... FOR UPDATE — Explicit Pessimistic Locking</h1>
+
+<h2>11.1 What is SELECT ... FOR UPDATE?</h2>
+
+<p>By default PostgreSQL uses MVCC where reads don't block writes. But sometimes you need to explicitly lock rows before modifying them. <code>SELECT ... FOR UPDATE</code> is the tool for this:</p>
+
+<div class="box">
+<code>SELECT ... FOR UPDATE</code> acquires an <strong>exclusive write lock</strong> on all returned rows immediately at SELECT time — <em>before</em> any UPDATE is executed. Other transactions that want to write those rows must wait.
+</div>
+
+<pre>BEGIN;
+SELECT * FROM product WHERE product_id > 6 FOR UPDATE;
+-- Locks all rows where product_id > 6 immediately
+UPDATE product SET stock = 0 WHERE product_id > 6;
+COMMIT;
+-- Locks are released at COMMIT</pre>
+
+<h2>11.2 Why Use SELECT ... FOR UPDATE?</h2>
+
+<p>Typical use cases:</p>
+<ul>
+  <li><strong>Protecting a Read-Modify-Write cycle:</strong> Read a value, compute a new value based on it, write the new value. You want to ensure the value hasn't changed between your read and write.</li>
+  <li><strong>Avoiding Lost Updates</strong> (under RC where MVCC alone doesn't prevent them): Explicitly lock the row you read so no one else can modify it before you write.</li>
+  <li><strong>Preventing Write Skew</strong> (partially): Lock all rows that your condition depends on, so another transaction that reads the same rows must wait.</li>
+  <li><strong>Avoiding retries</strong>: Under RR, write-write conflicts cause transaction aborts + retries. <code>FOR UPDATE</code> at RC level can block instead of abort.</li>
+</ul>
+
+<h2>11.3 Costs of SELECT ... FOR UPDATE</h2>
+<ul>
+  <li><strong>Higher deadlock risk</strong> — holding more locks for longer increases deadlock probability</li>
+  <li><strong>Lower concurrency</strong> — other transactions must wait for the locked rows</li>
+  <li><strong>Extra disk writes</strong> — PostgreSQL must record that a transaction holds a lock on these rows; this involves extra WAL writes</li>
+</ul>
+
+<div class="warn">
+<strong>Rule of thumb:</strong> <code>SELECT ... FOR UPDATE</code> adds pessimistic coordination but costs performance and deadlock risk. Think twice before using it. Consider whether a higher isolation level (RR or Serializable) would solve the problem more cleanly.
+</div>
+
+<h2>11.4 Simulated Example</h2>
+
+<p>Suppose we want to safely reduce stock when a product is ordered (protect against overselling under RC):</p>
+<pre>-- UNSAFE at RC (Lost Update possible):
+BEGIN;
+SELECT stock FROM product WHERE product_id = 3; -- reads stock=40
+-- Another transaction runs here and sets stock=39
+UPDATE product SET stock = 39 WHERE product_id = 3; -- WRONG: stock should be 38
+COMMIT;
+
+-- SAFE with FOR UPDATE:
+BEGIN;
+SELECT stock FROM product WHERE product_id = 3 FOR UPDATE;
+-- Other transactions wanting to update product_id=3 now BLOCK here
+-- stock=40, safely locked
+UPDATE product SET stock = stock - 1 WHERE product_id = 3;
+COMMIT; -- releases the lock, stock=39 correctly</pre>
+
+<h1>12. Write Skew Anomaly — Deep Dive</h1>
+
+<h2>12.1 Definition</h2>
+<p>Write Skew occurs when:</p>
+<ol>
+  <li>Two (or more) transactions each read an overlapping set of data</li>
+  <li>Each makes a write decision based on what they read</li>
+  <li>They write to <em>different</em> rows (so no direct write-write conflict)</li>
+  <li>Together, their writes violate a global invariant</li>
+</ol>
+
+<p>The tricky part: neither transaction individually violates anything. The problem is their <em>combined</em> effect based on each reading a state that becomes stale due to the other's write.</p>
+
+<h2>12.2 Write Skew Example (Promotion Invariant)</h2>
+
+<p>Business invariant: At most ONE product can have <code>promotion = TRUE</code> at any time.</p>
+<pre>-- Setup:
+ALTER TABLE product ADD COLUMN promotion BOOLEAN DEFAULT false;
+-- All products now have promotion = false</pre>
+
+<div class="box">
+<strong>T1 (in terminal 1):</strong>
+<pre>BEGIN ISOLATION LEVEL REPEATABLE READ;
+SELECT * FROM product WHERE promotion = true;
+-- (0 rows) — no promotions active
+
+UPDATE product SET promotion = true WHERE product_id = 4;
+
+SELECT * FROM product WHERE promotion = true;
+-- (1 row) — I promoted product 4
+
+COMMIT;</pre>
+
+<strong>T2 (in terminal 2, running concurrently):</strong>
+<pre>BEGIN ISOLATION LEVEL REPEATABLE READ;
+SELECT * FROM product WHERE promotion = true;
+-- (0 rows) — no promotions active (same snapshot as T1's start)
+
+UPDATE product SET promotion = true WHERE product_id = 6;
+
+SELECT * FROM product WHERE promotion = true;
+-- (1 row) — I promoted product 6
+
+COMMIT;</pre>
+</div>
+
+<p><strong>Result:</strong> Both transactions commit successfully. Now <code>promotion = true</code> for BOTH product 4 and product 6. <strong>The invariant is violated!</strong></p>
+
+<p><strong>Why does this happen?</strong> T1 and T2 each read "0 promotions" from their RR snapshot. They each write to a <em>different row</em> (product 4 vs product 6) — no write-write conflict. PostgreSQL doesn't detect any problem. Both commit. But the combined result violates the business rule.</p>
+
+<h2>12.3 SELECT ... FOR UPDATE Does NOT Fully Fix Write Skew</h2>
+
+<p>Using <code>SELECT ... FOR UPDATE</code> works for the "update existing rows" case:</p>
+<pre>-- T1:
+BEGIN;
+SELECT * FROM product WHERE promotion = true FOR UPDATE;
+-- Locks all rows where promotion=true (currently 0 rows — nothing to lock!)
+UPDATE product SET promotion = true WHERE product_id = 4;
+COMMIT;
+
+-- T2 runs at the same time:
+BEGIN;
+SELECT * FROM product WHERE promotion = true FOR UPDATE;
+-- Also locks 0 rows (no promoted products yet)
+UPDATE product SET promotion = true WHERE product_id = 6;
+COMMIT;</pre>
+
+<p><strong>Problem:</strong> When there are 0 promotions, <code>FOR UPDATE</code> locks 0 rows — there's nothing to lock! T1 and T2 both lock an empty set and proceed to promote different products. Write skew still occurs.</p>
+
+<div class="warn">
+<strong>CRITICAL:</strong> If T2 inserts a NEW product that is immediately promoted (not updating an existing row), <code>SELECT ... FOR UPDATE</code> CANNOT prevent the write skew. The new row didn't exist when T1 locked — T1 has no lock on a row that doesn't exist yet. This is called a "Phantom Insert" write skew and can only be prevented by Serializable.
+</div>
+
+<h2>12.4 Serializable Prevents Write Skew</h2>
+<pre>-- T1:
+BEGIN ISOLATION LEVEL SERIALIZABLE;
+SELECT * FROM product WHERE promotion = true; -- (0 rows)
+UPDATE product SET promotion = true WHERE product_id = 4;
+SELECT * FROM product WHERE promotion = true; -- (1 row)
+COMMIT; -- SUCCESS
+
+-- T2 (concurrent):
+BEGIN ISOLATION LEVEL SERIALIZABLE;
+SELECT * FROM product WHERE promotion = true; -- (0 rows)
+UPDATE product SET promotion = true WHERE product_id = 6;
+SELECT * FROM product WHERE promotion = true; -- (1 row)
+COMMIT; -- FAILS with: ERROR: could not serialize access due to
+         --              read/write dependencies among transactions</pre>
+
+<p>PostgreSQL's SSI detects the rw-dependency cycle: T2 read data (promotion=true rows) that T1 wrote to, AND T1 read data that T2 wrote to. This circular read-write dependency is what SSI aborts.</p>
+
+<div class="key">
+<strong>Write Skew solutions ranked:</strong>
+<ol>
+  <li><code>BEGIN ISOLATION LEVEL SERIALIZABLE</code> — cleanest, prevents all write skew (even phantom insert cases), but requires retry logic and has performance overhead</li>
+  <li><code>SELECT ... FOR UPDATE</code> — works for "update existing rows" write skew, but NOT for phantom insert write skew. Lower overhead than Serializable.</li>
+  <li>Application-level locking (pessimistic advisory locks) — possible but complex</li>
+</ol>
+</div>
+
+
+<h1>13. PostgreSQL Serializable — SSI (Serializable Snapshot Isolation)</h1>
+
+<h2>13.1 How Serializable Works in PostgreSQL</h2>
+
+<p>PostgreSQL's Serializable isolation works exactly like Repeatable Read, PLUS it additionally monitors for <strong>rw-dependencies</strong> (read-write dependencies) between transactions.</p>
+
+<div class="box">
+<strong>rw-dependency:</strong> "If T2's write would have changed the result of T1's read, had T2 run before T1."<br><br>
+Two transactions with a <em>circular</em> rw-dependency cannot have been executed serially — so PostgreSQL must abort one of them.
+</div>
+
+<h2>13.2 Predicate Locking</h2>
+
+<p>To track rw-dependencies without blocking, PostgreSQL uses <strong>predicate locks</strong>:</p>
+<ul>
+  <li>Predicate locks are NOT blocking locks — they don't prevent access</li>
+  <li>They track what data each Serializable transaction READ (the "predicate" — the WHERE conditions)</li>
+  <li>If another transaction writes data that falls within a predicate lock's range, PostgreSQL knows there's an rw-dependency</li>
+  <li>Predicate lock types: <strong>page locking</strong>, <strong>gap locking</strong>, <strong>next-key locking</strong></li>
+</ul>
+
+<h2>13.3 Error Messages: RR vs Serializable</h2>
+<table>
+  <tr><th>Situation</th><th>Error Message</th></tr>
+  <tr>
+    <td>RR: Two transactions try to UPDATE the same row</td>
+    <td><code>ERROR: could not serialize access due to concurrent update</code></td>
+  </tr>
+  <tr>
+    <td>Serializable: rw-dependency cycle detected (Write Skew)</td>
+    <td><code>ERROR: could not serialize access due to read/write dependencies among transactions</code></td>
+  </tr>
+</table>
+
+<h2>13.4 Summary — All Isolation Levels in PostgreSQL</h2>
+
+<table>
+  <tr>
+    <th>Level</th>
+    <th>Snapshot</th>
+    <th>Write-Write</th>
+    <th>Extra</th>
+    <th>Anomalies prevented</th>
+  </tr>
+  <tr>
+    <td>READ COMMITTED</td>
+    <td>Per statement</td>
+    <td>Wait for writer, get fresh snapshot</td>
+    <td>—</td>
+    <td>Dirty Write, Dirty Read</td>
+  </tr>
+  <tr>
+    <td>REPEATABLE READ</td>
+    <td>Per transaction (at first statement)</td>
+    <td>Wait for writer, then ABORT if committed</td>
+    <td>—</td>
+    <td>+ NRR, Phantom Read, Lost Update</td>
+  </tr>
+  <tr>
+    <td>SERIALIZABLE</td>
+    <td>Per transaction (at first statement)</td>
+    <td>Wait for writer, then ABORT if committed</td>
+    <td>Predicate locks, rw-dep tracking</td>
+    <td>Everything including Write Skew</td>
+  </tr>
+</table>
+
+<h1>14. Assignment 5 — Exercises with Model Answers</h1>
+
+<h2>Exercise 1: Deadlock with 3 Transactions</h2>
+
+<div class="exam">
+<div class="exam-title">Task</div>
+Open 3 PostgreSQL terminals, connect to kiushop2026. Run 3 transactions in parallel and provoke a deadlock involving all 3 transactions. Draw the waits-for graph cycle.
+</div>
+
+<div class="answer">
+<strong>Solution — How to provoke a 3-transaction deadlock:</strong>
+<pre>-- Terminal 1 (T1):
+BEGIN;
+UPDATE product SET stock = stock - 1 WHERE product_id = 1;  -- locks row 1
+-- Pause here, don't commit yet
+
+-- Terminal 2 (T2):
+BEGIN;
+UPDATE product SET stock = stock - 1 WHERE product_id = 2;  -- locks row 2
+-- Pause here
+
+-- Terminal 3 (T3):
+BEGIN;
+UPDATE product SET stock = stock - 1 WHERE product_id = 3;  -- locks row 3
+-- Pause here
+
+-- Now create the circular dependency:
+-- Terminal 1 (T1): try to lock row 2 (held by T2)
+UPDATE product SET stock = stock - 1 WHERE product_id = 2;  -- BLOCKS
+
+-- Terminal 2 (T2): try to lock row 3 (held by T3)
+UPDATE product SET stock = stock - 1 WHERE product_id = 3;  -- BLOCKS
+
+-- Terminal 3 (T3): try to lock row 1 (held by T1)
+UPDATE product SET stock = stock - 1 WHERE product_id = 1;  -- DEADLOCK!</pre>
+
+<strong>PostgreSQL error (in one of the terminals after ~1 second):</strong>
+<pre>ERROR:  deadlock detected
+DETAIL:  Process 1111 waits for ShareLock on transaction 2222; blocked by process 3333.
+         Process 3333 waits for ShareLock on transaction 4444; blocked by process 5555.
+         Process 5555 waits for ShareLock on transaction 6666; blocked by process 1111.</pre>
+
+<strong>Waits-For Graph Cycle:</strong>
+<pre>T1 → (waiting for row locked by) → T2 → (waiting for row locked by) → T3 → (waiting for row locked by) → T1</pre>
+<p>This is a cycle: T1→T2→T3→T1. PostgreSQL detects this cycle after the deadlock timeout (1s) and aborts one victim transaction (typically the one that detected it last). The other two can proceed.</p>
+
+<strong>Why does this happen under MVCC?</strong> Even though PostgreSQL uses MVCC (not 2PL), it uses exclusive row-level write locks for updates. Two transactions trying to update the same row form a lock conflict. Three transactions in a cycle of such conflicts → deadlock.
+</div>
+
+<h2>Exercise 2: HOT Updates — Verification</h2>
+
+<div class="exam">
+<div class="exam-title">Task</div>
+Perform HOT updates on the product table. Verify that heap ctid changes but Btree index entries do NOT change. Then run Vacuum and verify cleanup.
+</div>
+
+<div class="answer">
+<strong>Step 1: Check initial state</strong>
+<pre>-- 1. See all tuples with ctid:
+SELECT ctid, xmin, xmax, * FROM product;
+-- product_id=1 is at (0,1), product_id=2 at (0,2), etc.
+
+-- 2. Check Btree PK index leaf page (PK is integer - no need to decode):
+SELECT lp, lp_flags, lp_off, t_xmin, t_xmax, t_ctid
+FROM heap_page_items(get_raw_page('product', 0));
+-- Also check index: 
+SELECT data, ctid, htid, dead FROM bt_page_items('product_pkey', 1);</pre>
+
+<strong>Step 2: Run HOT updates (update non-indexed column: stock)</strong>
+<pre>-- HOT update: stock is NOT in the PK index, so this is a HOT update
+UPDATE product SET stock = stock + 10 WHERE product_id = 1;
+UPDATE product SET stock = stock + 10 WHERE product_id = 2;</pre>
+
+<strong>Step 3: Verify ctid changed but index did NOT</strong>
+<pre>-- ctid should now show new slot numbers (e.g., (0,8) and (0,9)):
+SELECT ctid, xmin, xmax, product_id, stock FROM product WHERE product_id IN (1,2);
+-- product_id=1: ctid is (0,8) now (was (0,1))
+-- product_id=2: ctid is (0,9) now (was (0,2))
+
+-- Btree index still shows OLD ctid:
+SELECT data, ctid, htid, dead FROM bt_page_items('product_pkey', 1);
+-- product_id=1 index entry: ctid=(0,1)  ← UNCHANGED
+-- product_id=2 index entry: ctid=(0,2)  ← UNCHANGED</pre>
+
+<strong>Step 4: See the heap page with HOT chain</strong>
+<pre>SELECT lp, lp_flags, lp_off, t_xmin, t_xmax, t_ctid
+FROM heap_page_items(get_raw_page('product', 0));
+-- lp=1: old version of product_id=1 (xmax=current_txid, t_ctid points to new slot)
+-- lp=8: new version of product_id=1 (xmax=0, t_ctid=(0,8) - points to itself = current)</pre>
+
+<strong>Step 5: Run VACUUM and verify</strong>
+<pre>VACUUM product;
+
+-- After vacuum, check heap page:
+SELECT lp, lp_flags, lp_off, t_xmin, t_xmax, t_ctid
+FROM heap_page_items(get_raw_page('product', 0));
+-- lp=1: lp_flags=2 (redirect pointer) now points directly to new slot
+-- lp=8: still has the current tuple data
+
+-- Btree index still has ctid=(0,1) pointing to lp=1
+-- But now lp=1 is a redirect, so it immediately jumps to lp=8 (no HOT chain needed)
+
+-- Also verify btree index was cleaned:
+SELECT data, ctid, htid, dead FROM bt_page_items('product_pkey', 1);
+-- dead=false for live entries, vacuum removed dead entries</pre>
+
+<strong>Why HOT updates are faster:</strong> A HOT update only writes one new heap slot. A COLD update would require writing a new heap slot PLUS updating every index (PK index, plus any other indexes). If the table has 5 indexes, a COLD update on an indexed column writes 5 index updates + 1 heap = 6 writes. HOT writes only 1. This is especially valuable for high-update columns like stock, score, price.
+</div>
+
+<h2>Exercise 3: COLD Updates — Indexed Column</h2>
+
+<div class="exam">
+<div class="exam-title">Task</div>
+Create additional index on product.name. Perform updates on the indexed column. Verify that new entries appear in BOTH the PK index AND the name index leaf pages.
+</div>
+
+<div class="answer">
+<pre>-- 1. Create index on name (this will force COLD updates when name changes):
+CREATE INDEX i_c_name ON product (name);
+
+-- 2. See current index entries:
+SELECT convert_from(decode(replace(substr(replace(data,' ',''),3),'00',''),'hex'),'UTF8') AS decoded,
+       ctid, htid, dead
+FROM bt_page_items('product_pkey', 1);  -- PK index
+
+SELECT convert_from(decode(replace(substr(replace(data,' ',''),3),'00',''),'hex'),'UTF8') AS decoded,
+       ctid, htid, dead
+FROM bt_page_items('i_c_name', 1);  -- name index
+
+-- Note current ctids for products you'll update
+
+-- 3. Update product names (indexed column → COLD UPDATE):
+UPDATE product SET name = 'Wireless Mouse Pro' WHERE product_id = 1;
+UPDATE product SET name = 'USB-C Hub Pro' WHERE product_id = 2;
+
+-- 4. Check that ctid changed:
+SELECT ctid, xmin, xmax, product_id, name FROM product WHERE product_id IN (1,2);
+-- ctid has changed (new heap slots)
+
+-- 5. Check BOTH indexes now have new entries:
+SELECT convert_from(...) AS decoded, ctid, htid, dead FROM bt_page_items('product_pkey', 1);
+-- New entry with new ctid for product_id=1 and 2
+-- OLD entry still there (not yet dead — vacuum will clean it)
+
+SELECT convert_from(...) AS decoded, ctid, htid, dead FROM bt_page_items('i_c_name', 1);
+-- New entries for 'Wireless Mouse Pro' and 'USB-C Hub Pro' with new ctids
+-- OLD entries for 'Wireless Mouse' and 'USB-C Hub' (marked dead after vacuum)
+
+-- 6. Run vacuum and verify index cleanup:
+VACUUM product;
+SELECT convert_from(...) AS decoded, ctid, htid, dead FROM bt_page_items('i_c_name', 1);
+-- Old 'dead=true' entries removed</pre>
+</div>
+
+<h2>Exercise 4: Write Skew with SELECT ... FOR UPDATE</h2>
+
+<div class="exam">
+<div class="exam-title">Task</div>
+Implement the promotion scenario using SELECT ... FOR UPDATE. Verify it prevents write skew for existing-row updates. Then modify to T2 inserting a new row and verify write skew is NOT prevented.
+</div>
+
+<div class="answer">
+<strong>Part A: SELECT ... FOR UPDATE prevents write skew (update existing rows)</strong>
+<pre>-- Terminal 1 (T1):
+BEGIN;
+SELECT * FROM product WHERE promotion = true FOR UPDATE;
+-- Returns 0 rows, BUT acquires a "gap lock" mentality in standard SQL
+-- In PostgreSQL RC/RR: locks the 0 rows returned (empty lock set)
+UPDATE product SET promotion = true WHERE product_id = 4;
+-- Check:
+SELECT * FROM product WHERE promotion = true;
+COMMIT;
+
+-- Terminal 2 (T2, concurrent):
+BEGIN;
+SELECT * FROM product WHERE promotion = true FOR UPDATE;
+-- Also 0 rows returned — T2 also locks nothing!
+UPDATE product SET promotion = true WHERE product_id = 6;
+-- T2 writes to a DIFFERENT row than T1
+SELECT * FROM product WHERE promotion = true;
+COMMIT;
+</pre>
+
+<p><strong>Result:</strong> BOTH T1 and T2 commit. 2 products promoted. Write skew STILL occurs! FOR UPDATE didn't help when the result set was empty.</p>
+
+<p><strong>Why?</strong> FOR UPDATE locks the rows that were actually RETURNED. With 0 promotions, 0 rows are returned and 0 locks acquired. T1 and T2 each hold no locks, so they don't block each other.</p>
+
+<strong>Part B: Insert case — write skew cannot be prevented with FOR UPDATE</strong>
+<pre>-- T1: promote product_id=4 (as above)
+-- T2: INSERT a new product that is immediately promoted:
+BEGIN;
+SELECT * FROM product WHERE promotion = true FOR UPDATE; -- 0 rows
+INSERT INTO product(product_id, name, price, stock, promotion)
+  VALUES (20, 'Projector', 2000, 20, true);
+COMMIT; -- SUCCESS — the new row wasn't in T1's lock set at all</pre>
+
+<p><strong>Result:</strong> T1 promotes product 4; T2 inserts product 20 with promotion=true. Two promotions. Write skew. FOR UPDATE cannot lock a row that doesn't exist yet.</p>
+
+<strong>Part C: Serializable prevents write skew even with INSERT</strong>
+<pre>-- T1:
+BEGIN ISOLATION LEVEL SERIALIZABLE;
+SELECT * FROM product WHERE promotion = true; -- 0 rows
+UPDATE product SET promotion = true WHERE product_id = 4;
+SELECT * FROM product WHERE promotion = true; -- 1 row
+COMMIT; -- SUCCESS
+
+-- T2 (concurrent):
+BEGIN ISOLATION LEVEL SERIALIZABLE;
+SELECT * FROM product WHERE promotion = true; -- 0 rows
+INSERT INTO product(product_id, name, price, stock, promotion)
+  VALUES (20, 'Projector', 2000, 20, true);
+SELECT * FROM product WHERE promotion = true; -- 1 row
+COMMIT; -- FAILS:
+-- ERROR: could not serialize access due to read/write dependencies among transactions
+-- HINT: The transaction might succeed if retried.</pre>
+
+<p><strong>Why Serializable works:</strong> PostgreSQL's SSI tracks that T2 read the "no promotions" state that T1 wrote into. The rw-dependency cycle (T1 wrote what T2 read, T2 inserted a row that would change what T1 read) is detected, and T2 is aborted.</p>
+</div>
+
+<h2>Exercise 5: ScyllaDB Consistency Behavior</h2>
+
+<div class="exam">
+<div class="exam-title">Task</div>
+Demonstrate ScyllaDB consistency levels by starting 2 of 3 nodes, writing data at consistency ONE, then switching nodes, and observing that the write is NOT visible on the new node.
+</div>
+
+<div class="answer">
+<strong>Conceptual explanation (paper exam format):</strong>
+
+<p>ScyllaDB is a peer-to-peer distributed database that uses <strong>consistent hashing</strong> to assign partitions to nodes, and a <strong>replication factor (RF)</strong> to duplicate each partition across RF nodes.</p>
+
+<strong>Setup:</strong> 3 nodes (kiu-scylla1, kiu-scylla2, kiu-scylla3), RF=3 (each partition on all 3 nodes). Start nodes 1 and 2 only (node 3 is down).
+
+<strong>Step-by-step answers:</strong>
+<ol>
+  <li>Default consistency = <strong>ONE</strong> — only 1 node needs to acknowledge a write/read</li>
+  <li>Write to a partition stored on kiu-scylla2 at consistency ONE: succeeds (kiu-scylla2 is up)</li>
+  <li>Stop kiu-scylla2, start kiu-scylla3</li>
+  <li><strong>Does the write show on kiu-scylla3?</strong> <strong>NO.</strong> The write was only sent to kiu-scylla2 at consistency ONE. kiu-scylla3 was down at write time and never received the update. The data is NOT replicated to kiu-scylla3 until node healing (hinted handoff, repair) occurs.</li>
+  <li><strong>Does the write show on kiu-scylla1?</strong> <strong>YES</strong> (if kiu-scylla1 is one of the replica nodes for that partition). kiu-scylla1 was up and received the ONE acknowledgment OR kiu-scylla2 forwarded to kiu-scylla1 as coordinator.</li>
+  <li>Change consistency to QUORUM on kiu-scylla3: needs ⌊RF/2⌋+1 = 2 nodes to agree (with RF=3)</li>
+  <li>Try to write to a partition on kiu-scylla2 (which is DOWN) at QUORUM: <strong>FAILS</strong> — only kiu-scylla1 and kiu-scylla3 are up. To write a partition that needs kiu-scylla2 and only has 1 other available node, QUORUM (2) cannot be reached → write error.</li>
+  <li><strong>Can you write at QUORUM with kiu-scylla2 down?</strong> YES — choose a partition stored on kiu-scylla1 AND kiu-scylla3 (not kiu-scylla2). With kiu-scylla1 and kiu-scylla3 both up, QUORUM=2 is achievable.</li>
+</ol>
+
+<strong>Key concepts:</strong>
+<ul>
+  <li><strong>Consistency ONE:</strong> Fast but weak — only 1 node must acknowledge. Writes may not reach all replicas immediately → stale reads possible on other nodes.</li>
+  <li><strong>Consistency QUORUM:</strong> Majority of replicas must acknowledge. Stronger consistency but fails if majority is unavailable.</li>
+  <li><strong>Hinted Handoff:</strong> When a replica is down, ScyllaDB stores a "hint" on the coordinator node and delivers it when the replica comes back online.</li>
+</ul>
+</div>
+
+</div>
+
+<script>
+(function(){
+  var KEY = 'readerPrefs2:db2site';
+  var root = document.documentElement;
+  var body = document.body;
+  var DEF = { fs: 1.5, cw: 560, full: false };
+  var st = Object.assign({}, DEF);
+  try { st = Object.assign(st, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch(e){}
+
+  var ctl = document.getElementById('reader-controls');
+  var toggle = document.getElementById('rc-toggle');
+  var fontVal = document.getElementById('rc-font-val');
+  var widthInput = document.getElementById('rc-width');
+  var widthVal = document.getElementById('rc-width-val');
+  var fullChk = document.getElementById('rc-full');
+
+  function clamp(v, lo, hi){ return Math.min(hi, Math.max(lo, v)); }
+
+  function apply(){
+    root.style.setProperty('--rfs', st.fs);
+    root.style.setProperty('--rcw', st.cw + 'px');
+    body.classList.toggle('reader-full', !!st.full);
+    fontVal.textContent = Math.round(st.fs * 100) + '%';
+    widthInput.value = st.cw;
+    widthVal.textContent = st.full ? 'full' : st.cw;
+    widthInput.disabled = !!st.full;
+    fullChk.checked = !!st.full;
+  }
+  function save(){
+    try { localStorage.setItem(KEY, JSON.stringify(st)); } catch(e){}
+  }
+
+  toggle.addEventListener('click', function(){ ctl.classList.toggle('open'); });
+
+  ctl.addEventListener('click', function(e){
+    var act = e.target.getAttribute('data-act');
+    if(!act) return;
+    if(act === 'font-inc') st.fs = clamp(Math.round((st.fs + 0.1)*10)/10, 0.7, 2.2);
+    else if(act === 'font-dec') st.fs = clamp(Math.round((st.fs - 0.1)*10)/10, 0.7, 2.2);
+    else if(act === 'reset') st = Object.assign({}, DEF);
+    apply(); save();
+  });
+
+  widthInput.addEventListener('input', function(){
+    st.cw = clamp(parseInt(widthInput.value, 10) || DEF.cw, 300, 1600);
+    apply(); save();
+  });
+  fullChk.addEventListener('change', function(){
+    st.full = fullChk.checked;
+    apply(); save();
+  });
+
+  apply();
+})();
+</script>
+
+
+<script>
+(function(){
+  var KEY='readerTheme:db2site';
+  var root=document.documentElement;
+  var mql=window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  var theme=null;
+  try{ theme=localStorage.getItem(KEY); }catch(e){}
+  if(theme!=='light' && theme!=='dark' && theme!=='system') theme='system';
+
+  var row=document.getElementById('rc-theme-row');
+  function effective(){ return theme==='system' ? (mql && mql.matches ? 'dark':'light') : theme; }
+  function apply(){
+    root.classList.toggle('theme-dark', effective()==='dark');
+    if(row){ row.querySelectorAll('[data-theme]').forEach(function(b){
+      b.classList.toggle('active', b.getAttribute('data-theme')===theme); }); }
+  }
+  if(row){
+    row.addEventListener('click', function(e){
+      var b=e.target.closest('[data-theme]'); if(!b) return;
+      theme=b.getAttribute('data-theme');
+      try{ localStorage.setItem(KEY, theme); }catch(err){}
+      apply();
+    });
+  }
+  if(mql){
+    var onChange=function(){ if(theme==='system') apply(); };
+    if(mql.addEventListener) mql.addEventListener('change', onChange);
+    else if(mql.addListener) mql.addListener(onChange);
+  }
+  apply();
+})();
+</script>
+
+<div id="reader-pagecounter">Page <span id="rpc-cur">1</span> / <span id="rpc-total">1</span></div>
+
+<script>
+(function(){
+  var PAGE_PX = 1000;            // fixed LOGICAL page height -> identical unit across all files
+  var root = document.documentElement;
+  var curEl = document.getElementById('rpc-cur');
+  var totEl = document.getElementById('rpc-total');
+
+  function fontScale(){
+    var v = parseFloat(getComputedStyle(root).getPropertyValue('--rfs'));
+    return (v && v > 0) ? v : 1;
+  }
+  function update(){
+    var fs = fontScale();
+    var pp = PAGE_PX * fs;                       // page height in rendered px
+    var docH = Math.max(root.scrollHeight, document.body.scrollHeight);
+    var total = Math.max(1, Math.ceil(docH / pp));
+    var cur = Math.min(total, Math.floor((window.scrollY || window.pageYOffset || 0) / pp) + 1);
+    curEl.textContent = cur;
+    totEl.textContent = total;
+  }
+
+  var ticking = false;
+  function onScroll(){
+    if(ticking) return; ticking = true;
+    requestAnimationFrame(function(){ update(); ticking = false; });
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', update);
+
+  // recompute when font/width settings change the document height
+  var rc = document.querySelector('.reader-container');
+  if(window.ResizeObserver && rc){
+    new ResizeObserver(update).observe(rc);
+  } else {
+    setInterval(update, 1000);
+  }
+  update();
+})();
+</script>
+
+
+<script>
+(function(){
+  var PAGE_PX = 1000;
+  var root = document.documentElement;
+  var rc = document.querySelector('.reader-container');
+  var pc = document.getElementById('reader-pagecounter');
+  if(!rc || !pc) return;
+
+  // wrap counter + outline so hover stays active when moving between them
+  var nav = document.createElement('div'); nav.id = 'reader-nav';
+  pc.parentNode.insertBefore(nav, pc); nav.appendChild(pc);
+  var outline = document.createElement('div'); outline.id = 'reader-outline';
+  nav.appendChild(outline);
+
+  function fontScale(){
+    var v = parseFloat(getComputedStyle(root).getPropertyValue('--rfs'));
+    return (v && v > 0) ? v : 1;
+  }
+  function esc(s){ return s.replace(/[&<>"]/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+  function build(){
+    var pp = PAGE_PX * fontScale();
+    var hs = rc.querySelectorAll('h1, h2, h3');
+    var sy = window.scrollY || window.pageYOffset || 0;
+    var html = '<div class="ro-head">Contents &middot; page</div>';
+    hs.forEach(function(h){
+      if(h.closest('.toc, .cover')) return;          // skip TOC / cover headings
+      var txt = (h.textContent || '').trim();
+      if(!txt) return;
+      var lvl = h.tagName === 'H1' ? 0 : (h.tagName === 'H2' ? 1 : 2);
+      var top = h.getBoundingClientRect().top + sy;
+      var pg = Math.max(1, Math.floor(top / pp) + 1);
+      html += '<a class="ro-item ro-l' + lvl + '" data-top="' + Math.round(top) + '">' +
+              '<span class="ro-t">' + esc(txt) + '</span>' +
+              '<span class="ro-p">p.' + pg + '</span></a>';
+    });
+    outline.innerHTML = html;
+  }
+
+  nav.addEventListener('mouseenter', build);   // rebuild fresh each hover (page #s stay correct)
+  outline.addEventListener('click', function(e){
+    var a = e.target.closest('.ro-item'); if(!a) return;
+    var y = parseFloat(a.getAttribute('data-top')) - 12;
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  });
+})();
+</script>
+
+
+<script>
+(function(){
+  var PAGE_PX = 1000, SPY_OFFSET = 90;
+  var root = document.documentElement;
+  var rc = document.querySelector('.reader-container');
+  var pc = document.getElementById('reader-pagecounter');
+  var outline = document.getElementById('reader-outline');
+  var nav = document.getElementById('reader-nav');
+  if(!rc || !pc || !outline || !nav) return;
+
+  // current-heading label inside the pill (before the "Page X / Y" text)
+  var head = document.createElement('span'); head.id = 'rpc-head';
+  /* current heading shown in the outline only, not in the pill */
+
+  // cache the real section headings (skip TOC / cover)
+  var heads = [];
+  rc.querySelectorAll('h1, h2, h3').forEach(function(h){
+    if(h.closest('.toc, .cover')) return;
+    if(!(h.textContent || '').trim()) return;
+    heads.push(h);
+  });
+
+  function fontScale(){
+    var v = parseFloat(getComputedStyle(root).getPropertyValue('--rfs'));
+    return (v && v > 0) ? v : 1;
+  }
+  function esc(s){ return s.replace(/[&<>"]/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function topsAndCurrent(){
+    var sy = window.scrollY || window.pageYOffset || 0;
+    var tops = heads.map(function(h){ return h.getBoundingClientRect().top + sy; });
+    var cur = -1;
+    for(var i=0;i<tops.length;i++){ if(tops[i] <= sy + SPY_OFFSET) cur = i; else break; }
+    if(cur < 0 && tops.length) cur = 0;
+    return { tops: tops, cur: cur, sy: sy };
+  }
+
+  function build(){
+    var st = topsAndCurrent();
+    var pp = PAGE_PX * fontScale();
+    var html = '<div class="ro-head">Contents &middot; page</div>';
+    heads.forEach(function(h, i){
+      var lvl = h.tagName === 'H1' ? 0 : (h.tagName === 'H2' ? 1 : 2);
+      var pg = Math.max(1, Math.floor(st.tops[i] / pp) + 1);
+      html += '<a class="ro-item ro-l' + lvl + (i === st.cur ? ' ro-active' : '') +
+              '" data-i="' + i + '" data-top="' + Math.round(st.tops[i]) + '">' +
+              '<span class="ro-t">' + esc((h.textContent||'').trim()) + '</span>' +
+              '<span class="ro-p">p.' + pg + '</span></a>';
+    });
+    outline.innerHTML = html;
+    var act = outline.querySelector('.ro-active');
+    if(act) outline.scrollTop = act.offsetTop - outline.clientHeight / 2;
+  }
+
+  // run AFTER the earlier outline builder so this (spy-aware) version wins
+  nav.addEventListener('mouseenter', build);
+  pc.addEventListener('click', function(){ nav.classList.toggle('pinned'); if(nav.classList.contains('pinned')) build(); });
+  document.addEventListener('click', function(e){ if(nav.classList.contains('pinned') && !nav.contains(e.target)) nav.classList.remove('pinned'); });
+
+  var ticking = false;
+  function onScroll(){
+    if(ticking) return; ticking = true;
+    requestAnimationFrame(function(){
+      var st = topsAndCurrent();
+      head.textContent = st.cur >= 0 ? (heads[st.cur].textContent || '').trim() : '';
+      // live-highlight active item if the outline is currently shown
+      var items = outline.children;
+      for(var i=0;i<items.length;i++){
+        var el = items[i]; if(!el.classList || !el.classList.contains('ro-item')) continue;
+        el.classList.toggle('ro-active', parseInt(el.getAttribute('data-i'),10) === st.cur);
+      }
+      ticking = false;
+    });
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', onScroll);
+
+  // initial current-heading label
+  var st0 = topsAndCurrent();
+  head.textContent = st0.cur >= 0 ? (heads[st0.cur].textContent || '').trim() : '';
+})();
+</script>
+
+
+<script>
+(function(){
+  var KEY='siteNavOpen', body=document.body;
+  var wide=window.matchMedia('(min-width:900px)');
+  var saved=null; try{ saved=localStorage.getItem(KEY); }catch(e){}
+  var open = saved===null ? wide.matches : saved==='1';
+  function apply(){ body.classList.toggle('nav-open', open); }
+  var t=document.getElementById('site-nav-toggle');
+  if(t) t.addEventListener('click', function(){ open=!open; try{localStorage.setItem(KEY,open?'1':'0');}catch(e){} apply(); });
+  var bd=document.getElementById('site-nav-backdrop');
+  if(bd) bd.addEventListener('click', function(){ open=false; try{localStorage.setItem(KEY,'0');}catch(e){} apply(); });
+  apply();
+})();
+</script>
+
+

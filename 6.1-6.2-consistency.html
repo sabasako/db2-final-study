@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Study Guide: Module 6.1 Consistency in P2P &amp; 6.2 Concurrent Write Conflict Resolution — KIU Databases II</title>
+<style>
+body{font-family:Georgia,serif;font-size:11pt;line-height:1.7;margin:2cm;color:#222}
+h1{color:#003366;font-size:20pt;border-bottom:3px solid #003366;padding-bottom:8px;margin-top:0;page-break-before:always}
+h1:first-of-type{page-break-before:avoid}
+h2{color:#003366;font-size:15pt;margin-top:24px;border-bottom:1px solid #aac}
+h3{color:#1a5276;font-size:13pt;margin-top:16px}
+h4{color:#444;font-size:11.5pt;margin-top:12px}
+.def{background:#e8f0fe;border-left:5px solid #1a73e8;padding:12px 14px;margin:12px 0;border-radius:4px}
+.imp{background:#fff3cd;border-left:5px solid #ffc107;padding:12px 14px;margin:12px 0;border-radius:4px}
+.tip{background:#d4edda;border-left:5px solid #28a745;padding:12px 14px;margin:12px 0;border-radius:4px}
+.tip::before{content:"EXAM TIP: ";font-weight:bold;color:#155724}
+.warn{background:#fde8e8;border-left:5px solid #dc3545;padding:12px 14px;margin:12px 0;border-radius:4px}
+pre,code{font-family:'Courier New',monospace}
+pre{background:#1e1e1e;color:#d4d4d4;padding:14px;border-radius:6px;font-size:9pt;line-height:1.5;white-space:pre-wrap;word-wrap:break-word}
+.out{background:#1a2a1a;color:#a8ff78;padding:12px;border-radius:6px;font-family:monospace;font-size:9pt;margin:8px 0;white-space:pre-wrap}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:10pt}
+th{background:#003366;color:white;padding:8px;text-align:left}
+td{border:1px solid #ccc;padding:7px;vertical-align:top}
+tr:nth-child(even){background:#f5f5f5}
+.toc{background:#f0f4ff;padding:16px;border:1px solid #aac;border-radius:6px;margin-bottom:20px}
+.toc a{color:#003366;text-decoration:none;line-height:2}
+.toc h3{margin-top:0;color:#003366}
+.timeline{background:#f0f0f8;padding:12px;border-radius:4px;font-family:monospace;font-size:9pt;white-space:pre;margin:10px 0;border:1px solid #ccc}
+.scenario{background:#f8f4e8;border:2px solid #d4a000;padding:14px;margin:16px 0;border-radius:6px}
+.scenario h4{color:#7a5000;margin-top:0}
+ol li,ul li{margin-bottom:6px}
+</style>
+
+<style id="reader-controls-style">
+/* ===== Injected reading controls ===== */
+:root{ --rfs:1.5; --rcw:560px; }
+.reader-container{
+  max-width: var(--rcw);
+  margin-left: auto;
+  margin-right: auto;
+  zoom: var(--rfs);
+}
+body.reader-full .reader-container{ max-width: none; }
+
+#reader-controls{
+  position: fixed; top: 14px; right: 14px; z-index: 9999;
+  font-family: -apple-system, Segoe UI, Roboto, sans-serif;
+}
+#reader-controls #rc-toggle{
+  width: 40px; height: 40px; border-radius: 50%;
+  border: none; background: #003366; color: #fff;
+  font-size: 16px; font-weight: bold; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.3);
+}
+#reader-controls #rc-panel{
+  display: none; margin-top: 8px; width: 240px;
+  background: #fff; color: #222; border: 1px solid #ccd;
+  border-radius: 10px; padding: 12px 14px;
+  box-shadow: 0 6px 24px rgba(0,0,0,.2); font-size: 13px;
+}
+#reader-controls.open #rc-panel{ display: block; }
+#reader-controls .rc-row{
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; margin: 8px 0;
+}
+#reader-controls .rc-row:first-child{ margin-top: 0; }
+#reader-controls .rc-row > span:first-child{ font-weight: 600; color: #003366; min-width: 42px; }
+#reader-controls button[data-act]{
+  border: 1px solid #aac; background: #f0f4ff; color: #003366;
+  border-radius: 6px; padding: 3px 10px; cursor: pointer; font-size: 13px;
+}
+#reader-controls button[data-act]:hover{ background: #dde6ff; }
+#reader-controls #rc-font-val, #reader-controls #rc-width-val{
+  min-width: 44px; text-align: center; font-variant-numeric: tabular-nums;
+}
+#reader-controls input[type=range]{ flex: 1; }
+#reader-controls label{ display: flex; align-items: center; gap: 6px; cursor: pointer; }
+@media print{
+  #reader-controls{ display: none !important; }
+  .reader-container{ zoom: 1 !important; max-width: none !important; margin: 0 !important; }
+}
+</style>
+
+<script>
+(function(){try{
+  var k='readerTheme:db2site';
+  var t=localStorage.getItem(k)||'system';
+  var dark = t==='dark' || (t==='system' && window.matchMedia &&
+            window.matchMedia('(prefers-color-scheme: dark)').matches);
+  if(dark) document.documentElement.classList.add('theme-dark');
+}catch(e){}})();
+</script>
+
+<style id="theme-dark-style">
+/* ===== Dark theme (scoped to html.theme-dark) ===== */
+html.theme-dark, html.theme-dark body{
+  background: #16181c !important;
+  color: #d2d5da !important;
+}
+html.theme-dark h1, html.theme-dark h2, html.theme-dark h3, html.theme-dark h4{
+  color: #9ec5ff !important;
+  border-color: #33425a !important;
+}
+html.theme-dark a{ color: #8ab4f8 !important; }
+html.theme-dark .subtitle, html.theme-dark .meta, html.theme-dark .sub{ color: #9aa0a8 !important; }
+
+/* callout / card boxes -> dark surface, keep their accent border */
+html.theme-dark .box, html.theme-dark .warn, html.theme-dark .key, html.theme-dark .exam, html.theme-dark .answer, html.theme-dark .def, html.theme-dark .imp, html.theme-dark .tip, html.theme-dark .scenario, html.theme-dark .timeline, html.theme-dark .toc, html.theme-dark .defbox, html.theme-dark .notebox, html.theme-dark .examtip, html.theme-dark .assignment, html.theme-dark .cover{
+  background: #1e2230 !important;
+  color: #d2d5da !important;
+}
+html.theme-dark .cover{ background: #1a1d28 !important; }
+html.theme-dark .exam-title, html.theme-dark .examtip,
+html.theme-dark .notebox, html.theme-dark .kiu-logo{ color: #c7d2e8 !important; }
+
+/* tables */
+html.theme-dark table th{ background: #243044 !important; color: #e8eef7 !important; }
+html.theme-dark table td, html.theme-dark table th{ border-color: #3a3f49 !important; }
+html.theme-dark table tr:nth-child(even){ background: #1b1e24 !important; }
+html.theme-dark table tr:nth-child(odd){ background: transparent !important; }
+
+/* code blocks: darken any light ones; leave already-dark ones consistent */
+html.theme-dark pre, html.theme-dark code{
+  background: #0e0f12 !important;
+  color: #e2e2e2 !important;
+  border-color: #2c2f36 !important;
+}
+html.theme-dark .out, html.theme-dark .output{ background: #0f1a10 !important; }
+
+/* the settings panel itself in dark mode */
+html.theme-dark #reader-controls #rc-panel{
+  background: #23262d !important; color: #e0e2e6 !important; border-color: #3a3f4a !important;
+}
+html.theme-dark #reader-controls button[data-act]{
+  background: #2d323c !important; color: #cfe0ff !important; border-color: #3a4150 !important;
+}
+html.theme-dark #reader-controls button[data-act]:hover{ background: #39404d !important; }
+html.theme-dark #reader-controls .rc-row > span:first-child{ color: #9ec5ff !important; }
+
+/* theme segmented control */
+#reader-controls .rc-seg{ display: inline-flex; gap: 4px; }
+#reader-controls .rc-seg button{
+  border: 1px solid #aac; background: #f0f4ff; color: #003366;
+  border-radius: 6px; padding: 3px 8px; cursor: pointer; font-size: 14px; line-height: 1;
+}
+#reader-controls .rc-seg button.active{ background: #003366; color: #fff; border-color: #003366; }
+html.theme-dark #reader-controls .rc-seg button{ background: #2d323c; color: #cfe0ff; border-color: #3a4150; }
+html.theme-dark #reader-controls .rc-seg button.active{ background: #8ab4f8; color: #11151c; border-color: #8ab4f8; }
+
+@media print{
+  /* never print a black page even if dark mode is on */
+  html.theme-dark, html.theme-dark body,
+  html.theme-dark .box, html.theme-dark .warn, html.theme-dark .key, html.theme-dark .exam, html.theme-dark .answer, html.theme-dark .def, html.theme-dark .imp, html.theme-dark .tip, html.theme-dark .scenario, html.theme-dark .timeline, html.theme-dark .toc, html.theme-dark .defbox, html.theme-dark .notebox, html.theme-dark .examtip, html.theme-dark .assignment, html.theme-dark .cover, html.theme-dark table th,
+  html.theme-dark pre, html.theme-dark code, html.theme-dark .out, html.theme-dark .output{
+    background: #fff !important; color: #000 !important;
+  }
+}
+</style>
+
+<style id="reader-pagecounter-style">
+#reader-pagecounter{
+  position: fixed; bottom: 14px; right: 14px; z-index: 9999;
+  background: rgba(0,51,102,.92); color: #fff;
+  font-family: -apple-system, Segoe UI, Roboto, sans-serif; font-size: 12px;
+  padding: 6px 11px; border-radius: 20px; pointer-events: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25);
+  font-variant-numeric: tabular-nums; letter-spacing: .2px;
+}
+#reader-pagecounter b{ font-weight: 700; }
+html.theme-dark #reader-pagecounter{ background: rgba(138,180,248,.92); color: #11151c; }
+@media print{ #reader-pagecounter{ display: none !important; } }
+</style>
+
+<style id="reader-outline-style">
+/* keep the Aa button pinned to the right so it doesn't jump when the panel opens */
+#reader-controls{ display: flex; flex-direction: column; align-items: flex-end; }
+
+/* page counter becomes hover-interactive (was pointer-events:none) */
+#reader-nav{ position: fixed; bottom: 14px; right: 14px; z-index: 9999;
+  font-family: -apple-system, Segoe UI, Roboto, sans-serif; }
+#reader-nav #reader-pagecounter{ position: static; bottom: auto; right: auto;
+  pointer-events: auto; cursor: pointer; }
+
+#reader-outline{
+  display: none; position: absolute; bottom: 100%; right: 0; margin-bottom: 8px;
+  width: min(340px, 82vw); max-height: 70vh; overflow-y: auto;
+  background: #fff; color: #222; border: 1px solid #ccd; border-radius: 10px;
+  box-shadow: 0 8px 28px rgba(0,0,0,.22); padding: 6px 4px; font-size: 12.5px;
+}
+#reader-nav:hover #reader-outline, #reader-nav.pinned #reader-outline{ display: block; }
+#reader-outline::after{ content:""; position:absolute; left:0; right:0; top:100%; height:14px; }
+#reader-outline .ro-head{ font-weight: 700; color: #003366; padding: 4px 10px 6px;
+  border-bottom: 1px solid #e3e8f0; margin-bottom: 4px; position: sticky; top: 0; background: #fff; }
+#reader-outline .ro-item{
+  display: flex; align-items: baseline; gap: 8px; justify-content: space-between;
+  padding: 3px 10px; cursor: pointer; border-radius: 6px; text-decoration: none; color: inherit;
+}
+#reader-outline .ro-item:hover{ background: #eef3ff; }
+#reader-outline .ro-t{ overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#reader-outline .ro-p{ color: #6678a0; font-variant-numeric: tabular-nums; flex: 0 0 auto; font-size: 11px; }
+#reader-outline .ro-l0{ font-weight: 600; }
+#reader-outline .ro-l1 .ro-t{ padding-left: 14px; font-weight: 400; }
+#reader-outline .ro-l2 .ro-t{ padding-left: 28px; color: #555; font-weight: 400; }
+
+html.theme-dark #reader-outline{ background: #23262d; color: #e0e2e6; border-color: #3a3f4a; }
+html.theme-dark #reader-outline .ro-head{ background: #23262d; color: #9ec5ff; border-color: #343a44; }
+html.theme-dark #reader-outline .ro-item:hover{ background: #2f3540; }
+html.theme-dark #reader-outline .ro-p{ color: #8fa0c4; }
+html.theme-dark #reader-outline .ro-l2 .ro-t{ color: #b6bcc6; }
+
+@media print{ #reader-nav{ display: none !important; } }
+</style>
+
+<style id="reader-spy-style">
+#reader-pagecounter{ white-space: nowrap; }
+#rpc-head{ overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 230px; font-weight: 600; }
+#rpc-head:not(:empty)::after{ content: "\00B7"; margin: 0 7px; opacity: .55; font-weight: 400; }
+#reader-outline .ro-item.ro-active{ background: #dbe6ff; font-weight: 700; }
+#reader-outline .ro-item.ro-active .ro-p{ color: #003366; }
+html.theme-dark #reader-outline .ro-item.ro-active{ background: #34507e; }
+html.theme-dark #reader-outline .ro-item.ro-active .ro-p{ color: #cfe0ff; }
+</style>
+
+<style id="site-nav-style">
+#site-nav-toggle{ position:fixed; top:14px; left:14px; z-index:10001; width:40px; height:40px;
+  border-radius:8px; border:none; background:#0f2540; color:#fff; font-size:18px; line-height:1;
+  cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,.3);
+  font-family:-apple-system,Segoe UI,Roboto,sans-serif; }
+#site-nav{ position:fixed; top:0; left:0; width:250px; height:100vh; overflow-y:auto;
+  background:#0f2540; color:#cfe0ff; z-index:10000; transform:translateX(-100%);
+  transition:transform .2s ease; box-shadow:2px 0 14px rgba(0,0,0,.25);
+  font-family:-apple-system,Segoe UI,Roboto,sans-serif; }
+body.nav-open #site-nav{ transform:translateX(0); }
+#site-nav .sn-title{ font-weight:700; color:#fff; font-size:15px; padding:16px 18px 4px 58px; }
+#site-nav .sn-sub{ font-size:11px; color:#7f9cc0; padding:0 18px 12px 58px; border-bottom:1px solid #22405f; margin-bottom:6px; }
+#site-nav a.sn-link{ display:block; padding:11px 18px; color:#cfe0ff; text-decoration:none;
+  font-size:13.5px; border-left:3px solid transparent; line-height:1.35; }
+#site-nav a.sn-link:hover{ background:#163255; }
+#site-nav a.sn-link.active{ background:#1d3e66; border-left-color:#8ab4f8; color:#fff; font-weight:600; }
+#site-nav-backdrop{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:9999; }
+body.nav-open #site-nav-backdrop{ display:block; }
+@media (min-width:900px){
+  body.nav-open{ padding-left:250px; }
+  body.nav-open #site-nav-backdrop{ display:none; }
+}
+@media print{ #site-nav,#site-nav-toggle,#site-nav-backdrop{ display:none !important; } body.nav-open{ padding-left:0 !important; } }
+
+/* ===== mobile responsiveness ===== */
+@media (max-width:700px){
+  body{ margin:0 !important; }
+  .reader-container{ max-width:none !important; margin:0 !important; zoom:1 !important; padding:0 14px !important; }
+  #reader-controls{ top:10px !important; right:10px !important; }
+  #site-nav-toggle{ top:10px; left:10px; width:38px; height:38px; }
+  #reader-nav{ bottom:10px !important; right:10px !important; }
+  .reader-container table{ font-size:8.7pt; }
+  .reader-container pre, .reader-container .ascii-diagram{ font-size:8pt; }
+  h1{ font-size:17pt !important; } h2{ font-size:13.5pt !important; }
+}
+</style>
+</head>
+<body>
+<button id="site-nav-toggle" title="Menu" aria-label="Menu">☰</button>
+<nav id="site-nav">
+  <div class="sn-title">DB2 Final Study</div>
+  <div class="sn-sub">KIU Databases II · 2026</div>
+  <a class="sn-link" href="index.html">Home</a>
+  <a class="sn-link" href="5-transactions.html">5.4 · Transactions & CC</a>
+  <a class="sn-link active" href="6.1-6.2-consistency.html">6.1–6.2 · Consistency & Conflicts</a>
+  <a class="sn-link" href="6.3-6.4-consensus-lwt.html">6.3–6.4 · Consensus & LWT</a>
+  <a class="sn-link" href="7-mongodb.html">7 · MongoDB & Sharding</a>
+  <a class="sn-link" href="final-exam-prep.html">Final Exam Prep</a>
+</nav>
+<div id="site-nav-backdrop"></div>
+
+
+<div id="reader-controls">
+  <button id="rc-toggle" title="Reading settings">Aa</button>
+  <div id="rc-panel">
+    <div class="rc-row" id="rc-theme-row">
+      <span>Theme</span>
+      <div class="rc-seg">
+        <button data-theme="light" title="Light mode">&#9728;</button>
+        <button data-theme="dark" title="Dark mode">&#9790;</button>
+        <button data-theme="system" title="Match system">&#128421;</button>
+      </div>
+    </div>
+
+    <div class="rc-row">
+      <span>Font</span>
+      <button data-act="font-dec" title="Smaller">A&minus;</button>
+      <span id="rc-font-val">100%</span>
+      <button data-act="font-inc" title="Larger">A+</button>
+    </div>
+    <div class="rc-row">
+      <span>Width</span>
+      <input id="rc-width" type="range" min="300" max="1600" step="20">
+      <span id="rc-width-val">560</span>
+    </div>
+    <div class="rc-row">
+      <label><input id="rc-full" type="checkbox"> Full width</label>
+      <button data-act="reset">Reset</button>
+    </div>
+  </div>
+</div>
+
+<div class="reader-container">
+
+
+<h1 style="page-break-before:avoid">Study Guide: Module 6.1 Consistency in P2P Distributed Databases &amp; 6.2 Concurrent Write Conflict Resolution</h1>
+<p><strong>KIU Databases II — Prof. Eva Knirsch | Exam Preparation | 2026-06-22</strong></p>
+<p>Reading: [Kl] chapter 5; [Ha] chapter 8; Dynamo Paper, 2007; Kleppmann, "Distributed systems and elliptic curves" (2020)</p>
+
+<div class="toc">
+<h3>Table of Contents</h3>
+<strong>Part 6.1 — Consistency in P2P Distributed Databases</strong><br>
+<a href="#s1">1. ACID in P2P Distributed Databases</a><br>
+<a href="#s2">2. Consistency Means Something Different in P2P</a><br>
+<a href="#s3">3. The CAP Theorem</a><br>
+<a href="#s4">4. CAP and Eventual Consistency</a><br>
+<a href="#s5">5. Why Two Replicas Hold Different Data</a><br>
+<a href="#s6">6. Happened-Before and Concurrency</a><br>
+<a href="#s7">7. Two Causes of Inconsistency &amp; Their Control Mechanisms</a><br>
+<a href="#s8">8. Consistency Levels (one / quorum / all)</a><br>
+<a href="#s9">9. Scylla Consistency Concept — Quorum Details</a><br>
+<a href="#s10">10. Watching Consistency Behavior (Lab Exercises + Answers)</a><br>
+<a href="#s11">11. P2P Consistency Diagrams (Write &amp; Read Scenarios)</a><br>
+<a href="#s12">12. Read Repair</a><br>
+<a href="#s13">13. Write/Read Quorum Replication — Worked Examples</a><br>
+<a href="#s14">14. The W + R &gt; N Rule</a><br>
+<a href="#s15">15. Read-Modify-Write (No Delta Updates)</a><br>
+<a href="#s16">16. Write-Write Conflict Solution Strategies (Overview)</a><br>
+<strong>Part 6.2 — Concurrent Write Conflict Detection / Resolution</strong><br>
+<a href="#s17">17. LWW (Last Write Wins) — In Depth</a><br>
+<a href="#s18">18. LWW Lab Exercises (writetime, USING TIMESTAMP)</a><br>
+<a href="#s19">19. Version Vectors / Vector Clocks — Concept</a><br>
+<a href="#s20">20. Version Vector Mechanics</a><br>
+<a href="#s21">21. VV Write, Read &amp; Read-Repair Walkthrough</a><br>
+<a href="#s22">22. Concurrent Writes with VV — Incomparable Vectors</a><br>
+<a href="#s23">23. Detect vs Resolve — The Key VV Exam Question</a><br>
+<a href="#s24">24. Sibling Values (RIAK)</a><br>
+<a href="#s25">25. Advantage of Version Vectors</a><br>
+<a href="#s26">26. CRDTs — Conflict-Free Replicated Data Types</a><br>
+<a href="#s27">27. CRDT Grow-Only Counter (Worked Example)</a><br>
+<a href="#s28">28. State-Based vs Operation-Based CRDTs</a><br>
+<a href="#s29">29. Strong Eventual Consistency (SEC)</a><br>
+<a href="#s30">30. Summary and Exam Cheat Sheet</a><br>
+</div>
+
+<h1 id="s1">1. ACID in P2P Distributed Databases</h1>
+
+<div class="def">
+<strong>ACID recap:</strong> Databases that support ACID are <em>transactional</em> databases.<br>
+<strong>A</strong>tomicity — all-or-nothing: a sequence of commands runs as a single unit; either all commit or all roll back.<br>
+<strong>C</strong>onsistency — all constraints of the database are kept.<br>
+<strong>I</strong>solation — as if each transaction had the database for itself (serializability).<br>
+<strong>D</strong>urability — writes of committed transactions are persistent, no loss of data.
+</div>
+
+<p>P2P distributed databases (Cassandra, Scylla, RIAK, ...) treat each ACID letter very differently from a single-server RDBMS:</p>
+
+<table>
+<tr><th>Property</th><th>Status in P2P (Scylla/Cassandra)</th></tr>
+<tr><td><strong>Atomicity</strong></td><td><strong>Does NOT exist in the ACID sense.</strong> There is no mechanism that groups a sequence of commands into one unit and commits/rolls them back together. Each CQL statement is executed independently. Cassandra "explicitly chooses not to implement operations that require cross-partition coordination ... does not support cross-partition transactions."</td></tr>
+<tr><td><strong>Isolation</strong></td><td>There are <strong>no transactions</strong>, so there are no concurrent transactions to serialize/isolate. But there ARE concurrent <em>operations</em>. Concurrent writes are typically <strong>conflicting writes</strong> → conflict resolution is needed. Concurrent reads may return different results.</td></tr>
+<tr><td><strong>Durability</strong></td><td>Of the four, this is the one P2P databases support <strong>most strongly</strong> (commit log + replication across nodes).</td></tr>
+<tr><td><strong>Consistency</strong></td><td>Redefined entirely (see Section 2). It is <strong>not about constraints</strong> — it is about replicas agreeing on a value.</td></tr>
+</table>
+
+<div class="tip">
+A classic exam framing: "Which ACID property is best supported by a P2P distributed database?" → <strong>Durability</strong>. "Which does not exist?" → <strong>Atomicity</strong> (no multi-statement / cross-partition transactions).
+</div>
+
+<h1 id="s2">2. Consistency Means Something Different in P2P</h1>
+
+<div class="def">
+<strong>Consistency in P2P</strong> = <em>replicas agree on a value</em>. Different replicas return the same value for the same request. This is <strong>NOT about database constraints</strong> (that is the ACID meaning).<br><br>
+<strong>(Atomic) Consistency:</strong> The same response is given to all identical requests.
+</div>
+
+<p>From Kleppmann (p. 322): "If you look at two database nodes at the same moment in time, you're likely to see different data on the two nodes, because write requests arrive on different nodes at different times. These inconsistencies occur no matter what replication method the database uses (single-leader, multi-leader, or leaderless replication)."</p>
+
+<div class="warn">
+<strong>Three different "consistency" meanings — do not mix them up:</strong><br>
+1. <strong>ACID Consistency</strong> = all DB constraints are kept (single-server / RDBMS).<br>
+2. <strong>P2P Consistency</strong> = all replicas return the same value for a request.<br>
+3. <strong>CAP Consistency</strong> = every node returns the same, most recent data (clients share one view). The slides explicitly note this is different from the ACID definition.
+</div>
+
+<h1 id="s3">3. The CAP Theorem</h1>
+
+<p>Eric Brewer introduced the <strong>CAP theorem in 2000</strong>; it was mathematically proven in <strong>2002</strong>. It applies to <strong>distributed, replicated</strong> systems.</p>
+
+<table>
+<tr><th>Letter</th><th>Property</th><th>Definition</th></tr>
+<tr><td><strong>C</strong></td><td>Consistency</td><td>Clients have the same view of the data. Every node returns the same, most recent data. (Different from ACID consistency!)</td></tr>
+<tr><td><strong>A</strong></td><td>Availability</td><td>Every request receives a non-error response in a reasonable amount of time.</td></tr>
+<tr><td><strong>P</strong></td><td>Tolerance to network partition</td><td>The system continues to operate and respond correctly even if the network connecting the nodes has a fault.</td></tr>
+</table>
+
+<div class="imp">
+<strong>Key insight — it is NOT really "pick two of three".</strong> Network failures (P) are beyond the control of any database system — they simply happen. So a distributed database <em>must</em> tolerate partitions. When a network fault occurs, the real choice is between <strong>C and A</strong>:
+<ul>
+<li><strong>C/P (Consistency prioritized):</strong> during a partition, refuse requests that cannot guarantee the latest data → may return errors / reduced availability.</li>
+<li><strong>A/P (Availability prioritized):</strong> during a partition, keep answering even if a node returns stale data → tolerate temporary inconsistency.</li>
+</ul>
+</div>
+
+<div class="tip">
+Scylla / Cassandra / Dynamo-style databases are fundamentally <strong>A/P</strong> systems (availability + partition tolerance), trading away strong consistency for eventual consistency. The consistency level (Section 8) lets you tune <em>per operation</em> how far toward C you lean.
+</div>
+
+<h1 id="s4">4. CAP and Eventual Consistency</h1>
+
+<p>If a system provides <strong>A/P</strong>, it tolerates that the database is temporarily in an inconsistent state — concurrent reads to different nodes may return different values.</p>
+
+<div class="def">
+<strong>Eventual Consistency (Kl, p. 322):</strong> "Most replicated databases provide at least eventual consistency, which means that if you stop writing to the database and wait for some unspecified length of time, then eventually all read requests will return the same value. In other words, the inconsistency is temporary, and it eventually resolves itself."
+</div>
+
+<p>Eventual consistency is a <strong>weak consistency guarantee</strong>: → eventually, a read will return the same result on all nodes.</p>
+
+<p>It is used for applications that:</p>
+<ul>
+<li>demand <strong>high availability</strong> (even with network partitions or node outages),</li>
+<li>need <strong>low latency</strong>,</li>
+<li>can <strong>tolerate stale reads</strong> and write-conflict resolution.</li>
+</ul>
+
+<p>ScyllaDB, Cassandra and other NoSQL databases "sacrifice a degree of consistency in order to increase availability. Rather than providing strong consistency, they provide eventual consistency. This means that in some cases, a read request will fail to return the result of the latest WRITE."</p>
+
+<h1 id="s5">5. Why Two Replicas Hold Different Data</h1>
+
+<p>The exam asks directly: <em>"How can it happen that 2 replicas have different data for the same object?"</em> There are exactly <strong>two root causes</strong>:</p>
+
+<ol>
+<li><strong>Replication / write propagation delay (replication lag):</strong> A write reaches the coordinator and is forwarded to the replica nodes, but not all replicas have applied the latest write yet. For a short window, some replicas hold the new value and some still hold the old one.</li>
+<li><strong>Concurrent writes:</strong> Two clients write the same object at the same time using different coordinators. The replicas end up with genuinely different values, and the system must resolve the conflict (Section 16 onwards).</li>
+</ol>
+
+<div class="timeline">
+  Client 1: update users1 set activity_score = 10 where u_id = 11;   (coordinator n10)
+  Client 2: update users1 set activity_score = 50 where u_id = 11;   (coordinator n7)
+                       --- concurrent writes, no natural order ---
+</div>
+
+<div class="imp">
+These are the <strong>two scenarios you must be able to name</strong>. Cause 1 (propagation delay) resolves itself once replication completes. Cause 2 (concurrent writes) requires an explicit conflict-resolution rule because the writes have <em>no natural order</em>.
+</div>
+
+<h1 id="s6">6. Happened-Before and Concurrency</h1>
+
+<div class="def">
+<strong>Happened-before (Kl, p. 187):</strong> "An operation A happens before another operation B if B knows about A, or depends on A. ... Two operations are concurrent if neither happens before the other (i.e., neither knows about the other)."<br><br>
+For any two operations A and B there are exactly <strong>three possibilities</strong>: A happened before B, B happened before A, or A and B are <strong>concurrent</strong>.
+</div>
+
+<p>Consequences for Cassandra / Scylla / Dynamo-style systems:</p>
+<ul>
+<li>Concurrent writes <strong>do not have a natural order</strong>.</li>
+<li>If an order <em>existed</em>, the system would simply apply the writes in that order → no data loss, no lost updates.</li>
+<li>Because there is <strong>no given order</strong>, concurrent writes cause a conflict that the system must resolve by some rule. The system needs a mechanism to decide which value "wins".</li>
+</ul>
+
+<h1 id="s7">7. Two Causes of Inconsistency &amp; Their Control Mechanisms</h1>
+
+<p>This table directly maps each cause of CAP-style inconsistency to the mechanism that drives the system back toward eventual consistency:</p>
+
+<table>
+<tr><th>Inconsistent data (CAP sense)</th><th>What happens</th><th>Control mechanism toward eventual consistency</th></tr>
+<tr><td>Write propagation to replicas</td><td>Not all replicas have applied the latest write</td><td><strong>Consistency levels</strong>, operational control (read repair, hinted handoff, repair)</td></tr>
+<tr><td>Concurrent writes</td><td>Replicas have different writes</td><td><strong>System conflict-resolution rules</strong> (LWW, version vectors, siblings, CRDTs, consensus)</td></tr>
+</table>
+
+<h1 id="s8">8. Consistency Levels (one / quorum / all)</h1>
+
+<div class="def">
+The <strong>consistency level</strong> determines <strong>how many replicas must participate</strong> in a read or write operation.
+</div>
+
+<table>
+<tr><th>Level</th><th>Meaning</th></tr>
+<tr><td><code>consistency one</code></td><td>one replica needs to participate</td></tr>
+<tr><td><code>consistency quorum</code></td><td>the <strong>majority</strong> of replicas need to participate</td></tr>
+<tr><td><code>consistency all</code></td><td>all replicas must participate</td></tr>
+</table>
+
+<p><strong>Default consistency level in Scylla / Cassandra: <code>one</code>.</strong></p>
+
+<div class="tip">
+"Quorum = majority". For replication factor RF, quorum = ⌊RF/2⌋ + 1. For RF=3, quorum = 2. For RF=5, quorum = 3. The default level <code>one</code> is the fastest and most available, but the most likely to return stale data.
+</div>
+
+<h1 id="s9">9. Scylla Consistency Concept — Quorum Details</h1>
+
+<ul>
+<li><strong>Write quorum (w quorum):</strong> a majority of replicas must apply the write.</li>
+<li><strong>Read quorum (r quorum):</strong> a majority of replicas must respond to a read request.</li>
+<li>If a write or read does <strong>not</strong> reach quorum, it is considered <strong>failed</strong> and returns an error.</li>
+<li>The <strong>coordinator node</strong> is responsible for returning the acknowledgement / failure to the client.</li>
+</ul>
+
+<div class="warn">
+<strong>Critical edge case (Kl, p. 178):</strong> If a quorum write <strong>times out</strong> before the majority of replicas can acknowledge to the coordinator, the coordinator sends a <strong>failure</strong> back to the client — but some replicas <em>may have already applied the write</em>, and eventually that write may become persistent. <strong>Applied writes are NOT rolled back.</strong> So a "failed" quorum write can still leave data behind.
+</div>
+
+<div class="tip">
+This edge case is the P2P parallel of the LWT "timeout ≠ failure" rule from Module 6.4: a reported failure does not guarantee the write was not applied. There is no rollback in P2P.
+</div>
+
+<h1 id="s10">10. Watching Consistency Behavior (Lab Exercises + Answers)</h1>
+
+<p>Setup: <code>rf = 3</code>; <code>u_id 14</code> is stored on kiu-scylla2 and kiu-scylla3 (verified via <code>nodetool getendpoints</code>); node status via <code>nodetool status</code>.</p>
+
+<div class="scenario">
+<h4>Exercise A — consistency one, stale read after node restart</h4>
+<ol>
+<li>Default consistency = <code>one</code>. Stop kiu-scylla3.</li>
+<li>On kiu-scylla2: read activity_score of user 14, modify it in the app, write back the updated score.</li>
+<li>The update is acknowledged (only one replica needed). Confirm the new value shows.</li>
+<li>Now <strong>stop kiu-scylla2 and start kiu-scylla3</strong>; open cqlsh on kiu-scylla3.</li>
+<li><strong>Q: Which value does kiu-scylla3 show? Why?</strong></li>
+</ol>
+<p><strong>Answer:</strong> kiu-scylla3 shows the <strong>OLD (stale)</strong> value. With <code>consistency one</code> the write only had to be applied on a single replica (kiu-scylla2). kiu-scylla3 was down when the write happened, so it never received the update, and now kiu-scylla2 (which holds the new value) is down — so read repair / replication cannot fix it yet. This demonstrates eventual consistency: until replication/repair catches up, replicas disagree.</p>
+</div>
+
+<div class="scenario">
+<h4>Exercise B — consistency quorum, write availability under a downed node</h4>
+<ol>
+<li>Set consistency = <code>quorum</code> on the session doing the update (kiu-scylla2). Stop kiu-scylla3.</li>
+<li>Try to write user 14 (its replicas include the stopped node).<br>
+<strong>Q: How does Scylla react and why?</strong></li>
+</ol>
+<p><strong>Answer (user 14):</strong> Quorum for RF=3 is 2. If two of user 14's three replicas are still up, the write <strong>succeeds</strong> (quorum reached). If the down node leaves fewer than 2 replicas of user 14 reachable, the write <strong>fails with an error</strong> because quorum cannot be met.</p>
+<ol start="3">
+<li>In the same quorum session, write back an updated activity_score for <strong>user 5</strong>.<br>
+<strong>Q: How does Scylla react and why?</strong></li>
+</ol>
+<p><strong>Answer (user 5):</strong> Depends on whether the down node holds a replica of user 5. If user 5's replicas are all on running nodes, the quorum write <strong>succeeds</strong>; if the stopped node was needed to reach the majority, it <strong>fails</strong>. The point: quorum availability is <em>per object</em>, decided by which replicas are up.</p>
+<ol start="4">
+<li>Run <code>select * from users</code> from a quorum session and from a non-quorum (one) session.<br>
+<strong>Answer:</strong> The quorum read may return a <strong>fresher / more consistent</strong> result (and may fail if quorum is unreachable); the <code>one</code> read always returns quickly from a single replica but can be <strong>stale</strong>.</li>
+</ol>
+</div>
+
+<h1 id="s11">11. P2P Consistency Diagrams (Write &amp; Read Scenarios)</h1>
+
+<p>Ring of 10 nodes, <code>rf = 3</code>, n10 is the coordinator. The coordinator forwards the operation to the RF replicas.</p>
+
+<h3>Write with consistency quorum, one replica unreachable</h3>
+<div class="timeline">
+Client 1: insert into users values (John, 20, ...)   -> coordinator n10
+n10 forwards write to replicas n2, n3, n4
+   n2: John,20  (applied)
+   n3: John,20  (applied)
+   n4: UNREACHABLE
+Write quorum (2 of 3) reached on n2 + n3  ->  WRITE SUCCEEDS
+</div>
+<p>The write is acknowledged because 2 of 3 replicas applied it; n4 will catch up later via repair.</p>
+
+<h3>Read with consistency one (can return stale 0)</h3>
+<div class="timeline">
+Client 1: insert (John, 20) just happened, still propagating
+Client 2: read(John)  -> coordinator n7
+   read consistency = ONE
+   n4 running but read executes there -> returns 0 (write not yet applied on n4!)
+   n2 read delayed (holds John,20)
+   n3 read delayed (holds John,20)
+Result: client may get "0" -> STALE READ
+</div>
+
+<h3>Read with consistency quorum (waits for majority, may time out)</h3>
+<div class="timeline">
+Client 2: read(John) -> coordinator n7, read consistency = QUORUM
+   needs majority (2 of 3) to respond
+   n4 returns 0 ;  n3 returns John,20  -> quorum responded
+   The read SUCCEEDS but the two responding replicas hold DIFFERENT values
+   -> triggers read repair (Section 12) to reach eventual consistency
+   (If too few replicas respond before timeout -> read FAILS with error)
+</div>
+
+<div class="imp">
+Pattern to memorize: <strong>consistency one</strong> = fast, always answers, can be stale. <strong>consistency quorum</strong> = waits for a majority, more likely fresh, but <strong>fails on timeout</strong> if the majority cannot respond. A successful quorum read that sees disagreeing replicas triggers <strong>read repair</strong>.
+</div>
+
+<h1 id="s12">12. Read Repair</h1>
+
+<div class="def">
+<strong>Read repair:</strong> a <strong>read operation triggers a write operation</strong> to synchronize replica values. It is one of the operational control mechanisms that drives the cluster toward eventual consistency.
+</div>
+
+<p>How it works in Scylla / Cassandra:</p>
+<ol>
+<li>A successful read detects <strong>different values</strong> for the requested data across replicas.</li>
+<li>The coordinator takes the value with the <strong>latest timestamp</strong> and returns it to the client.</li>
+<li>It then starts a write process (the read-repair) that writes the latest-timestamp version back to the out-of-date replicas.</li>
+</ol>
+
+<p><strong>RIAK</strong> describes the same idea with vector clocks: read repair occurs when a successful read finds that not all replicas agree. The errant node either responded "not found" (no copy) or with a vector clock that is an <strong>ancestor</strong> of the successful read's vector clock. RIAK then forces the errant nodes to update to the value of the successful read.</p>
+
+<h1 id="s13">13. Write/Read Quorum Replication — Worked Examples</h1>
+
+<p>Notation: <strong>N</strong> = number of replicas, <strong>W</strong> = replicas that must participate in a write, <strong>R</strong> = replicas that must participate in a read. With N = 5, quorum = 3.</p>
+
+<p>Two diagnostic questions for each setting:<br>
+(a) <em>How many nodes can be down while the cluster keeps write availability?</em> → <code>N − W</code><br>
+(b) <em>Can you get stale reads only?</em> → only when <code>W + R ≤ N</code> (no guaranteed overlap)</p>
+
+<table>
+<tr><th>Example</th><th>N / W / R</th><th>Nodes that can be down (write still available) = N − W</th><th>Stale reads possible? (W + R vs N)</th></tr>
+<tr><td><strong>1</strong></td><td>N=5, W=quorum(3), R=one(1)</td><td>5 − 3 = <strong>2</strong></td><td>W+R = 4 ≤ 5 → <strong>YES, stale reads possible</strong> (no guaranteed overlap)</td></tr>
+<tr><td><strong>2</strong></td><td>N=5, W=one(1), R=quorum(3)</td><td>5 − 1 = <strong>4</strong></td><td>W+R = 4 ≤ 5 → <strong>YES, stale reads possible</strong></td></tr>
+<tr><td><strong>3</strong></td><td>N=5, W=quorum(3), R=quorum(3)</td><td>5 − 3 = <strong>2</strong></td><td>W+R = 6 &gt; 5 → <strong>NO</strong> — read always overlaps a fresh replica → returns most recent</td></tr>
+</table>
+
+<div class="tip">
+Example 3 (W=quorum, R=quorum) is the sweet spot: W+R &gt; N guarantees a read overlaps at least one node that has the latest write, so you cannot get only-stale reads — at the cost of needing a majority for both reads and writes. Example 2 maximises write availability (4 nodes can be down) but R=quorum makes reads heavier and still allows stale results.
+</div>
+
+<h1 id="s14">14. The W + R &gt; N Rule</h1>
+
+<div class="def">
+<strong>W &lt; N and R &lt; N</strong> → allows the system to continue processing when nodes are down (you never need <em>all</em> replicas).<br><br>
+<strong>W + R &gt; N</strong> → a read returns — from at least one node — the <strong>most recent</strong> value for an object, because the write set and the read set are guaranteed to <strong>overlap</strong> in at least one replica.
+</div>
+
+<p>Intuition: if writes always land on W replicas and reads always touch R replicas, and W + R exceeds the total N, the two sets cannot be disjoint — at least one read replica must be one of the freshly written ones. Consistency levels are the operational control that lets you choose W and R, and therefore tune the consistency/availability trade-off per operation.</p>
+
+<h1 id="s15">15. Read-Modify-Write (No Delta Updates)</h1>
+
+<div class="warn">
+With Cassandra / Scylla you must do the <strong>read-modify-write cycle</strong> in the application. You <strong>cannot</strong> issue a delta update like "add 10 to the current value" — the database does not read-then-add atomically for you.
+</div>
+
+<div class="scenario">
+<h4>Example: users table, activity_score starts at 50</h4>
+<p><strong>App 1:</strong> give a 10% benefit → activity_score × 1.1 (= 55)<br>
+<strong>App 2:</strong> increase by 10 → activity_score + 10 (= 60)</p>
+<p>Both run concurrently, unaware of each other, on different coordinators. Each does: <code>SELECT activity_score</code> (both read 50), compute locally, then <code>UPDATE ... SET activity_score = ...</code>.</p>
+<div class="timeline">
+Client 1: select activity_score where u_id=14 -> 50 ; update set activity_score = 55
+Client 2: select activity_score where u_id=14 -> 50 ; update set activity_score = 60
+            --- concurrent writes, both based on the stale value 50 ---
+Correct combined result should be (50*1.1)+10 = 65, OR (50+10)*1.1 = 66.
+Actual result with LWW: either 55 or 60 survives -> the other update is LOST.
+</div>
+<p><strong>Lost update.</strong> Because both read 50 before either wrote, one update silently overwrites the other. Neither 65 nor 66 is reached. This is the motivation for Lightweight Transactions / consensus (Module 6.3/6.4) when you truly need correctness.</p>
+</div>
+
+<h1 id="s16">16. Write-Write Conflict Solution Strategies (Overview)</h1>
+
+<p>When concurrent writes conflict, a P2P system needs a rule to decide what to keep. The five strategies (covered in detail in Part 6.2):</p>
+
+<table>
+<tr><th>#</th><th>Strategy</th><th>Systems</th><th>Idea</th></tr>
+<tr><td>1</td><td><strong>LWW</strong> (Last Write Wins)</td><td>Scylla (default), Cassandra (default), RIAK (optional), Redis &amp; CouchDB (some config), Apache Kafka, Azure Cosmos DB</td><td>Arbitrary order imposed by the system (via timestamps) to resolve the conflict.</td></tr>
+<tr><td>2</td><td><strong>Version Vectors</strong></td><td>RIAK</td><td>Detect happened-before / after / concurrent. Detect conflicts, do not resolve them.</td></tr>
+<tr><td>3</td><td><strong>Sibling Values</strong></td><td>RIAK</td><td>Keep both conflicting values; the application decides.</td></tr>
+<tr><td>4</td><td><strong>CRDTs</strong></td><td>RIAK, Redis</td><td>Data structures that merge automatically. Concurrency: yes, conflicts: no.</td></tr>
+<tr><td>5</td><td><strong>Consensus Mechanism</strong></td><td>Cassandra, Scylla</td><td>Enforce an agreed-upon order, preventing conflicts from concurrent writes (LWT / Paxos — Module 6.4).</td></tr>
+</table>
+
+<h1 id="s17">17. LWW (Last Write Wins) — In Depth</h1>
+
+<div class="def">
+<strong>LWW core idea:</strong> Concurrent writes have no natural order, so the system imposes an <strong>arbitrary order</strong>, usually decided via <strong>generated timestamps</strong>. If two concurrent writes hit the same object, the write with the <strong>highest timestamp survives</strong>.
+</div>
+
+<ul>
+<li>Scylla / Cassandra: timestamp generation is <strong>NOT coordinated cluster-wide</strong>. Each coordinator generates timestamps from its own system clock.</li>
+<li>→ <strong>Clock drift / skew</strong> between nodes is a fundamental problem in LWW. A node whose clock runs <em>ahead</em> will always win (cf. Kl ch. 8, unreliable clocks).</li>
+<li>If two timestamps are equal, the system uses some <strong>tie breaker</strong>, which is usually not well documented.</li>
+</ul>
+
+<div class="warn">
+<strong>LWW trades durability for convergence (Kl, p. 186):</strong> "LWW achieves the goal of eventual convergence, but at the cost of durability: if there are several concurrent writes to the same key, even if they were all reported as successful to the client (because they were written to w replicas), only one of the writes will survive and the others will be <strong>silently discarded</strong>."
+</div>
+
+<div class="tip">
+Exam trap: "All concurrent writes were acknowledged as successful — is data safe?" → <strong>No.</strong> With LWW, acknowledgement does not mean survival; all but the highest-timestamp write are silently dropped. This is why LWW is fine for caches/telemetry but dangerous for data you cannot afford to lose.
+</div>
+
+<h1 id="s18">18. LWW Lab Exercises (writetime, USING TIMESTAMP)</h1>
+
+<div class="scenario">
+<h4>Exercise A — watch a write get silently discarded</h4>
+<pre>
+-- 2. read the current name of u_id 10
+SELECT u_name FROM users1 WHERE u_id = 10;
+
+-- 3. read the cell's write timestamp
+SELECT writetime(u_name) FROM users1 WHERE u_id = 10;
+-- returns a large microsecond timestamp, e.g. 1718000000000000
+
+-- 4. update with a LOWER (older) timestamp
+UPDATE users1 USING TIMESTAMP 1000 SET u_name = 'AAA' WHERE u_id = 10;
+</pre>
+<p><strong>Q: Will the update run? What do we expect?</strong></p>
+<p><strong>Answer:</strong> The command <strong>executes without error</strong> (it is accepted), but because <code>1000</code> is far <em>lower</em> than the existing cell's timestamp, LWW keeps the existing (higher-timestamp) value. <strong>Step 5 check:</strong> u_name is still the original value, not 'AAA' — the write was <strong>silently discarded</strong>. This proves LWW compares timestamps, not arrival order, and that a "successful" command can have no effect.</p>
+</div>
+
+<div class="scenario">
+<h4>Exercise B — concurrent update vs delete, decided by timestamp</h4>
+<p>Two concurrent writes on u_id = 10: one <strong>updates</strong> the activity score, the other <strong>deletes</strong> the row. By clock drift the update carries a timestamp slightly <em>higher</em> than the delete.</p>
+<pre>
+-- reproduce deterministically:
+SELECT writetime(activity_score) FROM users1 WHERE u_id = 10;   -- find current TS
+-- run the DELETE with TS = current + small amount
+DELETE FROM users1 USING TIMESTAMP &lt;ts+1&gt; WHERE u_id = 10;
+-- run the UPDATE with a yet slightly higher TS
+UPDATE users1 USING TIMESTAMP &lt;ts+2&gt; SET activity_score = 99 WHERE u_id = 10;
+</pre>
+<p><strong>Q: What is the result? Does the order of actual application matter?</strong></p>
+<p><strong>Answer:</strong> The write with the <strong>highest timestamp wins regardless of the physical order</strong> in which the replicas apply them. Here the update (ts+2) beats the delete (ts+1), so the row exists with activity_score = 99. It does <strong>not</strong> matter which command physically arrives first — LWW is decided purely by timestamp. (Note: a delete actually writes a <em>tombstone</em> with its timestamp; whichever timestamp is higher — tombstone or update — wins.)</p>
+</div>
+
+<h1 id="s19">19. Version Vectors / Vector Clocks — Concept</h1>
+
+<div class="def">
+A <strong>version vector (VV)</strong> lets participants determine, for two updates, whether one <strong>preceded</strong> the other (happened-before), <strong>followed</strong> it (happened-after), or whether they happened <strong>concurrently</strong>. VVs version values/updates — they are a "logical clock".
+</div>
+
+<table>
+<tr><th>Term</th><th>Purpose</th></tr>
+<tr><td><strong>Version vectors</strong></td><td>A mechanism to <strong>synchronize replicas</strong>.</td></tr>
+<tr><td><strong>Vector clocks</strong></td><td>A mechanism for <strong>partial (causal) ordering of events</strong> in a messaging system (e.g., so you don't get the answer before the question).</td></tr>
+</table>
+
+<p>Both are <strong>vector counters</strong>. They follow slightly different algorithms and methods, but are <strong>often used as synonyms</strong>.</p>
+
+<h1 id="s20">20. Version Vector Mechanics</h1>
+
+<ul>
+<li>A <strong>version counter</strong> is kept <strong>per replica, per object</strong>.</li>
+<li>Each replica <strong>increments its own counter</strong> when it processes a write on an object.</li>
+<li>A <strong>version vector</strong> is the collection of all replicas' version counters for that object. Its size = the <strong>replication factor</strong>.</li>
+<li>When two replicas synchronize, they set each slot to the <strong>maximum</strong> of the two:</li>
+</ul>
+
+<pre>
+V1[x] = V2[x] = max( V1[x], V2[x] )    for every replica slot x
+-- after synchronization, both replicas hold identical version vectors
+-- (this works when the two vectors are COMPARABLE)
+</pre>
+
+<div class="def">
+<strong>Comparing two VVs (componentwise):</strong><br>
+• VV_A &le; VV_B in <em>every</em> slot, and strictly smaller in at least one → A <strong>happened-before</strong> B (B is more recent; A is an ancestor).<br>
+• Symmetric case → B happened-before A.<br>
+• Neither dominates (one slot bigger here, another slot bigger there) → the vectors are <strong>incomparable</strong> → the writes are <strong>concurrent</strong> → a conflict.
+</div>
+
+<h1 id="s21">21. VV Write, Read &amp; Read-Repair Walkthrough</h1>
+
+<p>Replicas n2, n3, n4 (rf=3). Stored data structure: <code>{key, value, VersionVector}</code>. Start: <code>(John, 5, (n2:1,n3:1,n4:1))</code>.</p>
+
+<h3>Write operation (client A updates John → 20; n4 is down)</h3>
+<div class="timeline">
+client A: update(John, 20) -> Coordinator
+   n2 applies, increments its slot:  (John, 20, (n2:2,n3:1,n4:1))
+   n3 applies, increments its slot:  (John, 20, (n2:2,n3:2,n4:1))
+   n4 DOWN -> still (John, 5, (n2:1,n3:1,n4:1))
+</div>
+<p>Note: each writing replica bumps <em>its own</em> slot. Both LWW and VV attach metadata per replica/object — but LWW attaches a single timestamp, whereas VV attaches the whole counter vector.</p>
+
+<h3>Read + read-repair (client B reads John, reading from n2 and n4)</h3>
+<div class="timeline">
+n2: (John, 20, (n2:2,n3:2,n4:1))      n4: (John, 5, (n2:1,n3:1,n4:1))
+Compare: (n2:1,n3:1,n4:1) <= (n2:2,n3:2,n4:1) in every slot, strictly smaller
+   -> n4's VV is STRICTLY SMALLER -> n4 happened-before n2 -> n2 is more recent
+Therefore:
+   -> return n2's value (John, 20) to the client
+   -> update (repair) n4 to (John, 20, (n2:2,n3:2,n4:1))
+   -> both nodes now hold the same VV  -> synchronized
+</div>
+
+<div class="tip">
+When VVs are <strong>comparable</strong>, there is no real conflict — the larger vector simply wins and the smaller replica is repaired (synced to the max). The interesting case is when they are <strong>incomparable</strong> (next section).
+</div>
+
+<h1 id="s22">22. Concurrent Writes with VV — Incomparable Vectors</h1>
+
+<div class="scenario">
+<h4>Two concurrent updates from two clients (RIAK)</h4>
+<p>Start: <code>(John, 5, (n2:1,n3:1,n4:1))</code> on all replicas.</p>
+<div class="timeline">
+client 1: update(John, 20)  -> produces  (John, 20, (n2:2,n3:1,n4:1)) then (n2:2,n3:2,n4:1)
+client 2: update(John, 50)  -> produces  (John, 50, (n2:1,n3:1,n4:2)) then (n2:1,n3:2,n4:2)
+</div>
+<p><strong>Q: Are the VVs comparable?</strong></p>
+<p><strong>Answer:</strong> <strong>No.</strong> Compare <code>(n2:2,n3:2,n4:1)</code> vs <code>(n2:1,n3:2,n4:2)</code>: the first is larger in the n2 slot (2&gt;1) but smaller in the n4 slot (1&lt;2). Neither dominates → the vectors are <strong>incomparable</strong> → the two writes are <strong>concurrent</strong> → genuine conflict.</p>
+<p><strong>Q: What is returned to the clients? What happens to the VVs?</strong></p>
+<p><strong>Answer:</strong> The VV mechanism <strong>detects</strong> the concurrent conflict but <strong>cannot resolve</strong> it on its own. What happens next depends on the system / setting: RIAK with <code>allow_mult(true)</code> keeps <strong>both values as siblings</strong> (Section 24); otherwise a resolution policy (e.g., LWW) picks one. The conflicting VVs are kept until the application resolves the conflict.</p>
+</div>
+
+<h1 id="s23">23. Detect vs Resolve — The Key VV Exam Question</h1>
+
+<div class="imp">
+<strong>Slide multiple-choice — Version Vectors:</strong><br>
+A) are a method to resolve concurrent write conflicts<br>
+B) detect <em>and</em> resolve concurrent write conflicts<br>
+C) can only detect concurrent write conflicts<br><br>
+<strong>Correct answer: C.</strong> Version vectors <strong>can only DETECT</strong> concurrent write conflicts. They do <strong>not resolve</strong> them — resolution depends on the system and/or configuration (siblings, application logic, LWW, CRDTs, etc.).
+</div>
+
+<h1 id="s24">24. Sibling Values (RIAK)</h1>
+
+<div class="def">
+<strong>Siblings:</strong> when a conflict is detected and RIAK is configured with <code>.allow_mult(true)</code>, both conflicting values are kept as <strong>sibling values</strong>.
+</div>
+
+<ul>
+<li>→ <strong>Both values are returned</strong> and <strong>both VVs are kept</strong>.</li>
+<li>→ The <strong>client / application must resolve</strong> the conflict and decide on one value.</li>
+<li>→ After resolution, the chosen value and its VV are kept.</li>
+</ul>
+
+<p>RIAK documentation: "Concurrent writes — If two writes occur simultaneously from clients, Riak may not be able to choose a single value to store, in which case the object will be given a sibling."</p>
+
+<h1 id="s25">25. Advantage of Version Vectors</h1>
+
+<p>VVs detect concurrent writes but cannot resolve them — so what is their <strong>advantage</strong> over plain LWW timestamps?</p>
+
+<div class="def">
+VVs capture "happened-before", "happened-after" or "happened-concurrently" — i.e. they <strong>encode the causal history</strong> of an object. A plain timestamp throws this information away.
+</div>
+
+<pre>
+node A: [A:3, B:2]
+node B: [A:2, B:2]
+-- A dominates B (3>=2 and 2>=2, strictly greater in slot A)
+-- => the VV on node A includes ALL writes applied by node B, plus one extra write at A
+-- => no conflict; A is simply more recent
+</pre>
+
+<p>By contrast, a single <strong>timestamp imposes an arbitrary order</strong>. A higher timestamp may:</p>
+<ul>
+<li>truly represent a happened-after relation, OR</li>
+<li>actually correspond to a happened-<em>before</em> relation because of <strong>clock skew</strong>, OR</li>
+<li>represent a <strong>concurrent</strong> write that "won" only because of an arbitrary tie breaker.</li>
+</ul>
+
+<div class="tip">
+The advantage of VVs: they can tell the difference between "genuinely newer" and "concurrent / conflicting". LWW timestamps cannot — they always declare a winner even when the writes were really concurrent, silently losing data.
+</div>
+
+<h1 id="s26">26. CRDTs — Conflict-Free Replicated Data Types</h1>
+
+<div class="def">
+<strong>CRDT</strong> = <strong>C</strong>onflict-free <strong>R</strong>eplicated <strong>D</strong>ata <strong>T</strong>ype. Also expanded as <em>convergent</em> replicated data types (RIAK) and <em>commutative</em> replicated data types (Redis). Formally defined in <strong>2011</strong> by Shapiro, Preguiça, Baquero &amp; Zawirski. CRDTs are data structures that fulfil certain conditions and perform the <strong>merge automatically</strong> following the data type's inherent merge rules.
+</div>
+
+<p>Wikipedia definition — a CRDT is a data structure replicated across multiple computers with:</p>
+<ul>
+<li>The application can update <strong>any replica independently, concurrently, and without coordinating</strong> with other replicas.</li>
+<li>An algorithm (part of the data type) <strong>automatically resolves</strong> any inconsistencies.</li>
+<li>Replicas may differ at any instant, but are <strong>guaranteed to eventually converge</strong>.</li>
+</ul>
+
+<p>RIAK's motivation: conflict resolution is hard because it involves reasoning about concurrency, eventual consistency and siblings. CRDTs move that burden from the application into the database — "Without using data types, that conflict must be resolved using timestamps, vector clocks, dotted version vectors, or some other means. With data types, conflicts are resolved by Riak KV itself."</p>
+
+<div class="tip">
+Slogan from the strategy table: CRDTs give you <strong>concurrency: yes, conflicts: no</strong>. The key trick (next section) is to reduce all writes to <strong>commutative</strong> operations so the order of writes no longer matters.</div>
+
+<h1 id="s27">27. CRDT Grow-Only Counter (Worked Example)</h1>
+
+<p>Nodes n1, n2, n3. Each holds a <strong>state vector</strong> of per-node counts; <strong>each node may only update its own slot</strong>. The merge function takes the <strong>maximum of each slot</strong> and is <strong>commutative</strong>. The counter's current value = <strong>sum of all slots</strong>.</p>
+
+<div class="timeline">
+start:        n1:(0,0,0)   n2:(0,0,0)   n3:(0,0,0)
+client A: inc c := c+2  on n1  ->  n1:(2,0,0)
+client B: inc c := c+3  on n2  ->  n2:(0,3,0)
+merge n1 &amp; n2 (max per slot)   ->  (2,3,0)  on both
+merge into n3 (was down)       ->  n3:(2,3,0)
+final value = sum(2,3,0) = 5    (correct: 2 + 3, NO lost update)
+</div>
+
+<div class="imp">
+<strong>Why no lost update?</strong> Because each node only ever increments its <em>own</em> slot, two concurrent increments land in different slots and the max-merge keeps both. Compare this with the read-modify-write lost-update problem of Section 15 — the CRDT counter would have correctly produced 5, whereas LWW would have kept only one increment.
+</div>
+
+<h3>CRDT state vector vs Version Vector — do NOT confuse them</h3>
+<table>
+<tr><th></th><th>Version Vector</th><th>CRDT state vector</th></tr>
+<tr><td>Data structure</td><td><code>{key, value, VersionVector}</code></td><td><code>{key, CRDT Vector}</code></td></tr>
+<tr><td>What it captures</td><td><strong>Metadata</strong>: happened-before / after / concurrent for version updates (causality)</td><td>The actual <strong>values/state</strong>: what has been entered into the system</td></tr>
+<tr><td>Is time / causality relevant?</td><td>Yes — that is the whole point</td><td><strong>No</strong> — time and causality are irrelevant; only the merged state matters</td></tr>
+<tr><td>Role</td><td>Detects conflicts (does not resolve)</td><td>Tracks data values; merge resolves automatically</td></tr>
+</table>
+
+<h1 id="s28">28. State-Based vs Operation-Based CRDTs</h1>
+
+<div class="def">
+<strong>State-based CRDT:</strong> consists of a state, application algorithms, and a replication protocol. The <strong>merge method</strong> is the most important operation and must satisfy three properties:
+<ol>
+<li><strong>Commutative</strong> — merge(a,b) = merge(b,a)</li>
+<li><strong>Associative</strong> — merge(merge(a,b),c) = merge(a,merge(b,c))</li>
+<li><strong>Idempotent</strong> — merge(a,a) = a</li>
+</ol>
+The replication protocol only needs to guarantee that <strong>eventually all state updates are delivered</strong> to all replica nodes.
+</div>
+
+<table>
+<tr><th></th><th>State-based CRDT</th><th>Operation-based CRDT</th></tr>
+<tr><td>What is sent</td><td>The client sends the <strong>new state</strong>; it merges its state with other nodes' states (does not pass on the operations).</td><td>The <strong>update operation</strong> is propagated and applied locally.</td></tr>
+<tr><td>Delivery requirement</td><td>Loose — eventual delivery is enough (merge is idempotent, so duplicates are harmless).</td><td>Stricter — each operation must be transmitted <strong>exactly once</strong> per replica, because in some formulations operations are not idempotent.</td></tr>
+<tr><td>Ordering</td><td>Can be merged in any order (commutative + associative).</td><td>Once delivered, can be applied in any order.</td></tr>
+</table>
+
+<h1 id="s29">29. Strong Eventual Consistency (SEC)</h1>
+
+<div class="def">
+<strong>Strong Eventual Consistency (SEC):</strong> an object satisfies SEC if all <strong>correct replicas that have delivered the same set of updates have equivalent state</strong> — without needing conflict resolution or rollbacks.
+</div>
+
+<p><strong>Theorem:</strong> A state-based CRDT satisfies SEC. (Proof by induction on the causal histories of deliveries at the replicas — INRIA research report RR 7687.)</p>
+
+<div class="tip">
+SEC is <em>stronger</em> than plain eventual consistency: ordinary eventual consistency only promises convergence "eventually after writes stop"; SEC guarantees that any two replicas that have seen the <strong>same updates</strong> are <strong>already</strong> in the same state, with <strong>no conflict resolution needed</strong> — which is exactly what CRDTs deliver.
+</div>
+
+<h1 id="s30">30. Summary and Exam Cheat Sheet</h1>
+
+<h2>6.1 — Consistency in P2P — Key Facts</h2>
+<table>
+<tr><th>Topic</th><th>Key Point</th></tr>
+<tr><td>ACID in P2P</td><td>Atomicity: doesn't exist (no cross-partition tx). Isolation: no tx, but concurrent ops. Durability: strongest. Consistency: redefined.</td></tr>
+<tr><td>P2P consistency</td><td>Replicas agree on a value; same response to identical requests. NOT about constraints.</td></tr>
+<tr><td>Three "consistency" meanings</td><td>ACID = constraints; P2P = replicas agree; CAP = all nodes return same most-recent data.</td></tr>
+<tr><td>CAP theorem</td><td>Brewer 2000, proven 2002. C, A, P — can't have all three. P is unavoidable → real choice is C vs A.</td></tr>
+<tr><td>Scylla/Cassandra are</td><td>A/P systems → eventual consistency.</td></tr>
+<tr><td>Eventual consistency</td><td>Stop writing → eventually all reads return the same value. Weak guarantee.</td></tr>
+<tr><td>2 causes of replica divergence</td><td>(1) write propagation delay (replication lag); (2) concurrent writes.</td></tr>
+<tr><td>Happened-before</td><td>A before B if B knows of A. Concurrent = neither knows the other. 3 cases.</td></tr>
+<tr><td>Consistency levels</td><td>one / quorum / all. Default = ONE. Quorum = majority = ⌊RF/2⌋+1.</td></tr>
+<tr><td>Quorum timeout edge case</td><td>Failed quorum write may still have been applied on some replicas. Applied writes are NOT rolled back.</td></tr>
+<tr><td>Read repair</td><td>A read that finds disagreement returns the latest-timestamp value and writes it back to stale replicas.</td></tr>
+<tr><td>Write availability</td><td>Nodes that can be down = N − W.</td></tr>
+<tr><td>W + R &gt; N</td><td>Guarantees read overlaps a freshly written replica → returns the most recent value (no stale-only reads).</td></tr>
+<tr><td>Read-modify-write</td><td>Mandatory; no delta updates → lost-update risk under concurrency.</td></tr>
+</table>
+
+<h2>6.2 — Conflict Detection / Resolution — Key Facts</h2>
+<table>
+<tr><th>Topic</th><th>Key Point</th></tr>
+<tr><td>5 strategies</td><td>LWW · Version Vectors · Siblings · CRDTs · Consensus.</td></tr>
+<tr><td>LWW</td><td>Highest timestamp wins. Uncoordinated clocks → clock-drift problem (ahead clock always wins). Equal TS → undocumented tie breaker.</td></tr>
+<tr><td>LWW cost</td><td>Eventual convergence at the cost of durability — concurrent writes silently discarded even though all were "acknowledged".</td></tr>
+<tr><td>LWW commands</td><td><code>writetime(col)</code> reads a cell's TS; <code>USING TIMESTAMP n</code> forces a TS. Lower TS → write accepted but silently discarded.</td></tr>
+<tr><td>Version Vectors</td><td>Counter per replica per object; size = RF. Increment own slot on write; merge = max per slot.</td></tr>
+<tr><td>VV comparison</td><td>Comparable (one dominates) → happened-before, just sync. Incomparable → concurrent → conflict.</td></tr>
+<tr><td>VV detect vs resolve</td><td><strong>VVs only DETECT</strong> conflicts (answer C). Resolution depends on system/config.</td></tr>
+<tr><td>Siblings</td><td>RIAK <code>allow_mult(true)</code> → keep both values + both VVs; application resolves.</td></tr>
+<tr><td>VV advantage</td><td>Encode causal history; distinguish "newer" from "concurrent". Timestamps cannot.</td></tr>
+<tr><td>CRDTs</td><td>Auto-merging data types (Shapiro et al. 2011). Concurrency: yes, conflicts: no. Reduce writes to commutative ops.</td></tr>
+<tr><td>Grow-only counter</td><td>State vector, each node updates only its own slot, merge = max per slot (commutative), value = sum of slots.</td></tr>
+<tr><td>VV vs CRDT vector</td><td>VV = causality metadata {key,value,VV}. CRDT = values/state {key,CRDT vector}; causality irrelevant.</td></tr>
+<tr><td>Merge properties</td><td>Commutative, Associative, Idempotent (state-based CRDT).</td></tr>
+<tr><td>State vs op-based</td><td>State-based: send whole state, loose delivery. Op-based: send operation, exactly-once delivery.</td></tr>
+<tr><td>SEC</td><td>Replicas with the same delivered updates have equivalent state — no resolution needed. State-based CRDTs satisfy SEC.</td></tr>
+</table>
+
+
+</div>
+
+<script>
+(function(){
+  var KEY = 'readerPrefs2:db2site';
+  var root = document.documentElement;
+  var body = document.body;
+  var DEF = { fs: 1.5, cw: 560, full: false };
+  var st = Object.assign({}, DEF);
+  try { st = Object.assign(st, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch(e){}
+
+  var ctl = document.getElementById('reader-controls');
+  var toggle = document.getElementById('rc-toggle');
+  var fontVal = document.getElementById('rc-font-val');
+  var widthInput = document.getElementById('rc-width');
+  var widthVal = document.getElementById('rc-width-val');
+  var fullChk = document.getElementById('rc-full');
+
+  function clamp(v, lo, hi){ return Math.min(hi, Math.max(lo, v)); }
+
+  function apply(){
+    root.style.setProperty('--rfs', st.fs);
+    root.style.setProperty('--rcw', st.cw + 'px');
+    body.classList.toggle('reader-full', !!st.full);
+    fontVal.textContent = Math.round(st.fs * 100) + '%';
+    widthInput.value = st.cw;
+    widthVal.textContent = st.full ? 'full' : st.cw;
+    widthInput.disabled = !!st.full;
+    fullChk.checked = !!st.full;
+  }
+  function save(){
+    try { localStorage.setItem(KEY, JSON.stringify(st)); } catch(e){}
+  }
+
+  toggle.addEventListener('click', function(){ ctl.classList.toggle('open'); });
+
+  ctl.addEventListener('click', function(e){
+    var act = e.target.getAttribute('data-act');
+    if(!act) return;
+    if(act === 'font-inc') st.fs = clamp(Math.round((st.fs + 0.1)*10)/10, 0.7, 2.2);
+    else if(act === 'font-dec') st.fs = clamp(Math.round((st.fs - 0.1)*10)/10, 0.7, 2.2);
+    else if(act === 'reset') st = Object.assign({}, DEF);
+    apply(); save();
+  });
+
+  widthInput.addEventListener('input', function(){
+    st.cw = clamp(parseInt(widthInput.value, 10) || DEF.cw, 300, 1600);
+    apply(); save();
+  });
+  fullChk.addEventListener('change', function(){
+    st.full = fullChk.checked;
+    apply(); save();
+  });
+
+  apply();
+})();
+</script>
+
+
+<script>
+(function(){
+  var KEY='readerTheme:db2site';
+  var root=document.documentElement;
+  var mql=window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  var theme=null;
+  try{ theme=localStorage.getItem(KEY); }catch(e){}
+  if(theme!=='light' && theme!=='dark' && theme!=='system') theme='system';
+
+  var row=document.getElementById('rc-theme-row');
+  function effective(){ return theme==='system' ? (mql && mql.matches ? 'dark':'light') : theme; }
+  function apply(){
+    root.classList.toggle('theme-dark', effective()==='dark');
+    if(row){ row.querySelectorAll('[data-theme]').forEach(function(b){
+      b.classList.toggle('active', b.getAttribute('data-theme')===theme); }); }
+  }
+  if(row){
+    row.addEventListener('click', function(e){
+      var b=e.target.closest('[data-theme]'); if(!b) return;
+      theme=b.getAttribute('data-theme');
+      try{ localStorage.setItem(KEY, theme); }catch(err){}
+      apply();
+    });
+  }
+  if(mql){
+    var onChange=function(){ if(theme==='system') apply(); };
+    if(mql.addEventListener) mql.addEventListener('change', onChange);
+    else if(mql.addListener) mql.addListener(onChange);
+  }
+  apply();
+})();
+</script>
+
+<div id="reader-pagecounter">Page <span id="rpc-cur">1</span> / <span id="rpc-total">1</span></div>
+
+<script>
+(function(){
+  var PAGE_PX = 1000;            // fixed LOGICAL page height -> identical unit across all files
+  var root = document.documentElement;
+  var curEl = document.getElementById('rpc-cur');
+  var totEl = document.getElementById('rpc-total');
+
+  function fontScale(){
+    var v = parseFloat(getComputedStyle(root).getPropertyValue('--rfs'));
+    return (v && v > 0) ? v : 1;
+  }
+  function update(){
+    var fs = fontScale();
+    var pp = PAGE_PX * fs;                       // page height in rendered px
+    var docH = Math.max(root.scrollHeight, document.body.scrollHeight);
+    var total = Math.max(1, Math.ceil(docH / pp));
+    var cur = Math.min(total, Math.floor((window.scrollY || window.pageYOffset || 0) / pp) + 1);
+    curEl.textContent = cur;
+    totEl.textContent = total;
+  }
+
+  var ticking = false;
+  function onScroll(){
+    if(ticking) return; ticking = true;
+    requestAnimationFrame(function(){ update(); ticking = false; });
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', update);
+
+  // recompute when font/width settings change the document height
+  var rc = document.querySelector('.reader-container');
+  if(window.ResizeObserver && rc){
+    new ResizeObserver(update).observe(rc);
+  } else {
+    setInterval(update, 1000);
+  }
+  update();
+})();
+</script>
+
+
+<script>
+(function(){
+  var PAGE_PX = 1000;
+  var root = document.documentElement;
+  var rc = document.querySelector('.reader-container');
+  var pc = document.getElementById('reader-pagecounter');
+  if(!rc || !pc) return;
+
+  // wrap counter + outline so hover stays active when moving between them
+  var nav = document.createElement('div'); nav.id = 'reader-nav';
+  pc.parentNode.insertBefore(nav, pc); nav.appendChild(pc);
+  var outline = document.createElement('div'); outline.id = 'reader-outline';
+  nav.appendChild(outline);
+
+  function fontScale(){
+    var v = parseFloat(getComputedStyle(root).getPropertyValue('--rfs'));
+    return (v && v > 0) ? v : 1;
+  }
+  function esc(s){ return s.replace(/[&<>"]/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+  function build(){
+    var pp = PAGE_PX * fontScale();
+    var hs = rc.querySelectorAll('h1, h2, h3');
+    var sy = window.scrollY || window.pageYOffset || 0;
+    var html = '<div class="ro-head">Contents &middot; page</div>';
+    hs.forEach(function(h){
+      if(h.closest('.toc, .cover')) return;          // skip TOC / cover headings
+      var txt = (h.textContent || '').trim();
+      if(!txt) return;
+      var lvl = h.tagName === 'H1' ? 0 : (h.tagName === 'H2' ? 1 : 2);
+      var top = h.getBoundingClientRect().top + sy;
+      var pg = Math.max(1, Math.floor(top / pp) + 1);
+      html += '<a class="ro-item ro-l' + lvl + '" data-top="' + Math.round(top) + '">' +
+              '<span class="ro-t">' + esc(txt) + '</span>' +
+              '<span class="ro-p">p.' + pg + '</span></a>';
+    });
+    outline.innerHTML = html;
+  }
+
+  nav.addEventListener('mouseenter', build);   // rebuild fresh each hover (page #s stay correct)
+  outline.addEventListener('click', function(e){
+    var a = e.target.closest('.ro-item'); if(!a) return;
+    var y = parseFloat(a.getAttribute('data-top')) - 12;
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  });
+})();
+</script>
+
+
+<script>
+(function(){
+  var PAGE_PX = 1000, SPY_OFFSET = 90;
+  var root = document.documentElement;
+  var rc = document.querySelector('.reader-container');
+  var pc = document.getElementById('reader-pagecounter');
+  var outline = document.getElementById('reader-outline');
+  var nav = document.getElementById('reader-nav');
+  if(!rc || !pc || !outline || !nav) return;
+
+  // current-heading label inside the pill (before the "Page X / Y" text)
+  var head = document.createElement('span'); head.id = 'rpc-head';
+  /* current heading shown in the outline only, not in the pill */
+
+  // cache the real section headings (skip TOC / cover)
+  var heads = [];
+  rc.querySelectorAll('h1, h2, h3').forEach(function(h){
+    if(h.closest('.toc, .cover')) return;
+    if(!(h.textContent || '').trim()) return;
+    heads.push(h);
+  });
+
+  function fontScale(){
+    var v = parseFloat(getComputedStyle(root).getPropertyValue('--rfs'));
+    return (v && v > 0) ? v : 1;
+  }
+  function esc(s){ return s.replace(/[&<>"]/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function topsAndCurrent(){
+    var sy = window.scrollY || window.pageYOffset || 0;
+    var tops = heads.map(function(h){ return h.getBoundingClientRect().top + sy; });
+    var cur = -1;
+    for(var i=0;i<tops.length;i++){ if(tops[i] <= sy + SPY_OFFSET) cur = i; else break; }
+    if(cur < 0 && tops.length) cur = 0;
+    return { tops: tops, cur: cur, sy: sy };
+  }
+
+  function build(){
+    var st = topsAndCurrent();
+    var pp = PAGE_PX * fontScale();
+    var html = '<div class="ro-head">Contents &middot; page</div>';
+    heads.forEach(function(h, i){
+      var lvl = h.tagName === 'H1' ? 0 : (h.tagName === 'H2' ? 1 : 2);
+      var pg = Math.max(1, Math.floor(st.tops[i] / pp) + 1);
+      html += '<a class="ro-item ro-l' + lvl + (i === st.cur ? ' ro-active' : '') +
+              '" data-i="' + i + '" data-top="' + Math.round(st.tops[i]) + '">' +
+              '<span class="ro-t">' + esc((h.textContent||'').trim()) + '</span>' +
+              '<span class="ro-p">p.' + pg + '</span></a>';
+    });
+    outline.innerHTML = html;
+    var act = outline.querySelector('.ro-active');
+    if(act) outline.scrollTop = act.offsetTop - outline.clientHeight / 2;
+  }
+
+  // run AFTER the earlier outline builder so this (spy-aware) version wins
+  nav.addEventListener('mouseenter', build);
+  pc.addEventListener('click', function(){ nav.classList.toggle('pinned'); if(nav.classList.contains('pinned')) build(); });
+  document.addEventListener('click', function(e){ if(nav.classList.contains('pinned') && !nav.contains(e.target)) nav.classList.remove('pinned'); });
+
+  var ticking = false;
+  function onScroll(){
+    if(ticking) return; ticking = true;
+    requestAnimationFrame(function(){
+      var st = topsAndCurrent();
+      head.textContent = st.cur >= 0 ? (heads[st.cur].textContent || '').trim() : '';
+      // live-highlight active item if the outline is currently shown
+      var items = outline.children;
+      for(var i=0;i<items.length;i++){
+        var el = items[i]; if(!el.classList || !el.classList.contains('ro-item')) continue;
+        el.classList.toggle('ro-active', parseInt(el.getAttribute('data-i'),10) === st.cur);
+      }
+      ticking = false;
+    });
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', onScroll);
+
+  // initial current-heading label
+  var st0 = topsAndCurrent();
+  head.textContent = st0.cur >= 0 ? (heads[st0.cur].textContent || '').trim() : '';
+})();
+</script>
+
+
+<script>
+(function(){
+  var KEY='siteNavOpen', body=document.body;
+  var wide=window.matchMedia('(min-width:900px)');
+  var saved=null; try{ saved=localStorage.getItem(KEY); }catch(e){}
+  var open = saved===null ? wide.matches : saved==='1';
+  function apply(){ body.classList.toggle('nav-open', open); }
+  var t=document.getElementById('site-nav-toggle');
+  if(t) t.addEventListener('click', function(){ open=!open; try{localStorage.setItem(KEY,open?'1':'0');}catch(e){} apply(); });
+  var bd=document.getElementById('site-nav-backdrop');
+  if(bd) bd.addEventListener('click', function(){ open=false; try{localStorage.setItem(KEY,'0');}catch(e){} apply(); });
+  apply();
+})();
+</script>
+
+</body>
+</html>

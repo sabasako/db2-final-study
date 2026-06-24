@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DB2 Final Study — KIU Databases II 2026</title>
+<style>
+:root{ color-scheme: light dark; }
+body{ font-family:Georgia,serif; line-height:1.6; color:#222; background:#fff;
+  margin:0; padding:60px 24px; }
+.wrap{ max-width:760px; margin:0 auto; }
+h1{ color:#003366; font-size:26pt; margin:0 0 6px; }
+.lead{ color:#555; font-size:13pt; margin:0 0 28px; }
+.grid{ display:grid; gap:14px; }
+a.card{ display:block; text-decoration:none; color:inherit; border:1px solid #ccd;
+  border-radius:10px; padding:16px 18px; transition:box-shadow .15s, transform .05s; background:#f8faff; }
+a.card:hover{ box-shadow:0 6px 20px rgba(0,0,0,.12); transform:translateY(-1px); }
+a.card .t{ color:#003366; font-weight:700; font-size:14.5pt; }
+a.card .d{ color:#555; font-size:11pt; margin-top:4px; }
+.foot{ color:#888; font-size:9.5pt; margin-top:34px; text-align:center; }
+@media (prefers-color-scheme: dark){
+  body{ background:#16181c; color:#d2d5da; }
+  h1{ color:#9ec5ff; } .lead,.foot,a.card .d{ color:#9aa0a8; }
+  a.card{ background:#1e2230; border-color:#3a3f4a; }
+  a.card .t{ color:#9ec5ff; }
+}
+@media (max-width:700px){ body{ padding:70px 14px 40px; } h1{ font-size:21pt; } }
+</style>
+
+<style id="site-nav-style">
+#site-nav-toggle{ position:fixed; top:14px; left:14px; z-index:10001; width:40px; height:40px;
+  border-radius:8px; border:none; background:#0f2540; color:#fff; font-size:18px; line-height:1;
+  cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,.3);
+  font-family:-apple-system,Segoe UI,Roboto,sans-serif; }
+#site-nav{ position:fixed; top:0; left:0; width:250px; height:100vh; overflow-y:auto;
+  background:#0f2540; color:#cfe0ff; z-index:10000; transform:translateX(-100%);
+  transition:transform .2s ease; box-shadow:2px 0 14px rgba(0,0,0,.25);
+  font-family:-apple-system,Segoe UI,Roboto,sans-serif; }
+body.nav-open #site-nav{ transform:translateX(0); }
+#site-nav .sn-title{ font-weight:700; color:#fff; font-size:15px; padding:16px 18px 4px 58px; }
+#site-nav .sn-sub{ font-size:11px; color:#7f9cc0; padding:0 18px 12px 58px; border-bottom:1px solid #22405f; margin-bottom:6px; }
+#site-nav a.sn-link{ display:block; padding:11px 18px; color:#cfe0ff; text-decoration:none;
+  font-size:13.5px; border-left:3px solid transparent; line-height:1.35; }
+#site-nav a.sn-link:hover{ background:#163255; }
+#site-nav a.sn-link.active{ background:#1d3e66; border-left-color:#8ab4f8; color:#fff; font-weight:600; }
+#site-nav-backdrop{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:9999; }
+body.nav-open #site-nav-backdrop{ display:block; }
+@media (min-width:900px){
+  body.nav-open{ padding-left:250px; }
+  body.nav-open #site-nav-backdrop{ display:none; }
+}
+@media print{ #site-nav,#site-nav-toggle,#site-nav-backdrop{ display:none !important; } body.nav-open{ padding-left:0 !important; } }
+
+/* ===== mobile responsiveness ===== */
+@media (max-width:700px){
+  body{ margin:0 !important; }
+  .reader-container{ max-width:none !important; margin:0 !important; zoom:1 !important; padding:0 14px !important; }
+  #reader-controls{ top:10px !important; right:10px !important; }
+  #site-nav-toggle{ top:10px; left:10px; width:38px; height:38px; }
+  #reader-nav{ bottom:10px !important; right:10px !important; }
+  .reader-container table{ font-size:8.7pt; }
+  .reader-container pre, .reader-container .ascii-diagram{ font-size:8pt; }
+  h1{ font-size:17pt !important; } h2{ font-size:13.5pt !important; }
+}
+</style>
+</head>
+<body>
+<button id="site-nav-toggle" title="Menu" aria-label="Menu">☰</button>
+<nav id="site-nav">
+  <div class="sn-title">DB2 Final Study</div>
+  <div class="sn-sub">KIU Databases II · 2026</div>
+  <a class="sn-link active" href="index.html">Home</a>
+  <a class="sn-link" href="5-transactions.html">5.4 · Transactions & CC</a>
+  <a class="sn-link" href="6.1-6.2-consistency.html">6.1–6.2 · Consistency & Conflicts</a>
+  <a class="sn-link" href="6.3-6.4-consensus-lwt.html">6.3–6.4 · Consensus & LWT</a>
+  <a class="sn-link" href="7-mongodb.html">7 · MongoDB & Sharding</a>
+  <a class="sn-link" href="final-exam-prep.html">Final Exam Prep</a>
+</nav>
+<div id="site-nav-backdrop"></div>
+
+
+<div class="wrap">
+  <h1>DB2 Final Study</h1>
+  <p class="lead">KIU Databases II — final exam study guides. Open the menu (top-left) on any page to jump between modules; middle-click a link to open it in a new tab.</p>
+
+  <div class="grid">
+    <a class="card" href="5-transactions.html">
+      <div class="t">5.4 · Transactions &amp; Concurrency Control</div>
+      <div class="d">Distributed transactions, 2PC, concurrency control.</div>
+    </a>
+    <a class="card" href="6.1-6.2-consistency.html">
+      <div class="t">6.1–6.2 · Consistency &amp; Conflict Resolution</div>
+      <div class="d">CAP, quorums (W+R&gt;N), read repair, LWW, version vectors, CRDTs, siblings.</div>
+    </a>
+    <a class="card" href="6.3-6.4-consensus-lwt.html">
+      <div class="t">6.3–6.4 · Consensus &amp; Lightweight Transactions</div>
+      <div class="d">Consensus, 2PC vs Paxos/Raft, Scylla LWT (compare-and-set), conflict scenarios.</div>
+    </a>
+    <a class="card" href="7-mongodb.html">
+      <div class="t">7 · MongoDB &amp; Sharding</div>
+      <div class="d">Replica sets, write/read concern, rollback, elections, sharding, mongos.</div>
+    </a>
+    <a class="card" href="final-exam-prep.html">
+      <div class="t">Final Exam Prep</div>
+      <div class="d">7 sample tasks with worked solutions (show/hide answers).</div>
+    </a>
+  </div>
+
+  <p class="foot">KIU Databases II · 2026</p>
+</div>
+
+
+<script>
+(function(){
+  var KEY='siteNavOpen', body=document.body;
+  var wide=window.matchMedia('(min-width:900px)');
+  var saved=null; try{ saved=localStorage.getItem(KEY); }catch(e){}
+  var open = saved===null ? wide.matches : saved==='1';
+  function apply(){ body.classList.toggle('nav-open', open); }
+  var t=document.getElementById('site-nav-toggle');
+  if(t) t.addEventListener('click', function(){ open=!open; try{localStorage.setItem(KEY,open?'1':'0');}catch(e){} apply(); });
+  var bd=document.getElementById('site-nav-backdrop');
+  if(bd) bd.addEventListener('click', function(){ open=false; try{localStorage.setItem(KEY,'0');}catch(e){} apply(); });
+  apply();
+})();
+</script>
+
+</body>
+</html>

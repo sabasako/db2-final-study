@@ -1,0 +1,1238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DB2 Final Exam Prep — KIU Databases II 2026</title>
+<style>
+body{font-family:Georgia,serif;font-size:11pt;line-height:1.7;margin:2cm;color:#222}
+h1{color:#003366;font-size:20pt;border-bottom:3px solid #003366;padding-bottom:8px;margin-top:0;page-break-before:always}
+h1:first-of-type{page-break-before:avoid}
+h2{color:#003366;font-size:15pt;margin-top:24px;border-bottom:1px solid #aac}
+h3{color:#1a5276;font-size:13pt;margin-top:16px}
+h4{color:#444;font-size:11.5pt;margin-top:12px}
+.def{background:#e8f0fe;border-left:5px solid #1a73e8;padding:12px 14px;margin:12px 0;border-radius:4px}
+.imp{background:#fff3cd;border-left:5px solid #ffc107;padding:12px 14px;margin:12px 0;border-radius:4px}
+.tip{background:#d4edda;border-left:5px solid #28a745;padding:12px 14px;margin:12px 0;border-radius:4px}
+.tip::before{content:"EXAM TIP: ";font-weight:bold;color:#155724}
+.warn{background:#fde8e8;border-left:5px solid #dc3545;padding:12px 14px;margin:12px 0;border-radius:4px}
+.warn::before{content:"WATCH OUT: ";font-weight:bold;color:#721c24}
+pre,code{font-family:'Courier New',monospace}
+pre{background:#1e1e1e;color:#d4d4d4;padding:14px;border-radius:6px;font-size:9pt;line-height:1.5;white-space:pre-wrap;word-wrap:break-word}
+table{border-collapse:collapse;width:100%;margin:14px 0;font-size:10pt}
+th{background:#003366;color:white;padding:8px;text-align:left}
+td{border:1px solid #ccc;padding:7px;vertical-align:top}
+tr:nth-child(even){background:#f5f5f5}
+.toc{background:#f0f4ff;padding:16px;border:1px solid #aac;border-radius:6px;margin-bottom:20px}
+.toc h3{margin-top:0;color:#003366}
+.toc a{color:#003366;text-decoration:none}
+.toc ol{padding-left:22px}
+.toc li{margin:5px 0;font-size:11pt}
+.toc .sub{padding-left:20px;list-style-type:lower-alpha}
+ol li,ul li{margin-bottom:6px}
+p{margin:10px 0}
+hr{border:none;border-top:2px solid #ddd;margin:20px 0}
+
+/* Question card */
+.q-block{background:#f9f9ff;border:1px solid #c0cfe0;border-radius:6px;padding:14px 16px;margin:14px 0}
+.q-block .q-label{font-weight:bold;color:#003366;font-size:11pt;margin-bottom:6px}
+.q-block .q-text{color:#222;margin-bottom:10px}
+
+/* Show Answer button */
+.show-btn{
+  background:#003366;color:#fff;border:none;padding:7px 18px;
+  border-radius:4px;cursor:pointer;font-size:10pt;font-family:Georgia,serif;
+  margin-top:2px;transition:background 0.2s
+}
+.show-btn:hover{background:#1a5276}
+.show-btn.open{background:#155724}
+
+/* Answer box (hidden by default) */
+.answer{
+  display:none;
+  background:#e8f5e9;border-left:5px solid #28a745;
+  padding:12px 14px;margin-top:10px;border-radius:0 4px 4px 0;
+  font-size:10.5pt
+}
+.answer .ans-label{font-weight:bold;color:#155724;display:block;margin-bottom:6px;font-size:10pt}
+.answer table{font-size:9.5pt}
+.answer th{background:#1a5276}
+
+/* schedule table inside answer */
+.sched{border-collapse:collapse;width:auto;margin:8px 0}
+.sched th{background:#003366;color:#fff;padding:6px 14px;text-align:center}
+.sched td{border:1px solid #aaa;padding:5px 14px;text-align:center;min-width:130px}
+.sched tr:nth-child(even){background:#f0f8f0}
+
+/* version vector diagram */
+.vv-table{font-size:9pt;font-family:'Courier New',monospace}
+.vv-table th{background:#1a3a5c;font-size:9pt;padding:5px 8px}
+.vv-table td{padding:5px 8px;border:1px solid #bbb;white-space:nowrap}
+.vv-table tr:nth-child(even){background:#f5f5ff}
+</style>
+<script>
+function toggleAnswer(btn){
+  var ans = btn.nextElementSibling;
+  if(ans.style.display==='block'){
+    ans.style.display='none';
+    btn.textContent='Show Answer';
+    btn.classList.remove('open');
+  } else {
+    ans.style.display='block';
+    btn.textContent='Hide Answer';
+    btn.classList.add('open');
+  }
+}
+function showAll(){
+  document.querySelectorAll('.answer').forEach(function(a){a.style.display='block'});
+  document.querySelectorAll('.show-btn').forEach(function(b){b.textContent='Hide Answer';b.classList.add('open')});
+}
+function hideAll(){
+  document.querySelectorAll('.answer').forEach(function(a){a.style.display='none'});
+  document.querySelectorAll('.show-btn').forEach(function(b){b.textContent='Show Answer';b.classList.remove('open')});
+}
+</script>
+
+<style id="reader-controls-style">
+/* ===== Injected reading controls ===== */
+:root{ --rfs:1.5; --rcw:560px; }
+.reader-container{
+  max-width: var(--rcw);
+  margin-left: auto;
+  margin-right: auto;
+  zoom: var(--rfs);
+}
+body.reader-full .reader-container{ max-width: none; }
+
+#reader-controls{
+  position: fixed; top: 14px; right: 14px; z-index: 9999;
+  font-family: -apple-system, Segoe UI, Roboto, sans-serif;
+}
+#reader-controls #rc-toggle{
+  width: 40px; height: 40px; border-radius: 50%;
+  border: none; background: #003366; color: #fff;
+  font-size: 16px; font-weight: bold; cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.3);
+}
+#reader-controls #rc-panel{
+  display: none; margin-top: 8px; width: 240px;
+  background: #fff; color: #222; border: 1px solid #ccd;
+  border-radius: 10px; padding: 12px 14px;
+  box-shadow: 0 6px 24px rgba(0,0,0,.2); font-size: 13px;
+}
+#reader-controls.open #rc-panel{ display: block; }
+#reader-controls .rc-row{
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; margin: 8px 0;
+}
+#reader-controls .rc-row:first-child{ margin-top: 0; }
+#reader-controls .rc-row > span:first-child{ font-weight: 600; color: #003366; min-width: 42px; }
+#reader-controls button[data-act]{
+  border: 1px solid #aac; background: #f0f4ff; color: #003366;
+  border-radius: 6px; padding: 3px 10px; cursor: pointer; font-size: 13px;
+}
+#reader-controls button[data-act]:hover{ background: #dde6ff; }
+#reader-controls #rc-font-val, #reader-controls #rc-width-val{
+  min-width: 44px; text-align: center; font-variant-numeric: tabular-nums;
+}
+#reader-controls input[type=range]{ flex: 1; }
+#reader-controls label{ display: flex; align-items: center; gap: 6px; cursor: pointer; }
+@media print{
+  #reader-controls{ display: none !important; }
+  .reader-container{ zoom: 1 !important; max-width: none !important; margin: 0 !important; }
+}
+</style>
+
+<script>
+(function(){try{
+  var k='readerTheme:db2site';
+  var t=localStorage.getItem(k)||'system';
+  var dark = t==='dark' || (t==='system' && window.matchMedia &&
+            window.matchMedia('(prefers-color-scheme: dark)').matches);
+  if(dark) document.documentElement.classList.add('theme-dark');
+}catch(e){}})();
+</script>
+
+<style id="theme-dark-style">
+/* ===== Dark theme (scoped to html.theme-dark) ===== */
+html.theme-dark, html.theme-dark body{
+  background: #16181c !important;
+  color: #d2d5da !important;
+}
+html.theme-dark h1, html.theme-dark h2, html.theme-dark h3, html.theme-dark h4{
+  color: #9ec5ff !important;
+  border-color: #33425a !important;
+}
+html.theme-dark a{ color: #8ab4f8 !important; }
+html.theme-dark .subtitle, html.theme-dark .meta, html.theme-dark .sub{ color: #9aa0a8 !important; }
+
+/* callout / card boxes -> dark surface, keep their accent border */
+html.theme-dark .box, html.theme-dark .warn, html.theme-dark .key, html.theme-dark .exam, html.theme-dark .answer, html.theme-dark .def, html.theme-dark .imp, html.theme-dark .tip, html.theme-dark .scenario, html.theme-dark .timeline, html.theme-dark .toc, html.theme-dark .defbox, html.theme-dark .notebox, html.theme-dark .examtip, html.theme-dark .assignment, html.theme-dark .cover{
+  background: #1e2230 !important;
+  color: #d2d5da !important;
+}
+html.theme-dark .cover{ background: #1a1d28 !important; }
+html.theme-dark .exam-title, html.theme-dark .examtip,
+html.theme-dark .notebox, html.theme-dark .kiu-logo{ color: #c7d2e8 !important; }
+
+/* tables */
+html.theme-dark table th{ background: #243044 !important; color: #e8eef7 !important; }
+html.theme-dark table td, html.theme-dark table th{ border-color: #3a3f49 !important; }
+html.theme-dark table tr:nth-child(even){ background: #1b1e24 !important; }
+html.theme-dark table tr:nth-child(odd){ background: transparent !important; }
+
+/* code blocks: darken any light ones; leave already-dark ones consistent */
+html.theme-dark pre, html.theme-dark code{
+  background: #0e0f12 !important;
+  color: #e2e2e2 !important;
+  border-color: #2c2f36 !important;
+}
+html.theme-dark .out, html.theme-dark .output{ background: #0f1a10 !important; }
+
+/* the settings panel itself in dark mode */
+html.theme-dark #reader-controls #rc-panel{
+  background: #23262d !important; color: #e0e2e6 !important; border-color: #3a3f4a !important;
+}
+html.theme-dark #reader-controls button[data-act]{
+  background: #2d323c !important; color: #cfe0ff !important; border-color: #3a4150 !important;
+}
+html.theme-dark #reader-controls button[data-act]:hover{ background: #39404d !important; }
+html.theme-dark #reader-controls .rc-row > span:first-child{ color: #9ec5ff !important; }
+
+/* theme segmented control */
+#reader-controls .rc-seg{ display: inline-flex; gap: 4px; }
+#reader-controls .rc-seg button{
+  border: 1px solid #aac; background: #f0f4ff; color: #003366;
+  border-radius: 6px; padding: 3px 8px; cursor: pointer; font-size: 14px; line-height: 1;
+}
+#reader-controls .rc-seg button.active{ background: #003366; color: #fff; border-color: #003366; }
+html.theme-dark #reader-controls .rc-seg button{ background: #2d323c; color: #cfe0ff; border-color: #3a4150; }
+html.theme-dark #reader-controls .rc-seg button.active{ background: #8ab4f8; color: #11151c; border-color: #8ab4f8; }
+
+@media print{
+  /* never print a black page even if dark mode is on */
+  html.theme-dark, html.theme-dark body,
+  html.theme-dark .box, html.theme-dark .warn, html.theme-dark .key, html.theme-dark .exam, html.theme-dark .answer, html.theme-dark .def, html.theme-dark .imp, html.theme-dark .tip, html.theme-dark .scenario, html.theme-dark .timeline, html.theme-dark .toc, html.theme-dark .defbox, html.theme-dark .notebox, html.theme-dark .examtip, html.theme-dark .assignment, html.theme-dark .cover, html.theme-dark table th,
+  html.theme-dark pre, html.theme-dark code, html.theme-dark .out, html.theme-dark .output{
+    background: #fff !important; color: #000 !important;
+  }
+}
+</style>
+
+<style id="reader-pagecounter-style">
+#reader-pagecounter{
+  position: fixed; bottom: 14px; right: 14px; z-index: 9999;
+  background: rgba(0,51,102,.92); color: #fff;
+  font-family: -apple-system, Segoe UI, Roboto, sans-serif; font-size: 12px;
+  padding: 6px 11px; border-radius: 20px; pointer-events: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,.25);
+  font-variant-numeric: tabular-nums; letter-spacing: .2px;
+}
+#reader-pagecounter b{ font-weight: 700; }
+html.theme-dark #reader-pagecounter{ background: rgba(138,180,248,.92); color: #11151c; }
+@media print{ #reader-pagecounter{ display: none !important; } }
+</style>
+
+<style id="reader-outline-style">
+/* keep the Aa button pinned to the right so it doesn't jump when the panel opens */
+#reader-controls{ display: flex; flex-direction: column; align-items: flex-end; }
+
+/* page counter becomes hover-interactive (was pointer-events:none) */
+#reader-nav{ position: fixed; bottom: 14px; right: 14px; z-index: 9999;
+  font-family: -apple-system, Segoe UI, Roboto, sans-serif; }
+#reader-nav #reader-pagecounter{ position: static; bottom: auto; right: auto;
+  pointer-events: auto; cursor: pointer; }
+
+#reader-outline{
+  display: none; position: absolute; bottom: 100%; right: 0; margin-bottom: 8px;
+  width: min(340px, 82vw); max-height: 70vh; overflow-y: auto;
+  background: #fff; color: #222; border: 1px solid #ccd; border-radius: 10px;
+  box-shadow: 0 8px 28px rgba(0,0,0,.22); padding: 6px 4px; font-size: 12.5px;
+}
+#reader-nav:hover #reader-outline, #reader-nav.pinned #reader-outline{ display: block; }
+#reader-outline::after{ content:""; position:absolute; left:0; right:0; top:100%; height:14px; }
+#reader-outline .ro-head{ font-weight: 700; color: #003366; padding: 4px 10px 6px;
+  border-bottom: 1px solid #e3e8f0; margin-bottom: 4px; position: sticky; top: 0; background: #fff; }
+#reader-outline .ro-item{
+  display: flex; align-items: baseline; gap: 8px; justify-content: space-between;
+  padding: 3px 10px; cursor: pointer; border-radius: 6px; text-decoration: none; color: inherit;
+}
+#reader-outline .ro-item:hover{ background: #eef3ff; }
+#reader-outline .ro-t{ overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+#reader-outline .ro-p{ color: #6678a0; font-variant-numeric: tabular-nums; flex: 0 0 auto; font-size: 11px; }
+#reader-outline .ro-l0{ font-weight: 600; }
+#reader-outline .ro-l1 .ro-t{ padding-left: 14px; font-weight: 400; }
+#reader-outline .ro-l2 .ro-t{ padding-left: 28px; color: #555; font-weight: 400; }
+
+html.theme-dark #reader-outline{ background: #23262d; color: #e0e2e6; border-color: #3a3f4a; }
+html.theme-dark #reader-outline .ro-head{ background: #23262d; color: #9ec5ff; border-color: #343a44; }
+html.theme-dark #reader-outline .ro-item:hover{ background: #2f3540; }
+html.theme-dark #reader-outline .ro-p{ color: #8fa0c4; }
+html.theme-dark #reader-outline .ro-l2 .ro-t{ color: #b6bcc6; }
+
+@media print{ #reader-nav{ display: none !important; } }
+</style>
+
+<style id="reader-spy-style">
+#reader-pagecounter{ white-space: nowrap; }
+#rpc-head{ overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 230px; font-weight: 600; }
+#rpc-head:not(:empty)::after{ content: "\00B7"; margin: 0 7px; opacity: .55; font-weight: 400; }
+#reader-outline .ro-item.ro-active{ background: #dbe6ff; font-weight: 700; }
+#reader-outline .ro-item.ro-active .ro-p{ color: #003366; }
+html.theme-dark #reader-outline .ro-item.ro-active{ background: #34507e; }
+html.theme-dark #reader-outline .ro-item.ro-active .ro-p{ color: #cfe0ff; }
+</style>
+<style id="exam-dark-patch">
+/* dark-mode coverage for final_exam_prep's own classes */
+html.theme-dark .q-block{ background: #1e2230 !important; border-color: #3a4258 !important; }
+html.theme-dark .q-block .q-label{ color: #9ec5ff !important; }
+html.theme-dark .q-block .q-text{ color: #d2d5da !important; }
+html.theme-dark .answer .ans-label{ color: #7ee0a0 !important; }
+html.theme-dark .sched th{ background: #243044 !important; }
+html.theme-dark .sched td, html.theme-dark .vv-table td{ border-color: #3a3f49 !important; }
+html.theme-dark .sched tr:nth-child(even),
+html.theme-dark .vv-table tr:nth-child(even){ background: #1b1e24 !important; }
+html.theme-dark .show-btn{ background: #2d4a6b !important; }
+html.theme-dark .show-btn.open{ background: #1f5f38 !important; }
+html.theme-dark hr{ border-top-color: #3a3f49 !important; }
+</style>
+
+<style id="site-nav-style">
+#site-nav-toggle{ position:fixed; top:14px; left:14px; z-index:10001; width:40px; height:40px;
+  border-radius:8px; border:none; background:#0f2540; color:#fff; font-size:18px; line-height:1;
+  cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,.3);
+  font-family:-apple-system,Segoe UI,Roboto,sans-serif; }
+#site-nav{ position:fixed; top:0; left:0; width:250px; height:100vh; overflow-y:auto;
+  background:#0f2540; color:#cfe0ff; z-index:10000; transform:translateX(-100%);
+  transition:transform .2s ease; box-shadow:2px 0 14px rgba(0,0,0,.25);
+  font-family:-apple-system,Segoe UI,Roboto,sans-serif; }
+body.nav-open #site-nav{ transform:translateX(0); }
+#site-nav .sn-title{ font-weight:700; color:#fff; font-size:15px; padding:16px 18px 4px 58px; }
+#site-nav .sn-sub{ font-size:11px; color:#7f9cc0; padding:0 18px 12px 58px; border-bottom:1px solid #22405f; margin-bottom:6px; }
+#site-nav a.sn-link{ display:block; padding:11px 18px; color:#cfe0ff; text-decoration:none;
+  font-size:13.5px; border-left:3px solid transparent; line-height:1.35; }
+#site-nav a.sn-link:hover{ background:#163255; }
+#site-nav a.sn-link.active{ background:#1d3e66; border-left-color:#8ab4f8; color:#fff; font-weight:600; }
+#site-nav-backdrop{ display:none; position:fixed; inset:0; background:rgba(0,0,0,.45); z-index:9999; }
+body.nav-open #site-nav-backdrop{ display:block; }
+@media (min-width:900px){
+  body.nav-open{ padding-left:250px; }
+  body.nav-open #site-nav-backdrop{ display:none; }
+}
+@media print{ #site-nav,#site-nav-toggle,#site-nav-backdrop{ display:none !important; } body.nav-open{ padding-left:0 !important; } }
+
+/* ===== mobile responsiveness ===== */
+@media (max-width:700px){
+  body{ margin:0 !important; }
+  .reader-container{ max-width:none !important; margin:0 !important; zoom:1 !important; padding:0 14px !important; }
+  #reader-controls{ top:10px !important; right:10px !important; }
+  #site-nav-toggle{ top:10px; left:10px; width:38px; height:38px; }
+  #reader-nav{ bottom:10px !important; right:10px !important; }
+  .reader-container table{ font-size:8.7pt; }
+  .reader-container pre, .reader-container .ascii-diagram{ font-size:8pt; }
+  h1{ font-size:17pt !important; } h2{ font-size:13.5pt !important; }
+}
+</style>
+</head>
+<body>
+<button id="site-nav-toggle" title="Menu" aria-label="Menu">☰</button>
+<nav id="site-nav">
+  <div class="sn-title">DB2 Final Study</div>
+  <div class="sn-sub">KIU Databases II · 2026</div>
+  <a class="sn-link" href="index.html">Home</a>
+  <a class="sn-link" href="5-transactions.html">5.4 · Transactions & CC</a>
+  <a class="sn-link" href="6.1-6.2-consistency.html">6.1–6.2 · Consistency & Conflicts</a>
+  <a class="sn-link" href="6.3-6.4-consensus-lwt.html">6.3–6.4 · Consensus & LWT</a>
+  <a class="sn-link" href="7-mongodb.html">7 · MongoDB & Sharding</a>
+  <a class="sn-link active" href="final-exam-prep.html">Final Exam Prep</a>
+</nav>
+<div id="site-nav-backdrop"></div>
+
+
+<div id="reader-controls">
+  <button id="rc-toggle" title="Reading settings">Aa</button>
+  <div id="rc-panel">
+    <div class="rc-row" id="rc-theme-row">
+      <span>Theme</span>
+      <div class="rc-seg">
+        <button data-theme="light" title="Light mode">&#9728;</button>
+        <button data-theme="dark" title="Dark mode">&#9790;</button>
+        <button data-theme="system" title="Match system">&#128421;</button>
+      </div>
+    </div>
+
+    <div class="rc-row">
+      <span>Font</span>
+      <button data-act="font-dec" title="Smaller">A&minus;</button>
+      <span id="rc-font-val">100%</span>
+      <button data-act="font-inc" title="Larger">A+</button>
+    </div>
+    <div class="rc-row">
+      <span>Width</span>
+      <input id="rc-width" type="range" min="300" max="1600" step="20">
+      <span id="rc-width-val">560</span>
+    </div>
+    <div class="rc-row">
+      <label><input id="rc-full" type="checkbox"> Full width</label>
+      <button data-act="reset">Reset</button>
+    </div>
+  </div>
+</div>
+
+<div class="reader-container">
+
+
+<h1 style="page-break-before:avoid">DB2 Final Exam Preparation — 2026</h1>
+<p><strong>KIU Databases II — Final Exam Sample + Sample Solutions | Prepared 2026-06-24</strong></p>
+<p>7 tasks covering: Database Types · Scylla Consistency · Transaction Anomalies · PostgreSQL Storage · CRDT Sets · Version Vectors · MongoDB Read Concern</p>
+
+<div style="margin:14px 0">
+  <button class="show-btn" onclick="showAll()">Show All Answers</button>
+  &nbsp;
+  <button class="show-btn" onclick="hideAll()" style="background:#6c757d">Hide All Answers</button>
+</div>
+
+<div class="toc" id="toc">
+  <h3>Table of Contents</h3>
+  <ol>
+    <li><a href="#task1">Task 1 — Match Description to Database Type</a></li>
+    <li><a href="#task2">Task 2 — Scylla Consistency (Quorum)</a></li>
+    <li><a href="#task3">Task 3 — Transaction Anomaly (Write Skew)</a></li>
+    <li><a href="#task4">Task 4 — Updates in Postgres (HOT vs COLD)</a></li>
+    <li><a href="#task5">Task 5 — State-based CRDT Set</a></li>
+    <li><a href="#task6">Task 6 — Version Vectors</a></li>
+    <li><a href="#task7">Task 7 — MongoDB Read Concern</a></li>
+  </ol>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ TASK 1 -->
+<h1 id="task1">Task 1 — Match Description to Database Type</h1>
+
+<div class="def">
+  <strong>What is this task asking?</strong><br>
+  You are given 6 real-world scenarios. For each one you must: (1) name the correct database type from the list, and (2) write 1-2 sentences explaining <em>which specific feature</em> of that type makes it the right fit. The four options are: <strong>Relational, Key-Value, Document, Wide-Column / Column-Family</strong>.
+</div>
+
+<div class="tip">
+  The exam tests whether you know the <em>key characteristics</em> of each type — not just names. Look for trigger words in each description:<br>
+  <strong>Relational</strong> → "transactions", "referential integrity", "constraints", "ACID", "multiple tables in agreement"<br>
+  <strong>Key-Value</strong> → "single identifier", "fetch as fast as possible", "no querying inside", "score per player"<br>
+  <strong>Document</strong> → "flexible schema", "different attributes per item", "load all details at once", "evolving fields"<br>
+  <strong>Wide-Column</strong> → "known query patterns", "availability over consistency", "partition key + sort key", "social feed / timeline"
+</div>
+
+<div class="imp">
+  <strong>Format your answer like this every time:</strong><br>
+  [Database Type]. Reason: [one specific characteristic that matches the scenario].
+</div>
+
+<hr>
+
+<!-- Q1 -->
+<div class="q-block">
+  <div class="q-label">Question 1</div>
+  <div class="q-text">A payment system where transferring funds must update several accounts together as one unit, every entry has to point to a valid account, and nothing committed may ever be lost.</div>
+  <button class="show-btn" onclick="toggleAnswer(this)">Show Answer</button>
+  <div class="answer">
+    <span class="ans-label">Sample Solution:</span>
+    <strong>Relational.</strong> Reason: multi-record atomic transactions, referential integrity, and durability (ACID) are core strengths of RDBMS — exactly what a payment system needs.
+  </div>
+</div>
+
+<!-- Q2 -->
+<div class="q-block">
+  <div class="q-label">Question 2</div>
+  <div class="q-text">A user-session service for a busy website that stores each login token under a single identifier and needs to fetch it back as fast as possible, without ever looking inside it.</div>
+  <button class="show-btn" onclick="toggleAnswer(this)">Show Answer</button>
+  <div class="answer">
+    <span class="ans-label">Sample Solution:</span>
+    <strong>Key-Value.</strong> Reason: put/get by exact key with no querying inside the value is the key-value model's core design, giving O(1) lookups at maximum speed.
+  </div>
+</div>
+
+<!-- Q3 -->
+<div class="q-block">
+  <div class="q-label">Question 3</div>
+  <div class="q-text">An online store catalog where different products carry different sets of attributes, new attributes appear regularly, and each product is normally loaded together with all its details at once.</div>
+  <button class="show-btn" onclick="toggleAnswer(this)">Show Answer</button>
+  <div class="answer">
+    <span class="ans-label">Sample Solution:</span>
+    <strong>Document.</strong> Reason: varying attributes per record, flexible/dynamic schema, and loading a full record with all its data in one operation describe the document model perfectly.
+  </div>
+</div>
+
+<!-- Q4 -->
+<div class="q-block">
+  <div class="q-label">Question 4</div>
+  <div class="q-text">A social feed showing "items belonging to a given account, newest first," where query patterns are known beforehand and availability matters more than always reading the newest value.</div>
+  <button class="show-btn" onclick="toggleAnswer(this)">Show Answer</button>
+  <div class="answer">
+    <span class="ans-label">Sample Solution:</span>
+    <strong>Wide-Column / Column-Family.</strong> Reason: query-first / denormalized design with a partition key (account) and clustering key (timestamp) serves known read patterns. Prioritizes availability over strong consistency (AP in CAP).
+  </div>
+</div>
+
+<!-- Q5 -->
+<div class="q-block">
+  <div class="q-label">Question 5</div>
+  <div class="q-text">A game leaderboard that tracks a score per player and needs quick increment-and-read operations on a player identifier.</div>
+  <button class="show-btn" onclick="toggleAnswer(this)">Show Answer</button>
+  <div class="answer">
+    <span class="ans-label">Sample Solution:</span>
+    <strong>Key-Value.</strong> Reason: single-identifier access with atomic increment operations and no relational queries — exactly what key-value stores (e.g. Redis) are optimized for.
+  </div>
+</div>
+
+<!-- Q6 -->
+<div class="q-block">
+  <div class="q-label">Question 6</div>
+  <div class="q-text">A course-enrollment system that must stop two people from claiming the last available seat and the data about students, courses, and sign-ups has to stay in agreement.</div>
+  <button class="show-btn" onclick="toggleAnswer(this)">Show Answer</button>
+  <div class="answer">
+    <span class="ans-label">Sample Solution:</span>
+    <strong>Relational.</strong> Reason: preventing the last-seat race requires transactional isolation (serializable/for update), and cross-table referential integrity keeps students, courses, and sign-ups consistent.
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ TASK 2 -->
+<h1 id="task2">Task 2 — Scylla Consistency (Quorum)</h1>
+
+<div class="def">
+  <strong>What is this task asking?</strong><br>
+  This task tests your understanding of <strong>distributed consistency</strong>. You need to know: how ACID consistency differs from CAP consistency, why replicas can diverge and how they are reconciled, how the quorum formula W + R &gt; N works, and how to compare two quorum configurations by availability and latency.
+</div>
+
+<div class="tip">
+  Always check W + R &gt; N first before comparing configs. Then ask: how many node failures can reads survive? How many can writes survive? That tells you the tradeoff.
+</div>
+
+<div class="imp">
+  <strong>Key variables to memorize:</strong><br>
+  <strong>N</strong> = total replica count &nbsp;|&nbsp; <strong>W</strong> = replicas that must ack a write &nbsp;|&nbsp; <strong>R</strong> = replicas that must respond to a read<br>
+  Read can tolerate <strong>N − R</strong> failures. Write can tolerate <strong>N − W</strong> failures.
+</div>
+
+<hr>
+
+<!-- T2 Q1 -->
+<div class="q-block">
+  <div class="q-label">Question 1</div>
+  <div class="q-text">The word "consistency" means different things in ACID and in CAP. Define both.</div>
+  <button class="show-btn" onclick="toggleAnswer(this)">Show Answer</button>
+  <div class="answer">
+    <span class="ans-label">Sample Solution:</span>
+    <strong>ACID consistency</strong> — a transaction never breaks the database's internal rules. Constraints, foreign keys, and data invariants stay correct. It is about keeping data valid inside one database.<br><br>
+    <strong>CAP consistency</strong> — every node shows the same, most up-to-date value at the same time, so all clients see the same thing. It is about replicas agreeing with each other across a distributed system.
+  </div>
+</div>
+
+<!-- T2 Q2 -->
+<div class="q-block">
+  <div class="q-label">Question 2</div>
+  <div class="q-text">Name and distinguish the two fundamentally different reasons two replicas can hold different values for the same object. Explain how the system resolves each.</div>
+  <button class="show-btn" onclick="toggleAnswer(this)">Show Answer</button>
+  <div class="answer">
+    <span class="ans-label">Sample Solution:</span>
+    <strong>1. Concurrent writes</strong> — different writes reached different coordinators with no happened-before relationship, so replicas genuinely hold conflicting values. Resolution requires a <em>conflict-resolution rule</em> (e.g. Last-Write-Wins, sibling values / application merge).<br><br>
+    <strong>2. Replication lag</strong> — a write has been applied on some replicas but not yet propagated to others. There is a clear order, no conflict; it resolves on its own via eventual consistency (just needs time / read repair / anti-entropy).<br><br>
+    <em>Key distinction:</em> case 1 needs a rule to decide which value wins; case 2 only needs time to converge.
+  </div>
+</div>
+
+<!-- T2 Q3 -->
+<div class="q-block">
+  <div class="q-label">Question 3</div>
+  <div class="q-text">Explain how the quorum mechanism works in Scylla. State the roles of N, W, R and explain what the rule W + R &gt; N guarantees and why.</div>
+  <button class="show-btn" onclick="toggleAnswer(this)">Show Answer</button>
+  <div class="answer">
+    <span class="ans-label">Sample Solution:</span>
+    <strong>N</strong> = number of replicas that store a copy of the data.<br>
+    <strong>W</strong> = how many replicas must confirm a write before it is considered successful.<br>
+    <strong>R</strong> = how many replicas must respond to a read before a result is returned.<br><br>
+    The coordinator sends the write/read to all N replicas, then waits for W (or R) acknowledgements. If it cannot collect them in time, it returns an error.<br><br>
+    <strong>W + R &gt; N</strong> guarantees that the write set and read set always overlap by at least one replica. That overlapping replica holds the latest write, so any read is guaranteed to see the most recent value — strong consistency.
+  </div>
+</div>
+
+<!-- T2 Q4 -->
+<div class="q-block">
+  <div class="q-label">Question 4</div>
+  <div class="q-text">A cluster has N = 5. Compare configuration (a) W = 3, R = 3 with (b) W = 2, R = 4. Does each guarantee consistency? How do they differ in read vs write availability and latency, and which would generally be preferred? Justify.</div>
+  <button class="show-btn" onclick="toggleAnswer(this)">Show Answer</button>
+  <div class="answer">
+    <span class="ans-label">Sample Solution:</span>
+    <table>
+      <tr><th></th><th>(a) W=3, R=3</th><th>(b) W=2, R=4</th></tr>
+      <tr><td><strong>W + R &gt; N?</strong></td><td>3+3=6 &gt; 5 ✓</td><td>2+4=6 &gt; 5 ✓</td></tr>
+      <tr><td><strong>Guarantees consistency?</strong></td><td>Yes</td><td>Yes</td></tr>
+      <tr><td><strong>Write tolerates failures</strong></td><td>N−W = 2 nodes down</td><td>N−W = 3 nodes down (better)</td></tr>
+      <tr><td><strong>Read tolerates failures</strong></td><td>N−R = 2 nodes down</td><td>N−R = 1 node down (worse)</td></tr>
+      <tr><td><strong>Write latency</strong></td><td>Wait for 3 nodes</td><td>Wait for only 2 nodes (faster)</td></tr>
+      <tr><td><strong>Read latency</strong></td><td>Wait for 3 nodes</td><td>Wait for 4 nodes (slower)</td></tr>
+    </table>
+    <strong>Generally preferred: (a) W=3, R=3.</strong> The load is balanced — both reads and writes survive up to 2 node failures. Config (b) is only preferable when writes are very frequent and must stay available, while reads are rare or can tolerate low availability.
+  </div>
+</div>
+
+<!-- T2 Q5 -->
+<div class="q-block">
+  <div class="q-label">Question 5</div>
+  <div class="q-text">In consistency quorum, a write times out before a majority acknowledges and the coordinator returns failure to the client. Is the data guaranteed NOT to have been written? Explain.</div>
+  <button class="show-btn" onclick="toggleAnswer(this)">Show Answer</button>
+  <div class="answer">
+    <span class="ans-label">Sample Solution:</span>
+    <strong>No.</strong> A timeout only means a quorum did not acknowledge in time. Some replicas may have already applied the write — and applied writes in Scylla are <em>never rolled back</em>. The write can still propagate to remaining replicas later via read repair and become fully persistent. The client must <strong>read the value back</strong> to confirm whether it was actually written.
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ TASK 3 -->
+<h1 id="task3">Task 3 — Transaction Anomaly (Write Skew)</h1>
+
+<div class="def">
+  <strong>What is this task asking?</strong><br>
+  You are given a concrete hospital scenario with a business invariant (at least 1 doctor on call). You need to: (1) identify the anomaly, draw the interleaved schedule, and explain why the invariant breaks; (2) give two different prevention strategies and compare them.
+</div>
+
+<div class="tip">
+  The anomaly here is <strong>Write Skew</strong> — a special case that REPEATABLE READ does NOT prevent. Write skew happens when two transactions each read a shared condition, both decide it is safe to write, write to <em>different</em> rows, and together violate an invariant. Phantom reads are different (new rows appear). Write skew is about reading existing rows and writing to different ones.
+</div>
+
+<div class="warn">
+  Write skew is NOT prevented by REPEATABLE READ or READ COMMITTED. You need either <strong>SELECT FOR UPDATE</strong> (pessimistic locking) or <strong>SERIALIZABLE isolation</strong> (optimistic / SSI).
+</div>
+
+<hr>
+
+<!-- T3 Q1 -->
+<div class="q-block">
+  <div class="q-label">Question 1</div>
+  <div class="q-text">Suppose Alice and Bob both try to go off-call at the same time. What problem/anomaly might arise? Illustrate it with a concrete schedule of the two transactions, and explain why the invariant ends up violated.</div>
+  <button class="show-btn" onclick="toggleAnswer(this)">Show Answer</button>
+  <div class="answer">
+    <span class="ans-label">Sample Solution:</span>
+    <strong>Anomaly: Write Skew.</strong><br><br>
+    <table class="sched">
+      <tr><th>Step</th><th>T1 (Alice)</th><th>T2 (Bob)</th></tr>
+      <tr><td>1</td><td>COUNT on_call → 2</td><td></td></tr>
+      <tr><td>2</td><td></td><td>COUNT on_call → 2</td></tr>
+      <tr><td>3</td><td>SET Alice off-call</td><td></td></tr>
+      <tr><td>4</td><td></td><td>SET Bob off-call</td></tr>
+      <tr><td>5</td><td>COMMIT</td><td>COMMIT</td></tr>
+    </table>
+    Both transactions read count = 2, so each concludes it is safe to step down. They write to <em>different rows</em>, so neither blocks the other under REPEATABLE READ. Both commit. Final state: 0 doctors on call — invariant broken.<br><br>
+    Each transaction was individually correct; only their <em>combination</em> violates the rule.
+  </div>
+</div>
+
+<!-- T3 Q2 -->
+<div class="q-block">
+  <div class="q-label">Question 2</div>
+  <div class="q-text">Give two different ways to prevent this problem and compare them.</div>
+  <button class="show-btn" onclick="toggleAnswer(this)">Show Answer</button>
+  <div class="answer">
+    <span class="ans-label">Sample Solution:</span>
+    <strong>Option A — SELECT … FOR UPDATE (pessimistic locking)</strong><br>
+    Change the count query to: <code>SELECT * FROM doctors WHERE on_call = true FOR UPDATE</code><br>
+    T1 locks all on-call rows. T2's identical query <em>blocks</em> until T1 commits. T2 then re-reads, sees count = 1, and refuses to step down.<br><br>
+    <strong>Option B — SERIALIZABLE isolation level</strong><br>
+    Upgrade the isolation to SERIALIZABLE. The database detects that the two transactions cannot run serially without conflict and <em>aborts one</em> at commit time. The aborted transaction is retried — on retry it sees count = 1 and refuses.<br><br>
+    <table>
+      <tr><th></th><th>SELECT FOR UPDATE</th><th>SERIALIZABLE</th></tr>
+      <tr><td><strong>Approach</strong></td><td>Pessimistic — locks up front</td><td>Optimistic — detects at commit</td></tr>
+      <tr><td><strong>Concurrency</strong></td><td>Lower (T2 blocks waiting)</td><td>Higher (both run in parallel)</td></tr>
+      <tr><td><strong>Overhead</strong></td><td>Lock management</td><td>Conflict detection + retry logic</td></tr>
+      <tr><td><strong>Code change</strong></td><td>Minimal (one SQL keyword)</td><td>Change isolation level + add retry</td></tr>
+    </table>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ TASK 4 -->
+<h1 id="task4">Task 4 — Updates in Postgres (HOT vs COLD)</h1>
+
+<div class="def">
+  <strong>What is this task asking?</strong><br>
+  You must trace exactly how many physical locations Postgres writes to for each UPDATE, and explain <em>why</em>. The key concept is <strong>HOT (Heap-Only Tuple) updates</strong> vs regular (COLD) updates, and how indexes are affected. Always count: WAL + heap + affected indexes.
+</div>
+
+<div class="tip">
+  HOT update conditions (both must be true): (1) the changed column is <strong>not indexed</strong>, AND (2) the new row version fits on the <strong>same heap page</strong>. If either condition fails → COLD update → all indexes must be updated.
+</div>
+
+<div class="imp">
+  <strong>Postgres update = DELETE old row + INSERT new row</strong> (MVCC). Postgres never modifies a row in-place. The old tuple is marked dead, a new tuple is written on the heap. In a COLD update every index needs a new entry pointing to the new tuple's location.
+</div>
+
+<hr>
+
+<!-- T4 Q1 -->
+<div class="q-block">
+  <div class="q-label">Update 1</div>
+  <div class="q-text"><code>UPDATE product SET stock = 40 WHERE id = 1;</code><br>How many places does Postgres write to, and why?</div>
+  <button class="show-btn" onclick="toggleAnswer(this)">Show Answer</button>
+  <div class="answer">
+    <span class="ans-label">Sample Solution:</span>
+    <strong>HOT update — 2 places.</strong><br><br>
+    <strong>Why HOT?</strong> <code>stock</code> is not indexed, and there is free space on the same heap page (given by the question). Both HOT conditions are satisfied.<br><br>
+    <table>
+      <tr><th>Write location</th><th>Reason</th></tr>
+      <tr><td>1. WAL (Write-Ahead Log)</td><td>All changes must be logged first for durability / crash recovery.</td></tr>
+      <tr><td>2. Heap file</td><td>New tuple version written on the same page; old tuple marked dead. No index entries need to change — the index still points to the same page and Postgres follows the HOT chain.</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- T4 Q2 -->
+<div class="q-block">
+  <div class="q-label">Update 2</div>
+  <div class="q-text"><code>UPDATE product SET price = 79 WHERE id = 1;</code><br>How many places does Postgres write to, and why?</div>
+  <button class="show-btn" onclick="toggleAnswer(this)">Show Answer</button>
+  <div class="answer">
+    <span class="ans-label">Sample Solution:</span>
+    <strong>COLD update — 5 places.</strong><br><br>
+    <strong>Why COLD?</strong> <code>price</code> is indexed. Changing an indexed column means the index entry for the old tuple is stale — every index must now point to the new tuple's heap location. HOT is impossible.<br><br>
+    <table>
+      <tr><th>Write location</th><th>Reason</th></tr>
+      <tr><td>1. WAL</td><td>Durability log — always first.</td></tr>
+      <tr><td>2. Heap file</td><td>New tuple version inserted (old marked dead).</td></tr>
+      <tr><td>3. Index on <code>id</code> (primary key)</td><td>All indexes must add an entry pointing to the new tuple's location.</td></tr>
+      <tr><td>4. Index on <code>name</code></td><td>Same reason — even though name didn't change, the row's physical location changed.</td></tr>
+      <tr><td>5. Index on <code>price</code></td><td>Price value changed, so the old index entry is wrong; new entry needed at new value.</td></tr>
+    </table>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ TASK 5 -->
+<h1 id="task5">Task 5 — State-based CRDT Set (OR-Set)</h1>
+
+<div class="def">
+  <strong>What is this task asking?</strong><br>
+  You must trace a Conflict-free Replicated Data Type (CRDT) OR-Set step by step, filling in each node's Add and Remove sets after each operation or merge. You then compute <code>get(fruits)</code> = elements in Add but not in Remove <em>that were seen before the remove</em>.
+</div>
+
+<div class="tip">
+  The two critical rules for this CRDT:<br>
+  1. <strong>Merge = union</strong> — when nodes merge, their Add sets are unioned, their Remove sets are unioned.<br>
+  2. <strong>Remove only works if the node has already seen the element</strong> — i.e. the element exists in that node's Add set at the time of removal. If not, the remove is silently discarded.<br>
+  3. <code>get(fruits)</code> = All elements in any node's Add set <strong>minus</strong> those in any node's Remove set (at each merged state).
+</div>
+
+<div class="warn">
+  Concurrent add + remove of the same element: if the remover never saw the element (no merge in between), the <strong>add wins</strong>. This is the OR-Set (Observed-Remove Set) semantics.
+</div>
+
+<hr>
+
+<div class="q-block">
+  <div class="q-label">Full Table</div>
+  <div class="q-text">Fill in all node states and get(fruits) after each merge (T2 and T4).</div>
+  <button class="show-btn" onclick="toggleAnswer(this)">Show Answer</button>
+  <div class="answer">
+    <span class="ans-label">Sample Solution:</span>
+    <table>
+      <tr>
+        <th>Time</th>
+        <th>Node A</th>
+        <th>Node B</th>
+        <th>Node C</th>
+        <th>get(fruits)</th>
+      </tr>
+      <tr>
+        <td><strong>T0</strong></td>
+        <td>Add {–|–|–}<br>Rem {–|–|–}</td>
+        <td>Add {–|–|–}<br>Rem {–|–|–}</td>
+        <td>Add {–|–|–}<br>Rem {–|–|–}</td>
+        <td>{}</td>
+      </tr>
+      <tr>
+        <td><strong>T1</strong></td>
+        <td>Add {apple,mango|–|–}<br>Rem {–|–|–}</td>
+        <td>Add {–|–|–}<br>Rem {–|–|–}</td>
+        <td>Add {–|–|lemon}<br>Rem {–|–|–}</td>
+        <td>—</td>
+      </tr>
+      <tr style="background:#e8f5e9">
+        <td><strong>T2</strong><br>(merge)</td>
+        <td>Add {apple,mango|–|lemon}<br>Rem {–|–|–}</td>
+        <td>Add {apple,mango|–|lemon}<br>Rem {–|–|–}</td>
+        <td>Add {apple,mango|–|lemon}<br>Rem {–|–|–}</td>
+        <td><strong>{apple, mango, lemon}</strong></td>
+      </tr>
+      <tr>
+        <td><strong>T3</strong></td>
+        <td>Add {apple,mango,kiwi|–|lemon}<br>Rem {–|–|–}</td>
+        <td>Add {apple,mango|–|lemon}<br>Rem {–|apple|–}</td>
+        <td>Add {apple,mango|–|lemon}<br>Rem {–|–|–} <em>(kiwi remove discarded)</em></td>
+        <td>—</td>
+      </tr>
+      <tr style="background:#e8f5e9">
+        <td><strong>T4</strong><br>(merge)</td>
+        <td>Add {apple,mango,kiwi|–|lemon}<br>Rem {–|apple|–}</td>
+        <td>Add {apple,mango,kiwi|–|lemon}<br>Rem {–|apple|–}</td>
+        <td>Add {apple,mango,kiwi|–|lemon}<br>Rem {–|apple|–}</td>
+        <td><strong>{mango, kiwi, lemon}</strong></td>
+      </tr>
+    </table>
+    <br>
+    <strong>Key notes:</strong><br>
+    • <strong>'apple' is removed</strong> — Node B had seen 'apple' after T2 merge, so its removal at T3 is valid. After T4 merge, 'apple' is in Rem on all nodes → removed from result.<br>
+    • <strong>'kiwi' stays</strong> — Node C tried to remove 'kiwi' at T3, but C had never seen 'kiwi' (A added it concurrently, no merge yet). Remove of unseen element is discarded → add wins → 'kiwi' appears in result.
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ TASK 6 -->
+<h1 id="task6">Task 6 — Version Vectors</h1>
+
+<div class="def">
+  <strong>What is this task asking?</strong><br>
+  You trace two concurrent client writes through a 3-node cluster using version vectors. Each node maintains a vector clock (n1, n2, n3). You must fill in the Bob value and the updated version vector after each write propagates. Last-Write-Wins (LWW) is the conflict resolution strategy.
+</div>
+
+<div class="tip">
+  Version vector rules:<br>
+  1. When a node <strong>receives a new write</strong> from a client, it increments <em>its own</em> slot in the vector.<br>
+  2. When a write is <strong>replicated to another node</strong>, that node takes the <em>max</em> of each slot from both vectors (merge).<br>
+  3. <strong>LWW</strong> = when two writes conflict (neither vector dominates), pick the one with the higher timestamp / latest write.
+</div>
+
+<div class="warn">
+  The exam note says: using LWW <em>with</em> version vectors defeats their purpose in real systems — if you always use LWW, you don't need version vectors. Version vectors are more meaningful with sibling values. Know this for theory questions.
+</div>
+
+<hr>
+
+<div class="q-block">
+  <div class="q-label">Full Diagram</div>
+  <div class="q-text">Initial state: all 3 nodes have Bob:5, (n1:1, n2:1, n3:1). Client 1 sets Bob=6, Client 2 sets Bob=7. Fill in all blank values.</div>
+  <button class="show-btn" onclick="toggleAnswer(this)">Show Answer</button>
+  <div class="answer">
+    <span class="ans-label">Sample Solution (LWW — Client 2 wins):</span>
+
+    <p style="margin:6px 0 10px"><em>Each write is only sent to 2 of the 3 replica nodes — not all three. Node 2 is the only node that receives both writes.</em></p>
+
+    <table class="vv-table">
+      <tr>
+        <th>Node</th>
+        <th>Initial state</th>
+        <th>After Client 1: set(Bob, 6)</th>
+        <th>After Client 2: set(Bob, 7)</th>
+        <th>Final state</th>
+      </tr>
+      <tr>
+        <td><strong>Coordinator 1</strong><br><em>(handles C1)</em></td>
+        <td>—</td>
+        <td>Bob:6 (n1:2, n2:1, n3:1)<br><em>increments n1, sends to nodes 1 &amp; 2</em><br>→ after node 2 acks:<br>Bob:6 (n1:2, n2:2, n3:1)</td>
+        <td>—</td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td><strong>Node 1</strong></td>
+        <td>Bob:5 (n1:1, n2:1, n3:1)</td>
+        <td>First gets Bob:6 (n1:2, n2:1, n3:1) from Coordinator 1.<br>Then Coordinator 1 receives ack from Node 2 with (n1:2, n2:2, n3:1) and sends it back to Node 1.<br>→ Bob:6 (n1:2, n2:2, n3:1)</td>
+        <td>— <em>(not reached by C2's write)</em></td>
+        <td style="background:#fff3cd"><strong>Bob:6</strong><br>(n1:2, n2:2, n3:1)</td>
+      </tr>
+      <tr>
+        <td><strong>Node 2</strong></td>
+        <td>Bob:5 (n1:1, n2:1, n3:1)</td>
+        <td>Bob:6 (n1:2, n2:2, n3:1)<br><em>receives from C1, increments n2</em></td>
+        <td>Merges Bob:6 (n1:2,n2:2,n3:1) with Bob:7 (n1:1,n2:1,n3:2)<br>→ LWW picks Bob:7<br>→ vector = max per slot, n2 increments:<br>Bob:7 (n1:2, n2:3, n3:2)</td>
+        <td style="background:#e8f5e9"><strong>Bob:7</strong><br>(n1:2, n2:3, n3:2)</td>
+      </tr>
+      <tr>
+        <td><strong>Node 3</strong></td>
+        <td>Bob:5 (n1:1, n2:1, n3:1)</td>
+        <td>— <em>(not reached by C1's write)</em></td>
+        <td>First gets Bob:7 (n1:1, n2:1, n3:2) from Coordinator 2.<br>Then Coordinator 2 receives merged ack (n1:2,n2:3,n3:2) from Node 2 and sends it back to Node 3.<br>→ Bob:7 (n1:2, n2:3, n3:2)</td>
+        <td style="background:#e8f5e9"><strong>Bob:7</strong><br>(n1:2, n2:3, n3:2)</td>
+      </tr>
+      <tr>
+        <td><strong>Coordinator 2</strong><br><em>(handles C2)</em></td>
+        <td>—</td>
+        <td>—</td>
+        <td>Bob:7 (n1:1, n2:1, n3:2)<br><em>increments n3, sends to nodes 2 &amp; 3</em><br>→ after node 2 acks:<br>Bob:7 (n1:2, n2:3, n3:2)</td>
+        <td>—</td>
+      </tr>
+    </table>
+    <br>
+    <strong>Key observations:</strong><br>
+    • <strong>Node 1 ends with Bob:6</strong> — it only received Client 1's write. Client 2's write was routed to nodes 2 &amp; 3, so node 1 is stale.<br>
+    • <strong>Node 2 merges both writes</strong> — it holds Bob:6 from C1, then receives Bob:7 from C2. The two version vectors (n1:2,n2:2,n3:1) and (n1:1,n2:1,n3:2) neither dominates the other → conflict. LWW picks Bob:7. Merged vector = max per slot + n2 increments its own = (n1:2, n2:3, n3:2).<br>
+    • <strong>Node 3 ends with Bob:7 (n1:2,n2:3,n3:2)</strong> — it first receives Bob:7 (n1:1,n2:1,n3:2) from Coordinator 2 directly, then the coordinator sends the merged vector (n1:2,n2:3,n3:2) back to Node 3 after receiving Node 2's ack. Node 3 ends up with the same final state as Node 2.
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════ TASK 7 -->
+<h1 id="task7">Task 7 — MongoDB Read Concern</h1>
+
+<div class="def">
+  <strong>What is this task asking?</strong><br>
+  You need to define and distinguish two types of bad reads in MongoDB (dirty vs stale), and compare the two main readConcern levels. This is about MongoDB's replica set behaviour and consistency guarantees.
+</div>
+
+<div class="tip">
+  The core distinction to memorize:<br>
+  <strong>Dirty read</strong> = data that could be <em>rolled back</em> (not yet majority-committed) — risk of seeing data that "never happened".<br>
+  <strong>Stale read</strong> = data that is real and committed, but <em>old</em> — you're seeing an outdated version because replication lag.<br><br>
+  <code>readConcern: local</code> → risk of dirty reads (returns latest on this node, not necessarily majority-committed).<br>
+  <code>readConcern: majority</code> → risk of stale reads (only returns majority-committed data, which might be slightly behind the latest write).
+</div>
+
+<hr>
+
+<!-- T7 Q1 -->
+<div class="q-block">
+  <div class="q-label">Question 1</div>
+  <div class="q-text">Explain what is a dirty read, and how can it occur in MongoDB.</div>
+  <button class="show-btn" onclick="toggleAnswer(this)">Show Answer</button>
+  <div class="answer">
+    <span class="ans-label">Sample Solution:</span>
+    A <strong>dirty read</strong> returns a value that has not yet been acknowledged by a majority of nodes and could later be rolled back. In MongoDB, it occurs when you read a write that the primary has applied locally but has not yet reached a majority of secondaries. If that primary steps down before replication completes, MongoDB rolls back the write — so the data you read effectively never existed.
+  </div>
+</div>
+
+<!-- T7 Q2 -->
+<div class="q-block">
+  <div class="q-label">Question 2</div>
+  <div class="q-text">Explain what is a stale read, and how can it occur in MongoDB.</div>
+  <button class="show-btn" onclick="toggleAnswer(this)">Show Answer</button>
+  <div class="answer">
+    <span class="ans-label">Sample Solution:</span>
+    A <strong>stale read</strong> returns an old but real (already committed) value. It occurs because MongoDB replication is asynchronous: a secondary node may not yet have applied the most recent writes due to replication lag. Reading from a lagging secondary gives you an out-of-date value — the data is durable, but not current.
+  </div>
+</div>
+
+<!-- T7 Q3 -->
+<div class="q-block">
+  <div class="q-label">Question 3</div>
+  <div class="q-text">Compare <em>readConcern: local</em> and <em>readConcern: majority</em>. Which one is more prone to stale reads? Explain.</div>
+  <button class="show-btn" onclick="toggleAnswer(this)">Show Answer</button>
+  <div class="answer">
+    <span class="ans-label">Sample Solution:</span>
+    <table>
+      <tr>
+        <th></th>
+        <th>readConcern: local</th>
+        <th>readConcern: majority</th>
+      </tr>
+      <tr>
+        <td><strong>What it returns</strong></td>
+        <td>Latest value this node has locally, regardless of majority</td>
+        <td>Only values acknowledged by a majority of nodes</td>
+      </tr>
+      <tr>
+        <td><strong>Dirty read risk</strong></td>
+        <td>YES — value might be rolled back if primary steps down</td>
+        <td>NO — majority-committed data is durable</td>
+      </tr>
+      <tr>
+        <td><strong>Stale read risk</strong></td>
+        <td>Lower — you get the freshest local data</td>
+        <td>HIGHER — must wait for majority commit, so slightly older data</td>
+      </tr>
+      <tr>
+        <td><strong>Performance</strong></td>
+        <td>Faster (no majority wait)</td>
+        <td>Slightly slower (waits for majority acknowledgement)</td>
+      </tr>
+    </table>
+    <br>
+    <strong>readConcern: majority is more prone to stale reads.</strong> Because it only serves data that has been committed to a majority, it waits for the replication pipeline, so it always lags slightly behind the absolute latest write — trading freshness for safety against dirty reads.
+  </div>
+</div>
+
+<hr>
+<p style="text-align:center;color:#888;font-size:9.5pt;margin-top:30px">DB2 Final Exam Sample — KIU Databases II 2026 | Generated 2026-06-24</p>
+
+
+</div>
+
+<script>
+(function(){
+  var KEY = 'readerPrefs2:db2site';
+  var root = document.documentElement;
+  var body = document.body;
+  var DEF = { fs: 1.5, cw: 560, full: false };
+  var st = Object.assign({}, DEF);
+  try { st = Object.assign(st, JSON.parse(localStorage.getItem(KEY) || '{}')); } catch(e){}
+
+  var ctl = document.getElementById('reader-controls');
+  var toggle = document.getElementById('rc-toggle');
+  var fontVal = document.getElementById('rc-font-val');
+  var widthInput = document.getElementById('rc-width');
+  var widthVal = document.getElementById('rc-width-val');
+  var fullChk = document.getElementById('rc-full');
+
+  function clamp(v, lo, hi){ return Math.min(hi, Math.max(lo, v)); }
+
+  function apply(){
+    root.style.setProperty('--rfs', st.fs);
+    root.style.setProperty('--rcw', st.cw + 'px');
+    body.classList.toggle('reader-full', !!st.full);
+    fontVal.textContent = Math.round(st.fs * 100) + '%';
+    widthInput.value = st.cw;
+    widthVal.textContent = st.full ? 'full' : st.cw;
+    widthInput.disabled = !!st.full;
+    fullChk.checked = !!st.full;
+  }
+  function save(){
+    try { localStorage.setItem(KEY, JSON.stringify(st)); } catch(e){}
+  }
+
+  toggle.addEventListener('click', function(){ ctl.classList.toggle('open'); });
+
+  ctl.addEventListener('click', function(e){
+    var act = e.target.getAttribute('data-act');
+    if(!act) return;
+    if(act === 'font-inc') st.fs = clamp(Math.round((st.fs + 0.1)*10)/10, 0.7, 2.2);
+    else if(act === 'font-dec') st.fs = clamp(Math.round((st.fs - 0.1)*10)/10, 0.7, 2.2);
+    else if(act === 'reset') st = Object.assign({}, DEF);
+    apply(); save();
+  });
+
+  widthInput.addEventListener('input', function(){
+    st.cw = clamp(parseInt(widthInput.value, 10) || DEF.cw, 300, 1600);
+    apply(); save();
+  });
+  fullChk.addEventListener('change', function(){
+    st.full = fullChk.checked;
+    apply(); save();
+  });
+
+  apply();
+})();
+</script>
+
+
+<script>
+(function(){
+  var KEY='readerTheme:db2site';
+  var root=document.documentElement;
+  var mql=window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  var theme=null;
+  try{ theme=localStorage.getItem(KEY); }catch(e){}
+  if(theme!=='light' && theme!=='dark' && theme!=='system') theme='system';
+
+  var row=document.getElementById('rc-theme-row');
+  function effective(){ return theme==='system' ? (mql && mql.matches ? 'dark':'light') : theme; }
+  function apply(){
+    root.classList.toggle('theme-dark', effective()==='dark');
+    if(row){ row.querySelectorAll('[data-theme]').forEach(function(b){
+      b.classList.toggle('active', b.getAttribute('data-theme')===theme); }); }
+  }
+  if(row){
+    row.addEventListener('click', function(e){
+      var b=e.target.closest('[data-theme]'); if(!b) return;
+      theme=b.getAttribute('data-theme');
+      try{ localStorage.setItem(KEY, theme); }catch(err){}
+      apply();
+    });
+  }
+  if(mql){
+    var onChange=function(){ if(theme==='system') apply(); };
+    if(mql.addEventListener) mql.addEventListener('change', onChange);
+    else if(mql.addListener) mql.addListener(onChange);
+  }
+  apply();
+})();
+</script>
+
+<div id="reader-pagecounter">Page <span id="rpc-cur">1</span> / <span id="rpc-total">1</span></div>
+
+<script>
+(function(){
+  var PAGE_PX = 1000;            // fixed LOGICAL page height -> identical unit across all files
+  var root = document.documentElement;
+  var curEl = document.getElementById('rpc-cur');
+  var totEl = document.getElementById('rpc-total');
+
+  function fontScale(){
+    var v = parseFloat(getComputedStyle(root).getPropertyValue('--rfs'));
+    return (v && v > 0) ? v : 1;
+  }
+  function update(){
+    var fs = fontScale();
+    var pp = PAGE_PX * fs;                       // page height in rendered px
+    var docH = Math.max(root.scrollHeight, document.body.scrollHeight);
+    var total = Math.max(1, Math.ceil(docH / pp));
+    var cur = Math.min(total, Math.floor((window.scrollY || window.pageYOffset || 0) / pp) + 1);
+    curEl.textContent = cur;
+    totEl.textContent = total;
+  }
+
+  var ticking = false;
+  function onScroll(){
+    if(ticking) return; ticking = true;
+    requestAnimationFrame(function(){ update(); ticking = false; });
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', update);
+
+  // recompute when font/width settings change the document height
+  var rc = document.querySelector('.reader-container');
+  if(window.ResizeObserver && rc){
+    new ResizeObserver(update).observe(rc);
+  } else {
+    setInterval(update, 1000);
+  }
+  update();
+})();
+</script>
+
+
+<script>
+(function(){
+  var PAGE_PX = 1000;
+  var root = document.documentElement;
+  var rc = document.querySelector('.reader-container');
+  var pc = document.getElementById('reader-pagecounter');
+  if(!rc || !pc) return;
+
+  // wrap counter + outline so hover stays active when moving between them
+  var nav = document.createElement('div'); nav.id = 'reader-nav';
+  pc.parentNode.insertBefore(nav, pc); nav.appendChild(pc);
+  var outline = document.createElement('div'); outline.id = 'reader-outline';
+  nav.appendChild(outline);
+
+  function fontScale(){
+    var v = parseFloat(getComputedStyle(root).getPropertyValue('--rfs'));
+    return (v && v > 0) ? v : 1;
+  }
+  function esc(s){ return s.replace(/[&<>"]/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+
+  function build(){
+    var pp = PAGE_PX * fontScale();
+    var hs = rc.querySelectorAll('h1, h2, h3');
+    var sy = window.scrollY || window.pageYOffset || 0;
+    var html = '<div class="ro-head">Contents &middot; page</div>';
+    hs.forEach(function(h){
+      if(h.closest('.toc, .cover')) return;          // skip TOC / cover headings
+      var txt = (h.textContent || '').trim();
+      if(!txt) return;
+      var lvl = h.tagName === 'H1' ? 0 : (h.tagName === 'H2' ? 1 : 2);
+      var top = h.getBoundingClientRect().top + sy;
+      var pg = Math.max(1, Math.floor(top / pp) + 1);
+      html += '<a class="ro-item ro-l' + lvl + '" data-top="' + Math.round(top) + '">' +
+              '<span class="ro-t">' + esc(txt) + '</span>' +
+              '<span class="ro-p">p.' + pg + '</span></a>';
+    });
+    outline.innerHTML = html;
+  }
+
+  nav.addEventListener('mouseenter', build);   // rebuild fresh each hover (page #s stay correct)
+  outline.addEventListener('click', function(e){
+    var a = e.target.closest('.ro-item'); if(!a) return;
+    var y = parseFloat(a.getAttribute('data-top')) - 12;
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  });
+})();
+</script>
+
+
+<script>
+(function(){
+  var PAGE_PX = 1000, SPY_OFFSET = 90;
+  var root = document.documentElement;
+  var rc = document.querySelector('.reader-container');
+  var pc = document.getElementById('reader-pagecounter');
+  var outline = document.getElementById('reader-outline');
+  var nav = document.getElementById('reader-nav');
+  if(!rc || !pc || !outline || !nav) return;
+
+  // current-heading label inside the pill (before the "Page X / Y" text)
+  var head = document.createElement('span'); head.id = 'rpc-head';
+  /* current heading shown in the outline only, not in the pill */
+
+  // cache the real section headings (skip TOC / cover)
+  var heads = [];
+  rc.querySelectorAll('h1, h2, h3').forEach(function(h){
+    if(h.closest('.toc, .cover')) return;
+    if(!(h.textContent || '').trim()) return;
+    heads.push(h);
+  });
+
+  function fontScale(){
+    var v = parseFloat(getComputedStyle(root).getPropertyValue('--rfs'));
+    return (v && v > 0) ? v : 1;
+  }
+  function esc(s){ return s.replace(/[&<>"]/g, function(c){
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]; }); }
+  function topsAndCurrent(){
+    var sy = window.scrollY || window.pageYOffset || 0;
+    var tops = heads.map(function(h){ return h.getBoundingClientRect().top + sy; });
+    var cur = -1;
+    for(var i=0;i<tops.length;i++){ if(tops[i] <= sy + SPY_OFFSET) cur = i; else break; }
+    if(cur < 0 && tops.length) cur = 0;
+    return { tops: tops, cur: cur, sy: sy };
+  }
+
+  function build(){
+    var st = topsAndCurrent();
+    var pp = PAGE_PX * fontScale();
+    var html = '<div class="ro-head">Contents &middot; page</div>';
+    heads.forEach(function(h, i){
+      var lvl = h.tagName === 'H1' ? 0 : (h.tagName === 'H2' ? 1 : 2);
+      var pg = Math.max(1, Math.floor(st.tops[i] / pp) + 1);
+      html += '<a class="ro-item ro-l' + lvl + (i === st.cur ? ' ro-active' : '') +
+              '" data-i="' + i + '" data-top="' + Math.round(st.tops[i]) + '">' +
+              '<span class="ro-t">' + esc((h.textContent||'').trim()) + '</span>' +
+              '<span class="ro-p">p.' + pg + '</span></a>';
+    });
+    outline.innerHTML = html;
+    var act = outline.querySelector('.ro-active');
+    if(act) outline.scrollTop = act.offsetTop - outline.clientHeight / 2;
+  }
+
+  // run AFTER the earlier outline builder so this (spy-aware) version wins
+  nav.addEventListener('mouseenter', build);
+  pc.addEventListener('click', function(){ nav.classList.toggle('pinned'); if(nav.classList.contains('pinned')) build(); });
+  document.addEventListener('click', function(e){ if(nav.classList.contains('pinned') && !nav.contains(e.target)) nav.classList.remove('pinned'); });
+
+  var ticking = false;
+  function onScroll(){
+    if(ticking) return; ticking = true;
+    requestAnimationFrame(function(){
+      var st = topsAndCurrent();
+      head.textContent = st.cur >= 0 ? (heads[st.cur].textContent || '').trim() : '';
+      // live-highlight active item if the outline is currently shown
+      var items = outline.children;
+      for(var i=0;i<items.length;i++){
+        var el = items[i]; if(!el.classList || !el.classList.contains('ro-item')) continue;
+        el.classList.toggle('ro-active', parseInt(el.getAttribute('data-i'),10) === st.cur);
+      }
+      ticking = false;
+    });
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', onScroll);
+
+  // initial current-heading label
+  var st0 = topsAndCurrent();
+  head.textContent = st0.cur >= 0 ? (heads[st0.cur].textContent || '').trim() : '';
+})();
+</script>
+
+
+<script>
+(function(){
+  var KEY='siteNavOpen', body=document.body;
+  var wide=window.matchMedia('(min-width:900px)');
+  var saved=null; try{ saved=localStorage.getItem(KEY); }catch(e){}
+  var open = saved===null ? wide.matches : saved==='1';
+  function apply(){ body.classList.toggle('nav-open', open); }
+  var t=document.getElementById('site-nav-toggle');
+  if(t) t.addEventListener('click', function(){ open=!open; try{localStorage.setItem(KEY,open?'1':'0');}catch(e){} apply(); });
+  var bd=document.getElementById('site-nav-backdrop');
+  if(bd) bd.addEventListener('click', function(){ open=false; try{localStorage.setItem(KEY,'0');}catch(e){} apply(); });
+  apply();
+})();
+</script>
+
+</body>
+</html>
