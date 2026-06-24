@@ -342,6 +342,26 @@ html.theme-dark .vv-stale{ background:#3a3320 !important; color:#d2d5da !importa
 /* keep wide answer tables inside the column */
 .vv-table{ max-width:100%; }
 </style>
+<style id="crdt-interactive-style">
+.tbl-scroll{ overflow-x:auto; -webkit-overflow-scrolling:touch; max-width:100%; }
+.crdt-interactive{ background:#eef3ff; border:1px solid #c0cfe0; border-radius:6px; padding:12px 14px; margin:12px 0; }
+.crdt-interactive .ci-head{ font-weight:bold; color:#003366; margin-bottom:6px; }
+.crdt-interactive .ci-given{ font-size:9.5pt; margin-bottom:10px; }
+.crdt-interactive table{ width:auto; min-width:100%; }
+.crdt-interactive input{ width:160px; max-width:46vw; box-sizing:border-box; padding:5px 7px;
+  border:1px solid #aac; border-radius:4px; font-family:inherit; font-size:10pt; }
+.crdt-interactive input.ci-ok{ border-color:#28a745; background:#eaffea; }
+.crdt-interactive input.ci-no{ border-color:#dc3545; background:#ffecec; }
+.crdt-interactive .ci-check{ background:#1a73e8; color:#fff; border:none; padding:7px 16px;
+  border-radius:4px; cursor:pointer; margin-top:10px; font-size:10pt; font-family:inherit; }
+.crdt-interactive .ci-check:hover{ background:#1558b0; }
+.crdt-interactive .ci-result{ display:none; margin-left:12px; font-weight:bold; }
+html.theme-dark .crdt-interactive{ background:#1e2230; border-color:#3a4258; color:#d2d5da; }
+html.theme-dark .crdt-interactive .ci-head{ color:#9ec5ff; }
+html.theme-dark .crdt-interactive input{ background:#11151c; color:#e0e2e6; border-color:#3a4150; }
+html.theme-dark .crdt-interactive input.ci-ok{ border-color:#28a745; background:#16301c; color:#cfe; }
+html.theme-dark .crdt-interactive input.ci-no{ border-color:#dc3545; background:#3a1d1d; color:#fdd; }
+</style>
 </head>
 <body>
 <button id="site-nav-toggle" title="Menu" aria-label="Menu">☰</button>
@@ -739,10 +759,35 @@ html.theme-dark .vv-stale{ background:#3a3320 !important; color:#d2d5da !importa
 <div class="q-block">
   <div class="q-label">Full Table</div>
   <div class="q-text">Fill in all node states and get(fruits) after each merge (T2 and T4).</div>
+  <div class="crdt-interactive">
+    <div class="ci-head">✏️ Solve it yourself</div>
+    <div class="ci-given"><strong>Given &mdash; T1:</strong> Node A adds <em>apple, mango</em>; Node C adds <em>lemon</em>.
+      &nbsp; <strong>T3:</strong> Node A adds <em>kiwi</em>; Node B removes <em>apple</em>; Node C tries to remove <em>kiwi</em> (before ever seeing it).<br>
+      Fill the converged state after each merge &mdash; sets, any order (e.g. <code>apple, mango</code>); use <code>-</code> for empty:</div>
+    <div class="tbl-scroll">
+    <table>
+      <tr><th>After merge</th><th>Add set (all nodes)</th><th>Rem set (all nodes)</th><th>get(fruits)</th></tr>
+      <tr>
+        <td><strong>T2</strong></td>
+        <td><input data-ans="apple,mango,lemon" placeholder="add set…"></td>
+        <td><input data-ans="" placeholder="rem set…"></td>
+        <td><input data-ans="apple,mango,lemon" placeholder="result…"></td>
+      </tr>
+      <tr>
+        <td><strong>T4</strong></td>
+        <td><input data-ans="apple,mango,kiwi,lemon" placeholder="add set…"></td>
+        <td><input data-ans="apple" placeholder="rem set…"></td>
+        <td><input data-ans="mango,kiwi,lemon" placeholder="result…"></td>
+      </tr>
+    </table>
+    </div>
+    <button class="ci-check" onclick="checkCrdt(this)">Check my answers</button>
+    <span class="ci-result"></span>
+  </div>
   <button class="show-btn" onclick="toggleAnswer(this)">Show Answer</button>
   <div class="answer">
     <span class="ans-label">Sample Solution:</span>
-    <table>
+    <div class="tbl-scroll"><table>
       <tr>
         <th>Time</th>
         <th>Node A</th>
@@ -785,7 +830,7 @@ html.theme-dark .vv-stale{ background:#3a3320 !important; color:#d2d5da !importa
         <td>Add {apple,mango,kiwi|–|lemon}<br>Rem {–|apple|–}</td>
         <td><strong>{mango, kiwi, lemon}</strong></td>
       </tr>
-    </table>
+    </table></div>
     <br>
     <strong>Key notes:</strong><br>
     • <strong>'apple' is removed</strong> — Node B had seen 'apple' after T2 merge, so its removal at T3 is valid. After T4 merge, 'apple' is in Rem on all nodes → removed from result.<br>
@@ -1242,6 +1287,27 @@ html.theme-dark .vv-stale{ background:#3a3320 !important; color:#d2d5da !importa
   if(bd) bd.addEventListener('click', function(){ open=false; try{localStorage.setItem(KEY,'0');}catch(e){} apply(); });
   apply();
 })();
+</script>
+
+<script>
+function normSet(s){
+  s=(s||'').toLowerCase().replace(/[{}()\[\]\u2205]/g,' ').replace(/[\u2013\u2014-]/g,' ');
+  var p=s.split(/[\s,|]+/).filter(function(x){return x && x!=='none' && x!=='empty';});
+  p.sort(); return p.join(',');
+}
+function checkCrdt(btn){
+  var box=btn.closest('.crdt-interactive');
+  var inputs=box.querySelectorAll('input[data-ans]'), ok=0;
+  inputs.forEach(function(i){
+    var good=normSet(i.value)===normSet(i.getAttribute('data-ans'));
+    i.classList.remove('ci-ok','ci-no'); i.classList.add(good?'ci-ok':'ci-no');
+    if(good) ok++;
+  });
+  var r=box.querySelector('.ci-result');
+  r.textContent=ok+' / '+inputs.length+' correct'+(ok===inputs.length?'  \uD83C\uDF89 all right!':'');
+  r.style.color = (ok===inputs.length) ? '#1a7a1a' : '#cc0000';
+  r.style.display='inline-block';
+}
 </script>
 
 </body>
