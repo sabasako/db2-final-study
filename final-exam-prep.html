@@ -67,7 +67,7 @@ hr{border:none;border-top:2px solid #ddd;margin:20px 0}
 /* version vector diagram */
 .vv-table{font-size:9pt;font-family:'Courier New',monospace}
 .vv-table th{background:#1a3a5c;font-size:9pt;padding:5px 8px}
-.vv-table td{padding:5px 8px;border:1px solid #bbb;white-space:nowrap}
+.vv-table td{padding:5px 8px;border:1px solid #bbb;white-space:normal;vertical-align:top}
 .vv-table tr:nth-child(even){background:#f5f5ff}
 </style>
 <script>
@@ -332,6 +332,15 @@ body.nav-open #site-nav-backdrop{ display:block; }
   .reader-container pre, .reader-container .ascii-diagram{ font-size:8pt; }
   h1{ font-size:17pt !important; } h2{ font-size:13.5pt !important; }
 }
+</style>
+<style id="vv-fix-style">
+/* theme-aware highlight cells (replace hardcoded inline backgrounds) */
+.vv-ok, .crdt-merge{ background:#e8f5e9; }
+.vv-stale{ background:#fff3cd; }
+html.theme-dark .vv-ok, html.theme-dark .crdt-merge{ background:#1f3a28 !important; color:#d2d5da !important; }
+html.theme-dark .vv-stale{ background:#3a3320 !important; color:#d2d5da !important; }
+/* keep wide answer tables inside the column */
+.vv-table{ max-width:100%; }
 </style>
 </head>
 <body>
@@ -754,7 +763,7 @@ body.nav-open #site-nav-backdrop{ display:block; }
         <td>Add {–|–|lemon}<br>Rem {–|–|–}</td>
         <td>—</td>
       </tr>
-      <tr style="background:#e8f5e9">
+      <tr class="crdt-merge">
         <td><strong>T2</strong><br>(merge)</td>
         <td>Add {apple,mango|–|lemon}<br>Rem {–|–|–}</td>
         <td>Add {apple,mango|–|lemon}<br>Rem {–|–|–}</td>
@@ -768,7 +777,7 @@ body.nav-open #site-nav-backdrop{ display:block; }
         <td>Add {apple,mango|–|lemon}<br>Rem {–|–|–} <em>(kiwi remove discarded)</em></td>
         <td>—</td>
       </tr>
-      <tr style="background:#e8f5e9">
+      <tr class="crdt-merge">
         <td><strong>T4</strong><br>(merge)</td>
         <td>Add {apple,mango,kiwi|–|lemon}<br>Rem {–|apple|–}</td>
         <td>Add {apple,mango,kiwi|–|lemon}<br>Rem {–|apple|–}</td>
@@ -834,21 +843,21 @@ body.nav-open #site-nav-backdrop{ display:block; }
         <td>Bob:5 (n1:1, n2:1, n3:1)</td>
         <td>First gets Bob:6 (n1:2, n2:1, n3:1) from Coordinator 1.<br>Then Coordinator 1 receives ack from Node 2 with (n1:2, n2:2, n3:1) and sends it back to Node 1.<br>→ Bob:6 (n1:2, n2:2, n3:1)</td>
         <td>— <em>(not reached by C2's write)</em></td>
-        <td style="background:#fff3cd"><strong>Bob:6</strong><br>(n1:2, n2:2, n3:1)</td>
+        <td class="vv-stale"><strong>Bob:6</strong><br>(n1:2, n2:2, n3:1)</td>
       </tr>
       <tr>
         <td><strong>Node 2</strong></td>
         <td>Bob:5 (n1:1, n2:1, n3:1)</td>
         <td>Bob:6 (n1:2, n2:2, n3:1)<br><em>receives from C1, increments n2</em></td>
         <td>Merges Bob:6 (n1:2,n2:2,n3:1) with Bob:7 (n1:1,n2:1,n3:2)<br>→ LWW picks Bob:7<br>→ vector = max per slot, n2 increments:<br>Bob:7 (n1:2, n2:3, n3:2)</td>
-        <td style="background:#e8f5e9"><strong>Bob:7</strong><br>(n1:2, n2:3, n3:2)</td>
+        <td class="vv-ok"><strong>Bob:7</strong><br>(n1:2, n2:3, n3:2)</td>
       </tr>
       <tr>
         <td><strong>Node 3</strong></td>
         <td>Bob:5 (n1:1, n2:1, n3:1)</td>
         <td>— <em>(not reached by C1's write)</em></td>
         <td>First gets Bob:7 (n1:1, n2:1, n3:2) from Coordinator 2.<br>Then Coordinator 2 receives merged ack (n1:2,n2:3,n3:2) from Node 2 and sends it back to Node 3.<br>→ Bob:7 (n1:2, n2:3, n3:2)</td>
-        <td style="background:#e8f5e9"><strong>Bob:7</strong><br>(n1:2, n2:3, n3:2)</td>
+        <td class="vv-ok"><strong>Bob:7</strong><br>(n1:2, n2:3, n3:2)</td>
       </tr>
       <tr>
         <td><strong>Coordinator 2</strong><br><em>(handles C2)</em></td>
