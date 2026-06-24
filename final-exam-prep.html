@@ -324,7 +324,7 @@ body.nav-open #site-nav-backdrop{ display:block; }
 /* ===== mobile responsiveness ===== */
 @media (max-width:700px){
   body{ margin:0 !important; }
-  .reader-container{ max-width:none !important; margin:0 !important; zoom:1 !important; padding:0 14px !important; }
+  .reader-container{ max-width: calc((100vw - 18px) / var(--rfs)) !important; margin:0 auto !important; padding:0 !important; }
   #reader-controls{ top:10px !important; right:10px !important; }
   #site-nav-toggle{ top:10px; left:10px; width:38px; height:38px; }
   #reader-nav{ bottom:10px !important; right:10px !important; }
